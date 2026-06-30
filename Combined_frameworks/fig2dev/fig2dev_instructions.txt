@@ -1,0 +1,15 @@
+1. Have to run ollam server in background first to interact with LLM.
+	command:
+    	export OLLAMA_HOST=127.0.0.1:12543 //run ollama on specific port
+   	./ollama-all/bin/ollama serve
+
+2.Steps to run automated tool:
+
+	1. conda create -n fig2devenv python=3.10
+	2. conda activate fig2devenv
+	3. pip install -r fig2dev_requirements.txt
+	4. python3 fig2dev_tool.py [Generates PoC exploits]
+	5. python3 variant/AID_Variant.py [ Generates PoC Variants from benchmark tool]
+
+## All fig2dev versions are in this link: https://sourceforge.net/projects/mcj/files/
+

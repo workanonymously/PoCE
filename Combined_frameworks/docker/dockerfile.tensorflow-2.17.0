@@ -1,0 +1,17 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONPATH=/app
+ENV IN_DOCKER=1
+ENV TF_VERSION=2.17.0
+
+COPY tensorflow/tensorflow_requirements.txt /tmp/tensorflow_requirements.txt
+RUN pip install --no-cache-dir -r /tmp/tensorflow_requirements.txt
+
+COPY . /app/Combined_frameworks
+
+WORKDIR /app/Combined_frameworks
+
+ENTRYPOINT ["python3", "main.py"]

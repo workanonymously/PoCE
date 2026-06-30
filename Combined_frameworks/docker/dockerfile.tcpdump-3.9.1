@@ -1,0 +1,56 @@
+FROM ubuntu:16.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    wget \
+    git \
+    gdb \
+    gcc g++ \
+    clang \
+    make \
+    flex \
+    bison \
+    libasan2 \
+    vim \
+    iproute2 \
+    libnet1-dev \
+    net-tools \
+    libnet-dev \
+    libpcap-dev \
+    iputils-ping \
+    curl \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+RUN mkdir /test
+WORKDIR /test
+
+# Build and install libpcap 0.9.1 (no ASan)
+RUN wget https://www.tcpdump.org/release/libpcap-0.9.1.tar.gz && \
+    tar -xvzf libpcap-0.9.1.tar.gz && \
+    cd libpcap-0.9.1 && \
+    ./configure && make -j$(nproc) && make install
+
+# Build and install tcpdump 3.9.1 with ASan
+RUN wget https://www.tcpdump.org/release/tcpdump-3.9.1.tar.gz && \
+    tar -xvzf tcpdump-3.9.1.tar.gz && \
+    cd tcpdump-3.9.1 && \
+    CC=gcc CFLAGS="-g -O0 -fsanitize=address -fno-omit-frame-pointer" \
+    LDFLAGS="-fsanitize=address" \
+    ./configure --with-libpcap=/usr/local --disable-ipv6&& \
+    make -j$(nproc) && make install
+
+# Create test directory
+WORKDIR /test
+
+# Optionally copy PoC source file
+# COPY bgp_truth_poc.c /test/bgp_truth_poc.c
+COPY test-poc.c /test/test-poc.c
+# COPY test-poc.py /test/test-poc.py
+
+# Entry point
+CMD ["/bin/bash"]

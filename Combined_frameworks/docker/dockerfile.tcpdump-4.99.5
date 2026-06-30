@@ -1,0 +1,83 @@
+FROM ubuntu:20.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    clang \
+    gdb\
+    llvm \
+    # llvm-symbolizer \
+    ## llv-symbolizer doesn't work
+    # libc++-dev \
+    # libc++abi-dev \
+    build-essential \
+    flex \
+    bison \
+    wget \
+    curl \
+    git \
+    libssl-dev \
+    libnet1-dev \
+    cmake \
+    pkg-config \
+    autoconf \
+    automake \
+    libtool \
+    ca-certificates \ 
+    ## added this ca-certificates
+    && rm -rf /var/lib/apt/lists/*
+
+# Set Clang as default compiler
+ENV CC=clang
+ENV CXX=clang++
+
+RUN mkdir /test
+WORKDIR /test
+
+# Install libpcap 1.10.5
+RUN wget https://www.tcpdump.org/release/libpcap-1.10.5.tar.gz && \
+    tar -xzf libpcap-1.10.5.tar.gz && \
+    cd libpcap-1.10.5 && \
+    CC=clang CFLAGS="-g -O1 -fsanitize=address -fno-omit-frame-pointer" LDFLAGS="-fsanitize=address" \
+    #added -O1
+    ./configure && \
+    make -j$(nproc) && \
+    make install &&\
+    ldconfig 
+    # Have to add this ldconfig to ensure runtime loader picks up
+
+
+# Install tcpdump 4.99.5
+RUN wget https://www.tcpdump.org/release/tcpdump-4.99.5.tar.gz && \
+    tar -xzf tcpdump-4.99.5.tar.gz && \
+    cd tcpdump-4.99.5 && \
+    CC=clang CFLAGS="-g -O1 -fsanitize=address -fno-omit-frame-pointer" LDFLAGS="-fsanitize=address" \
+    #changed from-00 to -O1
+    ./configure && \
+    make -j$(nproc) && \
+    make install &&\
+    ldconfig
+
+# # Set ASan runtime environment
+# ENV ASAN_OPTIONS=detect_leaks=1:halt_on_error=1:abort_on_error=1:symbolize=1
+ENV ASAN_OPTIONS=log_path=/tmp/asan.log:verbosity=1:abort_on_error=1:detect_leaks=0
+# ENV ASAN_SYMBOLIZER_PATH=/usr/bin/llvm-symbolizer #doesn't work
+ENV LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+
+# Create directory for test files
+# RUN mkdir /test
+WORKDIR /test
+
+COPY test-poc.c /test/test-poc.c
+# COPY test-poc.py /test/test-poc.py
+# COPY geonet_poc_new_version.c /test/geonet_poc_new_version.c
+# RUN clang -g -O1 -fsanitize=address -fno-omit-frame-pointer /test/dummy-poc.c -o /test/dummy-poc
+
+# COPY mfr.pcap  /test/mfr.pcap
+# RUN gcc /test/tcpdump-poc.c -o /test/tcpdump-poc
+# Clean up
+# RUN rm -rf /tmp/tcpdump-4.99.5*
+
+# Default command: show tcpdump version
+CMD ["/bin/bash"]

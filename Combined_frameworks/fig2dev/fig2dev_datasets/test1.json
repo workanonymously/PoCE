@@ -1,0 +1,17 @@
+{
+  "data": [
+
+    {
+        "fig version": "fig2dev-3.2.9a",
+        "vulnerability type": "SEGV-Segmentation fault",
+        "CVE": "CVE-2025-31163",
+        "CWE":"CWE-476",
+        "CWE Name":"NULL Pointer Dereference",
+        "Vulnerable function":"static void put_patternarc(F_pos *c, double rad, double da, double angle1, F_arc *a) { int i, cosa2, sina2; double a1, a2, rot, cosr, sinr; F_spline s; F_line *l; F_point *p; F_point o[8]; F_control z[8]; struct d_pos u[8]; get_xsplinepoints(z, u, 1.025821); for (i = 0; i < 8; ++i) { o[i].x = round(rad * u[i].x); o[i].y = round(rad * u[i].y); o[i].next = &(o[i+1]); } o[i-1].next = NULL; s.type = T_CLOSED_XSPLINE; s.style = a->style; s.thickness = a->thickness; s.pen_color = a->pen_color; s.depth = a->depth; s.fill_style = UNFILLED; s.style_val = a->style_val; s.for_arrow = a->for_arrow; s.back_arrow = a->back_arrow; s.cap_style = a->cap_style; s.points = &(o[0]); s.controls = &(z[0]); s.comments = NULL; s.next = NULL; l = create_line_with_spline(&s); l->join_style = MITERJOIN; p = l->points; if (p == NULL) return; a1 = atan2(p->y, p->x); a2 = a1 - da; sinr = sin(a2); cosr = cos(a2); sina2 = round(rad * sinr); cosa2 = round(rad * cosr); #define WIND_FORWARD o[3].next = p; p = p->next for (;;) { if (a2 < M_PI_4) { while (p->y > p->x) {WIND_FORWARD;} } else { while (p->x < cosa2) {WIND_FORWARD;} break; } if (a2 < -M_PI_4) { while (p->x > -p->y) {WIND_FORWARD;} } else { while (p->y > sina2) {WIND_FORWARD;} break; } if (a2 < -3. * M_PI_4) { while (p->y < p->x) {WIND_FORWARD;} } else { while (p->x > cosa2) {WIND_FORWARD;} break; } if (a2 < -5. * M_PI_4) { while (p->x < -p->y) {WIND_FORWARD;} while (p->x < cosa2) {WIND_FORWARD;} break; } else { while (p->y < sina2) {WIND_FORWARD;} break; } } #undef WIND_FORWARD rot = sqrt((double)o[3].next->x * o[3].next->x + (double)o[3].next->y * o[3].next->y); o[1].x = round(rot * cosr); o[1].y = round(rot * sinr); o[1].next = NULL; o[4].next = p; o[3].next->next = &(o[1]); if (a->direction) { i = -1; rot = YDIR(angle1 - M_PI + a1); } else { i = 1; rot = YDIR(angle1 - a1); } cosr = cos(rot); sinr = sin(rot); p = l->points; while (p != NULL) { int px; px = i * p->x; p->x = c->x + round(cosr * px - YDIR(sinr * p->y)); p->y = c->y + round(sinr * px + YDIR(cosr * p->y)); p = p->next; } if (a->type == T_PIE_WEDGE_ARC) { l->type = T_POLYGON; o[0].x = c->x; o[0].y = c->y; o[0].next = l->points; o[1].next = &(o[2]); o[2].x = c->x; o[2].y = c->y; o[2].next = NULL; l->points = &(o[0]); } else { l->type = T_POLYLINE; } i = verbose; genpict2e_line(l); verbose = i; o[3].next->next = o[4].next; if (a->type == T_PIE_WEDGE_ARC) l->points = o[0].next; free_linestorage(l); }",
+        "Vulnerability": "Segmentation fault in fig2dev in version 3.2.9a allows an attacker to availability via local input manipulation via put_patternarc function.",
+        "Fig convrting Object":"pict2e",
+        "link":"https://sourceforge.net/p/mcj/tickets/186/",
+        "PoC": "bug_SEGV1"    
+    }
+  ]
+}

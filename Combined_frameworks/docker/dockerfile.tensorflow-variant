@@ -1,0 +1,35 @@
+FROM continuumio/miniconda3:latest
+
+WORKDIR /app/Combined_frameworks
+
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONPATH=/app/Combined_frameworks/tensorflow/tensorflow_variant_our:/app/Combined_frameworks:/app
+ENV IN_DOCKER=1
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip install --no-cache-dir \
+    pandas \
+    openpyxl \
+    requests \
+    openai
+
+RUN conda create -y -n testing2 python=3.8 && \
+    conda run -n testing2 pip install --no-cache-dir tensorflow==2.4.0
+
+RUN conda create -y -n testing25 python=3.8 && \
+    conda run -n testing25 pip install --no-cache-dir tensorflow==2.5.0
+
+RUN conda create -y -n testing26 python=3.8 && \
+    conda run -n testing26 pip install --no-cache-dir tensorflow==2.6.0
+
+RUN conda create -y -n testing1 python=3.8 && \
+    conda run -n testing1 pip install --no-cache-dir tensorflow==2.8.0
+
+RUN conda clean -afy
+
+COPY . /app/Combined_frameworks
+
+ENTRYPOINT ["python3", "main.py"]

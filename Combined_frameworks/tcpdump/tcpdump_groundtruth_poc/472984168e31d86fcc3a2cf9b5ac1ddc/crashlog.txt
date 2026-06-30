@@ -1,0 +1,60 @@
+=================================================================
+==126267==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x6060000000ba at pc 0x0000007c5667 bp 0x7ffec46009a0 sp 0x7ffec4600998
+READ of size 4 at 0x6060000000ba thread T0
+    #0 0x7c5666 in EXTRACT_BE_U_4 tcpdump/./extract.h:98:26
+    #1 0x7e440e in rx_cache_find tcpdump/./print-rx.c:735:27
+    #2 0x7c4f51 in rx_print tcpdump/./print-rx.c:639:6
+    #3 0x6488ae in udp_print tcpdump/./print-udp.c:637:4
+    #4 0x565d62 in ip_print_demux tcpdump/./print-ip.c:406:3
+    #5 0x569f41 in ip_print tcpdump/./print-ip.c:696:3
+    #6 0x5c2fb1 in null_if_print tcpdump/./print-null.c:112:3
+    #7 0x51d539 in pretty_print_packet tcpdump/./print.c:389:11
+    #8 0x519f42 in print_packet tcpdump/./tcpdump.c:2957:2
+    #9 0x8b6a75 in pcap_offline_read libpcap/./savefile.c:505:4
+    #10 0x85eac8 in pcap_loop libpcap/./pcap.c:2581:8
+    #11 0x51336a in main tcpdump/./tcpdump.c:2411:12
+    #12 0x7f5d1d80b2b0 in __libc_start_main
+    #13 0x41d8c9 in _start
+
+0x6060000000bc is located 0 bytes to the right of 60-byte region [0x606000000080,0x6060000000bc)
+allocated by thread T0 here:
+    #0 0x4d2f10 in malloc (tcpdump/tcpdump+0x4d2f10)
+    #1 0x8b9a05 in pcap_check_header libpcap/./sf-pcap.c:397:14
+    #2 0x8b5f0c in pcap_fopen_offline_with_tstamp_precision libpcap/./savefile.c:378:7
+    #3 0x8b5aa1 in pcap_open_offline_with_tstamp_precision libpcap/./savefile.c:285:6
+    #4 0x51105e in main tcpdump/./tcpdump.c:1967:8
+    #5 0x7f5d1d80b2b0 in __libc_start_main
+
+SUMMARY: AddressSanitizer: heap-buffer-overflow tcpdump/./extract.h:98:26 in EXTRACT_BE_U_4
+Shadow bytes around the buggy address:
+  0x0c0c7fff7fc0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0c0c7fff7fd0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0c0c7fff7fe0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0c0c7fff7ff0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0c0c7fff8000: fa fa fa fa 00 00 00 00 00 00 04 fa fa fa fa fa
+=>0x0c0c7fff8010: 00 00 00 00 00 00 00[04]fa fa fa fa fd fd fd fd
+  0x0c0c7fff8020: fd fd fd fd fa fa fa fa 00 00 00 00 00 00 06 fa
+  0x0c0c7fff8030: fa fa fa fa 00 00 00 00 00 00 06 fa fa fa fa fa
+  0x0c0c7fff8040: 00 00 00 00 00 00 06 fa fa fa fa fa 00 00 00 00
+  0x0c0c7fff8050: 00 00 06 fa fa fa fa fa 00 00 00 00 00 00 06 fa
+  0x0c0c7fff8060: fa fa fa fa 00 00 00 00 00 00 06 fa fa fa fa fa
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==126267==ABORTING

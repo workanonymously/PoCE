@@ -1,0 +1,47 @@
+FROM ubuntu:18.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install build dependencies + Clang + ASan runtime
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    git \
+    curl \
+    pkg-config \
+    automake \
+    autoconf \
+    libtool \
+    clang \
+    llvm \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /test
+
+
+# Configure environment for ASan
+ENV CC=clang
+ENV CXX=clang++
+ENV CFLAGS="-O1 -g -fno-omit-frame-pointer -fsanitize=address"
+ENV CXXFLAGS="-O1 -g -fno-omit-frame-pointer -fsanitize=address"
+ENV LDFLAGS="-fsanitize=address"
+
+# Fetch libsixel 1.8.6 source
+RUN curl -L https://github.com/libsixel/libsixel/archive/refs/tags/v1.8.6.tar.gz -o libsixel-1.8.6.tar.gz \
+    && tar -xzf libsixel-1.8.6.tar.gz \
+    && rm libsixel-1.8.6.tar.gz\
+    && cd libsixel-1.8.6\
+    && ./configure --prefix=/usr/local --disable-shared --enable-static \
+    && make -j$(nproc) \
+    && make install \
+    && ldconfig
+
+COPY groundtruth_poc/poc  /test/poc
+COPY groundtruth_poc/stbi_poc /test/stbi_poc
+COPY groundtruth_poc/CVE-2022-27046-poc /test/CVE-2022-27046-poc
+# COPY test-poc.six /test/test-poc.six
+# COPY test-poc.c /test/test-poc.c
+COPY test-poc /test/test-poc
+COPY /groundtruth_poc_gif.hex /test/groundtruth_poc_gif.hex
+
+CMD ["/bin/bash"]

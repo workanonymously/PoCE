@@ -1,0 +1,68 @@
+FROM ubuntu:20.04
+# FROM lubuntu:14.04 
+
+LABEL maintainer="security-lab@example.com"
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install build dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    flex \
+    bison \
+    clang \
+    gdb \
+    wget \
+    make \
+    libtool \
+    autoconf \
+    automake \
+    pkg-config \
+    libnl-3-dev \
+    libnl-genl-3-dev \
+    iproute2 \
+    libnet1-dev \
+    libpcap-dev \
+    python3 python3-pip \
+    vim \
+    gdb \
+    && apt-get clean
+
+RUN mkdir /test
+WORKDIR /test
+
+# Build libpcap 1.6.2 with ASan
+COPY docker/libpcap-1.6.2.tar.gz .
+RUN tar -xzf libpcap-1.6.2.tar.gz && \
+    cd libpcap-1.6.2 && \
+    CC=clang CFLAGS="-g -O0 -fsanitize=address -fno-omit-frame-pointer" \
+    LDFLAGS="-fsanitize=address" \
+    ./configure && \
+    make -j$(nproc) && \
+    make install 
+    # ldconfig
+
+# Build tcpdump 4.6.2 with ASan
+COPY docker/tcpdump-4.6.2.tar.gz .
+RUN tar -xzf tcpdump-4.6.2.tar.gz && \
+    cd tcpdump-4.6.2 && \
+    CC=clang CFLAGS="-g -O0 -fsanitize=address -fno-omit-frame-pointer" \
+    LDFLAGS="-fsanitize=address" \
+    ./configure --disable-ipv6 && \
+    make -j$(nproc) && \
+    make install
+    # ldconfig
+
+
+WORKDIR /test
+
+# Optional: Add PoC
+COPY test-poc.c /test/test-poc.c
+# COPY test-poc.py /test/test-poc.py
+# COPY test_geonet1.c /test/test_geonet1.c
+# COPY test_geonet2.c /test/test_geonet2.c
+# RUN gcc /opt/tcpdump-poc.c -o /opt/tcpdump-poc
+
+# Clean up
+# RUN rm -rf /tmp/tcpdump-4.6.2*
+
+CMD ["/bin/bash"]

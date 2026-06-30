@@ -1,0 +1,6 @@
+Steps to run automated tool:
+1. conda create -n libsixelenv python=3.10
+2. conda activate libsixelenv
+3. pip install -r libsixel_requirements.txt
+4. Change the documents path based on framework in rag_tool_ollama.py file
+4. python3 libsixel_tool.py

@@ -1,0 +1,49 @@
+# Liblouis 2.5.2 + AddressSanitizer
+FROM ubuntu:20.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
+
+# ASan/UBsan compile & link flags
+ENV CFLAGS="-g -O1 -fsanitize=address -fno-omit-frame-pointer"
+ENV CXXFLAGS="-g -O1 -fsanitize=address -fno-omit-frame-pointer"
+ENV LDFLAGS="-fsanitize=address"
+ENV ASAN_OPTIONS="detect_leaks=1:symbolize=1:halt_on_error=1"
+ENV ASAN_SYMBOLIZER_PATH=/usr/bin/llvm-symbolizer
+
+WORKDIR /usr/src
+
+# Install all required dependencies including texinfo
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    clang llvm llvm-dev \
+    autoconf automake libtool pkg-config \
+    wget ca-certificates curl \
+    git \
+    texinfo \
+    python \
+    help2man \
+ && rm -rf /var/lib/apt/lists/*
+
+# Clone liblouis repository and checkout version 2.5.2
+RUN git clone https://github.com/liblouis/liblouis.git liblouis-2.5.2-src \
+ && cd liblouis-2.5.2-src \
+ && git checkout v2.5.2
+
+WORKDIR /usr/src/liblouis-2.5.2-src
+
+# Generate configure script
+RUN autoreconf -f -i
+
+# Use clang
+ENV CC=clang
+ENV CXX=clang++
+
+# Build - skip documentation if makeinfo is still causing issues
+RUN ./configure --prefix=/usr/local \
+ && make -j$(nproc) \
+ && make install
+
+WORKDIR /workspace
+CMD ["/bin/bash"]

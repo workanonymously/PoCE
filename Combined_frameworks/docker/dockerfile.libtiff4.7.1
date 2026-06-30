@@ -1,0 +1,59 @@
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install build dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    autoconf \
+    automake \
+    libtool \
+    pkg-config \
+    wget \
+    git \
+    ca-certificates \
+    xz-utils \
+    clang \
+    llvm \
+    && rm -rf /var/lib/apt/lists/*
+
+# Use clang for better ASAN diagnostics
+ENV CC=clang
+ENV CXX=clang++
+
+# ASAN + debug flags
+ENV CFLAGS="-O1 -g -fno-omit-frame-pointer -fsanitize=address"
+ENV CXXFLAGS="-O1 -g -fno-omit-frame-pointer -fsanitize=address"
+ENV LDFLAGS="-fsanitize=address"
+
+# Single working directory
+WORKDIR /data
+
+# Download libtiff 4.7.1
+RUN wget https://download.osgeo.org/libtiff/tiff-4.7.1.tar.gz && \
+    tar -xzf tiff-4.7.1.tar.gz
+
+WORKDIR /data/tiff-4.7.1
+
+# Configure with ASAN enabled
+RUN ./configure \
+    --disable-shared \
+    --enable-static \
+    --disable-jbig \
+    --disable-webp \
+    --disable-zstd \
+    --disable-lzma \
+    --disable-jpeg \
+    --disable-old-jpeg \
+    CFLAGS="$CFLAGS" \
+    CXXFLAGS="$CXXFLAGS" \
+    LDFLAGS="$LDFLAGS"
+
+# Build and install
+RUN make -j$(nproc)
+RUN make install
+
+# Runtime directory
+WORKDIR /data
+
+CMD ["/bin/bash"]

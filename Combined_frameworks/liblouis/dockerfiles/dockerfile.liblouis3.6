@@ -1,0 +1,77 @@
+# Dockerfile: Build Liblouis 3.6.0 with AddressSanitizer enabled
+FROM ubuntu:18.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV LC_ALL=C.UTF-8
+ENV LANG=C.UTF-8
+
+
+ENV LIBLOUIS_VER=3.6.0
+ENV PREFIX=/usr/local
+
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    clang-10 \
+    clang++-10 \
+    libclang-dev \
+    autoconf \
+    automake \
+    libtool \
+    pkg-config \
+    gettext \
+    python3 \
+    python3-distutils \
+    git \
+    ca-certificates \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+
+RUN update-alternatives --install /usr/bin/clang clang /usr/bin/clang-10 100 \
+ && update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-10 100
+
+
+WORKDIR /usr/src
+COPY liblouis-3.6.0.tar.gz ./
+RUN tar xzf liblouis-3.6.0.tar.gz && \
+    ls -la && \
+    ls -la liblouis-3.6.0/
+
+
+ENV CFLAGS="-g -O1 -fsanitize=address -fno-omit-frame-pointer"
+ENV CXXFLAGS="-g -O1 -fsanitize=address -fno-omit-frame-pointer"
+ENV LDFLAGS="-fsanitize=address"
+ENV CC=clang
+ENV CXX=clang++
+
+
+
+WORKDIR /usr/src/liblouis-3.6.0
+
+# First check what files exist and use the appropriate build method
+RUN if [ -f "./autogen.sh" ]; then \
+        ./autogen.sh && ./configure --prefix=${PREFIX}; \
+    elif [ -f "./configure" ]; then \
+        ./configure --prefix=${PREFIX}; \
+    else \
+        echo "No configure script found!" && ls -la && exit 1; \
+    fi
+
+RUN make -j1 && make install
+
+
+ENV ASAN_OPTIONS=verbosity=1:malloc_context_size=20
+ENV LD_LIBRARY_PATH=${PREFIX}/lib:${LD_LIBRARY_PATH}
+
+RUN ldconfig || true
+
+
+WORKDIR /workspace
+
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    file \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+
+CMD ["/bin/bash"]

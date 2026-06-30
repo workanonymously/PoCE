@@ -1,0 +1,49 @@
+FROM ubuntu:20.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV WORKSPACE=/workspace
+
+# ===============================
+# Install build dependencies
+# ===============================
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    clang \
+    wget \
+    automake \
+    autoconf \
+    libtool \
+    pkg-config \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# ===============================
+# Set workspace
+# ===============================
+WORKDIR ${WORKSPACE}
+
+# ===============================
+# Download libtiff 4.2.0
+# ===============================
+RUN wget https://download.osgeo.org/libtiff/tiff-4.2.0.tar.gz && \
+    tar -xzf tiff-4.2.0.tar.gz
+
+# ===============================
+# Build libtiff with ASAN
+# ===============================
+WORKDIR ${WORKSPACE}/tiff-4.2.0
+
+ENV CC=clang
+ENV CXX=clang++
+ENV CFLAGS="-g -O0 -fsanitize=address -fno-omit-frame-pointer"
+ENV CXXFLAGS="-g -O0 -fsanitize=address -fno-omit-frame-pointer"
+ENV LDFLAGS="-fsanitize=address"
+
+RUN ./configure --disable-shared && \
+    make -j$(nproc)
+
+# ===============================
+# Default shell
+# ===============================
+WORKDIR ${WORKSPACE}
+CMD ["/bin/bash"]

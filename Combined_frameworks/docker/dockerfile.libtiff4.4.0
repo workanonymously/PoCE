@@ -1,0 +1,28 @@
+# Dockerfile for libtiff 4.4.0 with ASan support
+FROM ubuntu:18.04
+
+RUN apt-get update && apt-get install -y \
+    build-essential wget tar gcc g++ pkg-config \
+    libjpeg-dev zlib1g-dev liblzma-dev libwebp-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /tmp
+
+RUN wget -q https://download.osgeo.org/libtiff/tiff-4.4.0.tar.gz \
+    && tar -xzf tiff-4.4.0.tar.gz
+
+WORKDIR /tmp/tiff-4.4.0
+
+# First, configure without ASan flags
+RUN ./configure --prefix=$PWD/build_asan --disable-shared
+
+# Then build with ASan flags
+RUN CFLAGS="-g -fsanitize=address -fno-omit-frame-pointer" \
+    CXXFLAGS="-g -fsanitize=address -fno-omit-frame-pointer" \
+    LDFLAGS="-fsanitize=address" \
+    make -j$(nproc)
+
+RUN make install \
+    && make clean
+
+WORKDIR /workspace

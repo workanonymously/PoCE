@@ -1,0 +1,64 @@
+FROM debian:bullseye
+
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    # gcc \
+    gcc g++ \
+    gdb\
+    clang\
+    make \
+    wget \
+    curl \
+    git \
+    build-essential \
+    flex \
+    bison \
+    libtool \
+    libnet1-dev \
+    libpcap-dev \
+    iputils-ping \
+    net-tools \
+    vim 
+
+RUN mkdir /test
+WORKDIR /test
+
+# Download and build libpcap 0.8.1
+COPY docker/libpcap-0.8.1.tar.gz .
+# RUN wget http://www.tcpdump.org/release/libpcap-0.8.1.tar.gz && \
+RUN tar -xzf libpcap-0.8.1.tar.gz && \
+    # tar xzf libpcap-0.8.1.tar.gz && \
+    cd libpcap-0.8.1 && \
+    CC=clang CFLAGS="-g -O0 -fsanitize=address -fno-omit-frame-pointer" \
+    LDFLAGS="-fsanitize=address" \
+    ./configure && make && make install
+
+
+# Download and build tcpdump 3.8.1
+COPY docker/tcpdump-3.8.1.tar.gz .
+# RUN wget http://www.tcpdump.org/release/tcpdump-3.8.1.tar.gz && \
+RUN tar -xzf tcpdump-3.8.1.tar.gz && \
+    # tar xzf libpcap-3.8.1.tar.gz && \
+    cd tcpdump-3.8.1 && \
+    # OPTIONAL: Add pcap_debug to avoid link error
+    echo "int pcap_debug = 0;" >> tcpdump.c && \
+    CC=clang CFLAGS="-g -O0 -fsanitize=address -fno-omit-frame-pointer" \
+    LDFLAGS="-fsanitize=address" \
+    ./configure --disable-ipv6 && \
+    make && make install
+
+
+
+WORKDIR /test
+
+
+COPY test-poc.c /test/test-poc.c
+# COPY test-poc.py /test/test-poc.py
+
+# RUN gcc /opt/tcpdump-poc.c -o /opt/tcpdump-poc
+
+# Clean up
+# RUN rm -rf /tmp/tcpdump-3.8.1*
+
+# CMD ["/usr/local/sbin/tcpdump", "--version"]
+CMD ["/bin/bash"]

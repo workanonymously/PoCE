@@ -1,0 +1,66 @@
+# Base image
+FROM ubuntu:20.04
+
+# Set non-interactive mode
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install dependencies, build tools, and GCC with ASan support
+RUN apt-get update && \
+    apt-get install -y \
+    build-essential \
+    wget \
+    curl \
+    gdb \
+    flex \
+    bison \
+    pkg-config \
+    autoconf \
+    automake \
+    libtool \
+    libnet1-dev \
+    zlib1g-dev \
+    gcc \
+    g++ \
+    clang\
+    libasan5 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Build and install libpcap 1.8.1 with GCC + ASan
+RUN mkdir /test
+WORKDIR /test
+RUN wget https://www.tcpdump.org/release/libpcap-1.8.1.tar.gz && \
+    tar xvf libpcap-1.8.1.tar.gz && \
+    cd libpcap-1.8.1 && \
+    # CC=clang CFLAGS="-g -O0 -fsanitize=memory -fno-omit-frame-pointer" \
+    # LDFLAGS="-fsanitize=memory" \
+    ./configure && \
+    make -j$(nproc) && \
+    make install
+
+# Build and install tcpdump 4.9.0 with GCC + ASan
+
+RUN wget https://www.tcpdump.org/release/tcpdump-4.9.0.tar.gz && \
+    tar xvf tcpdump-4.9.0.tar.gz && \
+    cd tcpdump-4.9.0 && \
+    CC=clang CFLAGS="-g -O0 -fsanitize=address -fno-omit-frame-pointer" \
+    LDFLAGS="-fsanitize=address" \
+    ./configure && \
+    make -j$(nproc) && \
+    make install
+
+# Set ASan runtime environment variables
+ENV ASAN_OPTIONS=detect_leaks=1:halt_on_error=1:abort_on_error=1:symbolize=1
+
+# Create directory for test files
+
+WORKDIR /test
+
+# Optional: Add PoC
+COPY test-poc.c /test/test-poc.c
+# COPY test-poc.py /test/test-poc.py
+# RUN gcc /opt/tcpdump-poc.c -o /opt/tcpdump-poc
+
+# Clean up
+# RUN rm -rf /tmp/tcpdump-4.9.0*
+
+CMD ["/bin/bash"]

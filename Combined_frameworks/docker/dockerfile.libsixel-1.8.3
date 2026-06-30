@@ -1,0 +1,40 @@
+FROM ubuntu:18.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install build dependencies + Clang + ASan runtime
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    git \
+    curl \
+    pkg-config \
+    automake \
+    autoconf \
+    libtool \
+    clang \
+    llvm \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /test
+
+# Configure environment for ASan
+ENV CC=clang
+ENV CXX=clang++
+ENV CFLAGS="-O1 -g -fno-omit-frame-pointer -fsanitize=address"
+ENV CXXFLAGS="-O1 -g -fno-omit-frame-pointer -fsanitize=address"
+ENV LDFLAGS="-fsanitize=address"
+
+
+RUN curl -L https://github.com/libsixel/libsixel/archive/refs/tags/v1.8.3.tar.gz -o libsixel-1.8.3.tar.gz \
+    && tar -xzf libsixel-1.8.3.tar.gz \
+    && rm libsixel-1.8.3.tar.gz \
+    && cd libsixel-1.8.3 \
+    && ./configure --prefix=/usr/local --disable-shared --enable-static \
+    && make -j$(nproc) \
+    && make install \
+    && ldconfig
+
+COPY test-poc /test/test-poc
+
+CMD ["/bin/bash"]

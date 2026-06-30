@@ -1,0 +1,33 @@
+FROM ubuntu:14.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install dependencies
+RUN apt-get update && \
+    apt-get install -y wget gdb gcc g++ clang make bison flex libpcap-dev libnet-dev python && \
+    apt-get clean
+
+RUN mkdir /test
+WORKDIR /test
+# Download and install tcpdump 4.5.1 with ASan
+RUN wget http://www.tcpdump.org/release/tcpdump-4.5.1.tar.gz && \
+    tar -xzf tcpdump-4.5.1.tar.gz && \
+    cd tcpdump-4.5.1 && \
+    CC=clang CFLAGS="-g -O0 -fsanitize=address -fno-omit-frame-pointer" \
+    LDFLAGS="-fsanitize=address" \
+    ./configure && make -j$(nproc) && make install && \
+    cd .. && rm -rf tcpdump-4.5.1*
+
+# Create directory for test files
+
+WORKDIR /test
+
+# Optional: Add PoC
+COPY test-poc.c /test/test-poc.c
+# COPY test-poc.py /test/test-poc.py
+# RUN gcc /opt/tcpdump-poc.c -o /opt/tcpdump-poc
+
+# Clean up
+# RUN rm -rf /tmp/tcpdump-4.5.1*
+
+CMD ["/bin/bash"]

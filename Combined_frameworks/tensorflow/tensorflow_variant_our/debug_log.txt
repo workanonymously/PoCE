@@ -1,0 +1,351 @@
+2026-06-30 03:38:36,124 - DEBUG - Reading CSV file: tf_poc.csv
+2026-06-30 03:38:36,129 - INFO - Successfully loaded CSV with 93 PoCs
+2026-06-30 03:38:36,129 - INFO - 
+Processing PoC 1...
+2026-06-30 03:38:36,129 - DEBUG - Sending LLM request for PoC 1
+2026-06-30 03:38:36,130 - ERROR - Error processing PoC 1: [Errno 2] No such file or directory: 'flake8'
+2026-06-30 03:38:36,130 - INFO - 
+Processing PoC 2...
+2026-06-30 03:38:36,131 - DEBUG - Sending LLM request for PoC 2
+2026-06-30 03:38:36,131 - ERROR - Error processing PoC 2: [Errno 2] No such file or directory: 'flake8'
+2026-06-30 03:38:36,132 - INFO - 
+Processing PoC 3...
+2026-06-30 03:38:36,132 - DEBUG - Sending LLM request for PoC 3
+2026-06-30 03:38:36,133 - ERROR - Error processing PoC 3: [Errno 2] No such file or directory: 'flake8'
+2026-06-30 03:38:36,133 - INFO - 
+Processing PoC 4...
+2026-06-30 03:38:36,133 - DEBUG - Sending LLM request for PoC 4
+2026-06-30 03:38:36,134 - ERROR - Error processing PoC 4: [Errno 2] No such file or directory: 'flake8'
+2026-06-30 03:38:36,134 - INFO - 
+Processing PoC 5...
+2026-06-30 03:38:36,134 - DEBUG - Sending LLM request for PoC 5
+2026-06-30 03:38:36,136 - ERROR - Error processing PoC 5: [Errno 2] No such file or directory: 'flake8'
+2026-06-30 03:38:36,136 - INFO - 
+Processing PoC 6...
+2026-06-30 03:38:36,136 - DEBUG - Sending LLM request for PoC 6
+2026-06-30 03:38:36,137 - ERROR - Error processing PoC 6: [Errno 2] No such file or directory: 'flake8'
+2026-06-30 03:38:36,137 - INFO - 
+Processing PoC 7...
+2026-06-30 03:38:36,137 - DEBUG - Sending LLM request for PoC 7
+2026-06-30 03:38:36,139 - ERROR - Error processing PoC 7: [Errno 2] No such file or directory: 'flake8'
+2026-06-30 03:38:36,139 - INFO - 
+Processing PoC 8...
+2026-06-30 03:38:36,139 - DEBUG - Sending LLM request for PoC 8
+2026-06-30 03:38:36,140 - ERROR - Error processing PoC 8: [Errno 2] No such file or directory: 'flake8'
+2026-06-30 03:38:36,140 - INFO - 
+Processing PoC 9...
+2026-06-30 03:38:36,140 - DEBUG - Sending LLM request for PoC 9
+2026-06-30 03:38:36,141 - ERROR - Error processing PoC 9: [Errno 2] No such file or directory: 'flake8'
+2026-06-30 03:38:36,141 - INFO - 
+Processing PoC 10...
+2026-06-30 03:38:36,141 - DEBUG - Sending LLM request for PoC 10
+2026-06-30 03:38:36,142 - ERROR - Error processing PoC 10: [Errno 2] No such file or directory: 'flake8'
+2026-06-30 03:38:36,142 - INFO - 
+Processing PoC 11...
+2026-06-30 03:38:36,142 - DEBUG - Sending LLM request for PoC 11
+2026-06-30 03:38:36,143 - ERROR - Error processing PoC 11: [Errno 2] No such file or directory: 'flake8'
+2026-06-30 03:38:36,143 - INFO - 
+Processing PoC 12...
+2026-06-30 03:38:36,143 - DEBUG - Sending LLM request for PoC 12
+2026-06-30 03:38:36,144 - ERROR - Error processing PoC 12: [Errno 2] No such file or directory: 'flake8'
+2026-06-30 03:38:36,144 - INFO - 
+Processing PoC 13...
+2026-06-30 03:38:36,144 - DEBUG - Sending LLM request for PoC 13
+2026-06-30 03:38:36,145 - ERROR - Error processing PoC 13: [Errno 2] No such file or directory: 'flake8'
+2026-06-30 03:38:36,146 - INFO - 
+Processing PoC 14...
+2026-06-30 03:38:36,146 - DEBUG - Sending LLM request for PoC 14
+2026-06-30 03:38:36,147 - ERROR - Error processing PoC 14: [Errno 2] No such file or directory: 'flake8'
+2026-06-30 03:38:36,147 - INFO - 
+Processing PoC 15...
+2026-06-30 03:38:36,147 - DEBUG - Sending LLM request for PoC 15
+2026-06-30 03:38:36,148 - ERROR - Error processing PoC 15: [Errno 2] No such file or directory: 'flake8'
+2026-06-30 03:38:36,148 - INFO - 
+Processing PoC 16...
+2026-06-30 03:38:36,149 - DEBUG - Sending LLM request for PoC 16
+2026-06-30 03:38:36,150 - ERROR - Error processing PoC 16: [Errno 2] No such file or directory: 'flake8'
+2026-06-30 03:38:36,150 - INFO - 
+Processing PoC 17...
+2026-06-30 03:38:36,150 - DEBUG - Sending LLM request for PoC 17
+2026-06-30 03:38:36,151 - ERROR - Error processing PoC 17: [Errno 2] No such file or directory: 'flake8'
+2026-06-30 03:38:36,151 - INFO - 
+Processing PoC 18...
+2026-06-30 03:38:36,151 - DEBUG - Sending LLM request for PoC 18
+2026-06-30 03:38:36,152 - ERROR - Error processing PoC 18: [Errno 2] No such file or directory: 'flake8'
+2026-06-30 03:38:36,152 - INFO - 
+Processing PoC 19...
+2026-06-30 03:38:36,152 - DEBUG - Sending LLM request for PoC 19
+2026-06-30 03:38:36,153 - ERROR - Error processing PoC 19: [Errno 2] No such file or directory: 'flake8'
+2026-06-30 03:38:36,154 - INFO - 
+Processing PoC 20...
+2026-06-30 03:38:36,154 - DEBUG - Sending LLM request for PoC 20
+2026-06-30 03:38:36,154 - ERROR - Error processing PoC 20: [Errno 2] No such file or directory: 'flake8'
+2026-06-30 03:38:36,155 - INFO - 
+Processing PoC 21...
+2026-06-30 03:38:36,155 - DEBUG - Sending LLM request for PoC 21
+2026-06-30 03:38:36,156 - ERROR - Error processing PoC 21: [Errno 2] No such file or directory: 'flake8'
+2026-06-30 03:38:36,156 - INFO - 
+Processing PoC 22...
+2026-06-30 03:38:36,156 - DEBUG - Sending LLM request for PoC 22
+2026-06-30 03:38:36,157 - ERROR - Error processing PoC 22: [Errno 2] No such file or directory: 'flake8'
+2026-06-30 03:38:36,157 - INFO - 
+Processing PoC 23...
+2026-06-30 03:38:36,157 - DEBUG - Sending LLM request for PoC 23
+2026-06-30 03:38:36,158 - ERROR - Error processing PoC 23: [Errno 2] No such file or directory: 'flake8'
+2026-06-30 03:38:36,158 - INFO - 
+Processing PoC 24...
+2026-06-30 03:38:36,158 - DEBUG - Sending LLM request for PoC 24
+2026-06-30 03:38:36,158 - ERROR - Error processing PoC 24: [Errno 2] No such file or directory: 'flake8'
+2026-06-30 03:38:36,159 - INFO - 
+Processing PoC 25...
+2026-06-30 03:38:36,159 - DEBUG - Sending LLM request for PoC 25
+2026-06-30 03:38:36,159 - ERROR - Error processing PoC 25: [Errno 2] No such file or directory: 'flake8'
+2026-06-30 03:38:36,160 - INFO - 
+Processing PoC 26...
+2026-06-30 03:38:36,160 - DEBUG - Sending LLM request for PoC 26
+2026-06-30 03:38:36,160 - ERROR - Error processing PoC 26: [Errno 2] No such file or directory: 'flake8'
+2026-06-30 03:38:36,160 - INFO - 
+Processing PoC 27...
+2026-06-30 03:38:36,160 - DEBUG - Sending LLM request for PoC 27
+2026-06-30 03:38:36,161 - ERROR - Error processing PoC 27: [Errno 2] No such file or directory: 'flake8'
+2026-06-30 03:38:36,161 - INFO - 
+Processing PoC 28...
+2026-06-30 03:38:36,161 - DEBUG - Sending LLM request for PoC 28
+2026-06-30 03:38:36,162 - ERROR - Error processing PoC 28: [Errno 2] No such file or directory: 'flake8'
+2026-06-30 03:38:36,162 - INFO - 
+Processing PoC 29...
+2026-06-30 03:38:36,162 - DEBUG - Sending LLM request for PoC 29
+2026-06-30 03:38:36,163 - ERROR - Error processing PoC 29: [Errno 2] No such file or directory: 'flake8'
+2026-06-30 03:38:36,163 - INFO - 
+Processing PoC 30...
+2026-06-30 03:38:36,163 - DEBUG - Sending LLM request for PoC 30
+2026-06-30 03:38:36,164 - ERROR - Error processing PoC 30: [Errno 2] No such file or directory: 'flake8'
+2026-06-30 03:38:36,164 - INFO - 
+Processing PoC 31...
+2026-06-30 03:38:36,164 - DEBUG - Sending LLM request for PoC 31
+2026-06-30 03:38:36,165 - ERROR - Error processing PoC 31: [Errno 2] No such file or directory: 'flake8'
+2026-06-30 03:38:36,165 - INFO - 
+Processing PoC 32...
+2026-06-30 03:38:36,165 - DEBUG - Sending LLM request for PoC 32
+2026-06-30 03:38:36,166 - ERROR - Error processing PoC 32: [Errno 2] No such file or directory: 'flake8'
+2026-06-30 03:38:36,166 - INFO - 
+Processing PoC 33...
+2026-06-30 03:38:36,166 - DEBUG - Sending LLM request for PoC 33
+2026-06-30 03:38:36,167 - ERROR - Error processing PoC 33: [Errno 2] No such file or directory: 'flake8'
+2026-06-30 03:38:36,167 - INFO - 
+Processing PoC 34...
+2026-06-30 03:38:36,167 - DEBUG - Sending LLM request for PoC 34
+2026-06-30 03:38:36,168 - ERROR - Error processing PoC 34: [Errno 2] No such file or directory: 'flake8'
+2026-06-30 03:38:36,168 - INFO - 
+Processing PoC 35...
+2026-06-30 03:38:36,168 - DEBUG - Sending LLM request for PoC 35
+2026-06-30 03:38:36,170 - ERROR - Error processing PoC 35: [Errno 2] No such file or directory: 'flake8'
+2026-06-30 03:38:36,170 - INFO - 
+Processing PoC 36...
+2026-06-30 03:38:36,170 - DEBUG - Sending LLM request for PoC 36
+2026-06-30 03:38:36,171 - ERROR - Error processing PoC 36: [Errno 2] No such file or directory: 'flake8'
+2026-06-30 03:38:36,171 - INFO - 
+Processing PoC 37...
+2026-06-30 03:38:36,171 - DEBUG - Sending LLM request for PoC 37
+2026-06-30 03:38:36,173 - ERROR - Error processing PoC 37: [Errno 2] No such file or directory: 'flake8'
+2026-06-30 03:38:36,173 - DEBUG - Saving results to sandbox_variant_results.xlsx
+2026-06-30 03:38:36,227 - INFO - Results saved to sandbox_variant_results.xlsx
+2026-06-30 03:38:36,228 - INFO - 
+Results saved to 'sandbox_variant_results.xlsx'
+2026-06-30 03:43:22,372 - DEBUG - Reading CSV file: tf_poc.csv
+2026-06-30 03:43:22,376 - INFO - Successfully loaded CSV with 93 PoCs
+2026-06-30 03:43:22,377 - INFO - 
+Processing PoC 1...
+2026-06-30 03:43:22,377 - DEBUG - Sending LLM request for PoC 1
+2026-06-30 03:43:22,378 - DEBUG - Starting new HTTP connection (1): localhost:12543
+2026-06-30 03:43:22,379 - ERROR - Error processing PoC 1: HTTPConnectionPool(host='localhost', port=12543): Max retries exceeded with url: /api/generate (Caused by NewConnectionError("HTTPConnection(host='localhost', port=12543): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-06-30 03:43:22,379 - INFO - 
+Processing PoC 2...
+2026-06-30 03:43:22,379 - DEBUG - Sending LLM request for PoC 2
+2026-06-30 03:43:22,380 - DEBUG - Starting new HTTP connection (1): localhost:12543
+2026-06-30 03:43:22,380 - ERROR - Error processing PoC 2: HTTPConnectionPool(host='localhost', port=12543): Max retries exceeded with url: /api/generate (Caused by NewConnectionError("HTTPConnection(host='localhost', port=12543): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-06-30 03:43:22,380 - INFO - 
+Processing PoC 3...
+2026-06-30 03:43:22,380 - DEBUG - Sending LLM request for PoC 3
+2026-06-30 03:43:22,381 - DEBUG - Starting new HTTP connection (1): localhost:12543
+2026-06-30 03:43:22,381 - ERROR - Error processing PoC 3: HTTPConnectionPool(host='localhost', port=12543): Max retries exceeded with url: /api/generate (Caused by NewConnectionError("HTTPConnection(host='localhost', port=12543): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-06-30 03:43:22,381 - INFO - 
+Processing PoC 4...
+2026-06-30 03:43:22,382 - DEBUG - Sending LLM request for PoC 4
+2026-06-30 03:43:22,383 - DEBUG - Starting new HTTP connection (1): localhost:12543
+2026-06-30 03:43:22,383 - ERROR - Error processing PoC 4: HTTPConnectionPool(host='localhost', port=12543): Max retries exceeded with url: /api/generate (Caused by NewConnectionError("HTTPConnection(host='localhost', port=12543): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-06-30 03:43:22,383 - INFO - 
+Processing PoC 5...
+2026-06-30 03:43:22,383 - DEBUG - Sending LLM request for PoC 5
+2026-06-30 03:43:22,384 - DEBUG - Starting new HTTP connection (1): localhost:12543
+2026-06-30 03:43:22,385 - ERROR - Error processing PoC 5: HTTPConnectionPool(host='localhost', port=12543): Max retries exceeded with url: /api/generate (Caused by NewConnectionError("HTTPConnection(host='localhost', port=12543): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-06-30 03:43:22,385 - INFO - 
+Processing PoC 6...
+2026-06-30 03:43:22,385 - DEBUG - Sending LLM request for PoC 6
+2026-06-30 03:43:22,386 - DEBUG - Starting new HTTP connection (1): localhost:12543
+2026-06-30 03:43:22,386 - ERROR - Error processing PoC 6: HTTPConnectionPool(host='localhost', port=12543): Max retries exceeded with url: /api/generate (Caused by NewConnectionError("HTTPConnection(host='localhost', port=12543): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-06-30 03:43:22,386 - INFO - 
+Processing PoC 7...
+2026-06-30 03:43:22,386 - DEBUG - Sending LLM request for PoC 7
+2026-06-30 03:43:22,388 - DEBUG - Starting new HTTP connection (1): localhost:12543
+2026-06-30 03:43:22,388 - ERROR - Error processing PoC 7: HTTPConnectionPool(host='localhost', port=12543): Max retries exceeded with url: /api/generate (Caused by NewConnectionError("HTTPConnection(host='localhost', port=12543): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-06-30 03:43:22,388 - INFO - 
+Processing PoC 8...
+2026-06-30 03:43:22,388 - DEBUG - Sending LLM request for PoC 8
+2026-06-30 03:43:22,389 - DEBUG - Starting new HTTP connection (1): localhost:12543
+2026-06-30 03:43:22,389 - ERROR - Error processing PoC 8: HTTPConnectionPool(host='localhost', port=12543): Max retries exceeded with url: /api/generate (Caused by NewConnectionError("HTTPConnection(host='localhost', port=12543): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-06-30 03:43:22,389 - INFO - 
+Processing PoC 9...
+2026-06-30 03:43:22,389 - DEBUG - Sending LLM request for PoC 9
+2026-06-30 03:43:22,391 - DEBUG - Starting new HTTP connection (1): localhost:12543
+2026-06-30 03:43:22,391 - ERROR - Error processing PoC 9: HTTPConnectionPool(host='localhost', port=12543): Max retries exceeded with url: /api/generate (Caused by NewConnectionError("HTTPConnection(host='localhost', port=12543): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-06-30 03:43:22,391 - INFO - 
+Processing PoC 10...
+2026-06-30 03:43:22,391 - DEBUG - Sending LLM request for PoC 10
+2026-06-30 03:43:22,392 - DEBUG - Starting new HTTP connection (1): localhost:12543
+2026-06-30 03:43:22,392 - ERROR - Error processing PoC 10: HTTPConnectionPool(host='localhost', port=12543): Max retries exceeded with url: /api/generate (Caused by NewConnectionError("HTTPConnection(host='localhost', port=12543): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-06-30 03:43:22,392 - INFO - 
+Processing PoC 11...
+2026-06-30 03:43:22,392 - DEBUG - Sending LLM request for PoC 11
+2026-06-30 03:43:22,393 - DEBUG - Starting new HTTP connection (1): localhost:12543
+2026-06-30 03:43:22,393 - ERROR - Error processing PoC 11: HTTPConnectionPool(host='localhost', port=12543): Max retries exceeded with url: /api/generate (Caused by NewConnectionError("HTTPConnection(host='localhost', port=12543): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-06-30 03:43:22,393 - INFO - 
+Processing PoC 12...
+2026-06-30 03:43:22,393 - DEBUG - Sending LLM request for PoC 12
+2026-06-30 03:43:22,394 - DEBUG - Starting new HTTP connection (1): localhost:12543
+2026-06-30 03:43:22,395 - ERROR - Error processing PoC 12: HTTPConnectionPool(host='localhost', port=12543): Max retries exceeded with url: /api/generate (Caused by NewConnectionError("HTTPConnection(host='localhost', port=12543): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-06-30 03:43:22,395 - INFO - 
+Processing PoC 13...
+2026-06-30 03:43:22,395 - DEBUG - Sending LLM request for PoC 13
+2026-06-30 03:43:22,396 - DEBUG - Starting new HTTP connection (1): localhost:12543
+2026-06-30 03:43:22,396 - ERROR - Error processing PoC 13: HTTPConnectionPool(host='localhost', port=12543): Max retries exceeded with url: /api/generate (Caused by NewConnectionError("HTTPConnection(host='localhost', port=12543): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-06-30 03:43:22,396 - INFO - 
+Processing PoC 14...
+2026-06-30 03:43:22,396 - DEBUG - Sending LLM request for PoC 14
+2026-06-30 03:43:22,397 - DEBUG - Starting new HTTP connection (1): localhost:12543
+2026-06-30 03:43:22,397 - ERROR - Error processing PoC 14: HTTPConnectionPool(host='localhost', port=12543): Max retries exceeded with url: /api/generate (Caused by NewConnectionError("HTTPConnection(host='localhost', port=12543): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-06-30 03:43:22,397 - INFO - 
+Processing PoC 15...
+2026-06-30 03:43:22,397 - DEBUG - Sending LLM request for PoC 15
+2026-06-30 03:43:22,398 - DEBUG - Starting new HTTP connection (1): localhost:12543
+2026-06-30 03:43:22,398 - ERROR - Error processing PoC 15: HTTPConnectionPool(host='localhost', port=12543): Max retries exceeded with url: /api/generate (Caused by NewConnectionError("HTTPConnection(host='localhost', port=12543): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-06-30 03:43:22,398 - INFO - 
+Processing PoC 16...
+2026-06-30 03:43:22,398 - DEBUG - Sending LLM request for PoC 16
+2026-06-30 03:43:22,399 - DEBUG - Starting new HTTP connection (1): localhost:12543
+2026-06-30 03:43:22,399 - ERROR - Error processing PoC 16: HTTPConnectionPool(host='localhost', port=12543): Max retries exceeded with url: /api/generate (Caused by NewConnectionError("HTTPConnection(host='localhost', port=12543): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-06-30 03:43:22,400 - INFO - 
+Processing PoC 17...
+2026-06-30 03:43:22,400 - DEBUG - Sending LLM request for PoC 17
+2026-06-30 03:43:22,400 - DEBUG - Starting new HTTP connection (1): localhost:12543
+2026-06-30 03:43:22,401 - ERROR - Error processing PoC 17: HTTPConnectionPool(host='localhost', port=12543): Max retries exceeded with url: /api/generate (Caused by NewConnectionError("HTTPConnection(host='localhost', port=12543): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-06-30 03:43:22,401 - INFO - 
+Processing PoC 18...
+2026-06-30 03:43:22,401 - DEBUG - Sending LLM request for PoC 18
+2026-06-30 03:43:22,402 - DEBUG - Starting new HTTP connection (1): localhost:12543
+2026-06-30 03:43:22,402 - ERROR - Error processing PoC 18: HTTPConnectionPool(host='localhost', port=12543): Max retries exceeded with url: /api/generate (Caused by NewConnectionError("HTTPConnection(host='localhost', port=12543): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-06-30 03:43:22,402 - INFO - 
+Processing PoC 19...
+2026-06-30 03:43:22,402 - DEBUG - Sending LLM request for PoC 19
+2026-06-30 03:43:22,403 - DEBUG - Starting new HTTP connection (1): localhost:12543
+2026-06-30 03:43:22,403 - ERROR - Error processing PoC 19: HTTPConnectionPool(host='localhost', port=12543): Max retries exceeded with url: /api/generate (Caused by NewConnectionError("HTTPConnection(host='localhost', port=12543): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-06-30 03:43:22,403 - INFO - 
+Processing PoC 20...
+2026-06-30 03:43:22,403 - DEBUG - Sending LLM request for PoC 20
+2026-06-30 03:43:22,404 - DEBUG - Starting new HTTP connection (1): localhost:12543
+2026-06-30 03:43:22,405 - ERROR - Error processing PoC 20: HTTPConnectionPool(host='localhost', port=12543): Max retries exceeded with url: /api/generate (Caused by NewConnectionError("HTTPConnection(host='localhost', port=12543): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-06-30 03:43:22,405 - INFO - 
+Processing PoC 21...
+2026-06-30 03:43:22,405 - DEBUG - Sending LLM request for PoC 21
+2026-06-30 03:43:22,406 - DEBUG - Starting new HTTP connection (1): localhost:12543
+2026-06-30 03:43:22,406 - ERROR - Error processing PoC 21: HTTPConnectionPool(host='localhost', port=12543): Max retries exceeded with url: /api/generate (Caused by NewConnectionError("HTTPConnection(host='localhost', port=12543): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-06-30 03:43:22,406 - INFO - 
+Processing PoC 22...
+2026-06-30 03:43:22,406 - DEBUG - Sending LLM request for PoC 22
+2026-06-30 03:43:22,407 - DEBUG - Starting new HTTP connection (1): localhost:12543
+2026-06-30 03:43:22,407 - ERROR - Error processing PoC 22: HTTPConnectionPool(host='localhost', port=12543): Max retries exceeded with url: /api/generate (Caused by NewConnectionError("HTTPConnection(host='localhost', port=12543): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-06-30 03:43:22,407 - INFO - 
+Processing PoC 23...
+2026-06-30 03:43:22,407 - DEBUG - Sending LLM request for PoC 23
+2026-06-30 03:43:22,408 - DEBUG - Starting new HTTP connection (1): localhost:12543
+2026-06-30 03:43:22,408 - ERROR - Error processing PoC 23: HTTPConnectionPool(host='localhost', port=12543): Max retries exceeded with url: /api/generate (Caused by NewConnectionError("HTTPConnection(host='localhost', port=12543): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-06-30 03:43:22,409 - INFO - 
+Processing PoC 24...
+2026-06-30 03:43:22,409 - DEBUG - Sending LLM request for PoC 24
+2026-06-30 03:43:22,409 - DEBUG - Starting new HTTP connection (1): localhost:12543
+2026-06-30 03:43:22,410 - ERROR - Error processing PoC 24: HTTPConnectionPool(host='localhost', port=12543): Max retries exceeded with url: /api/generate (Caused by NewConnectionError("HTTPConnection(host='localhost', port=12543): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-06-30 03:43:22,410 - INFO - 
+Processing PoC 25...
+2026-06-30 03:43:22,410 - DEBUG - Sending LLM request for PoC 25
+2026-06-30 03:43:22,410 - DEBUG - Starting new HTTP connection (1): localhost:12543
+2026-06-30 03:43:22,411 - ERROR - Error processing PoC 25: HTTPConnectionPool(host='localhost', port=12543): Max retries exceeded with url: /api/generate (Caused by NewConnectionError("HTTPConnection(host='localhost', port=12543): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-06-30 03:43:22,411 - INFO - 
+Processing PoC 26...
+2026-06-30 03:43:22,411 - DEBUG - Sending LLM request for PoC 26
+2026-06-30 03:43:22,412 - DEBUG - Starting new HTTP connection (1): localhost:12543
+2026-06-30 03:43:22,412 - ERROR - Error processing PoC 26: HTTPConnectionPool(host='localhost', port=12543): Max retries exceeded with url: /api/generate (Caused by NewConnectionError("HTTPConnection(host='localhost', port=12543): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-06-30 03:43:22,412 - INFO - 
+Processing PoC 27...
+2026-06-30 03:43:22,412 - DEBUG - Sending LLM request for PoC 27
+2026-06-30 03:43:22,413 - DEBUG - Starting new HTTP connection (1): localhost:12543
+2026-06-30 03:43:22,413 - ERROR - Error processing PoC 27: HTTPConnectionPool(host='localhost', port=12543): Max retries exceeded with url: /api/generate (Caused by NewConnectionError("HTTPConnection(host='localhost', port=12543): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-06-30 03:43:22,413 - INFO - 
+Processing PoC 28...
+2026-06-30 03:43:22,413 - DEBUG - Sending LLM request for PoC 28
+2026-06-30 03:43:22,414 - DEBUG - Starting new HTTP connection (1): localhost:12543
+2026-06-30 03:43:22,414 - ERROR - Error processing PoC 28: HTTPConnectionPool(host='localhost', port=12543): Max retries exceeded with url: /api/generate (Caused by NewConnectionError("HTTPConnection(host='localhost', port=12543): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-06-30 03:43:22,414 - INFO - 
+Processing PoC 29...
+2026-06-30 03:43:22,414 - DEBUG - Sending LLM request for PoC 29
+2026-06-30 03:43:22,415 - DEBUG - Starting new HTTP connection (1): localhost:12543
+2026-06-30 03:43:22,415 - ERROR - Error processing PoC 29: HTTPConnectionPool(host='localhost', port=12543): Max retries exceeded with url: /api/generate (Caused by NewConnectionError("HTTPConnection(host='localhost', port=12543): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-06-30 03:43:22,415 - INFO - 
+Processing PoC 30...
+2026-06-30 03:43:22,415 - DEBUG - Sending LLM request for PoC 30
+2026-06-30 03:43:22,416 - DEBUG - Starting new HTTP connection (1): localhost:12543
+2026-06-30 03:43:22,417 - ERROR - Error processing PoC 30: HTTPConnectionPool(host='localhost', port=12543): Max retries exceeded with url: /api/generate (Caused by NewConnectionError("HTTPConnection(host='localhost', port=12543): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-06-30 03:43:22,417 - INFO - 
+Processing PoC 31...
+2026-06-30 03:43:22,417 - DEBUG - Sending LLM request for PoC 31
+2026-06-30 03:43:22,418 - DEBUG - Starting new HTTP connection (1): localhost:12543
+2026-06-30 03:43:22,418 - ERROR - Error processing PoC 31: HTTPConnectionPool(host='localhost', port=12543): Max retries exceeded with url: /api/generate (Caused by NewConnectionError("HTTPConnection(host='localhost', port=12543): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-06-30 03:43:22,418 - INFO - 
+Processing PoC 32...
+2026-06-30 03:43:22,418 - DEBUG - Sending LLM request for PoC 32
+2026-06-30 03:43:22,419 - DEBUG - Starting new HTTP connection (1): localhost:12543
+2026-06-30 03:43:22,419 - ERROR - Error processing PoC 32: HTTPConnectionPool(host='localhost', port=12543): Max retries exceeded with url: /api/generate (Caused by NewConnectionError("HTTPConnection(host='localhost', port=12543): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-06-30 03:43:22,419 - INFO - 
+Processing PoC 33...
+2026-06-30 03:43:22,419 - DEBUG - Sending LLM request for PoC 33
+2026-06-30 03:43:22,420 - DEBUG - Starting new HTTP connection (1): localhost:12543
+2026-06-30 03:43:22,420 - ERROR - Error processing PoC 33: HTTPConnectionPool(host='localhost', port=12543): Max retries exceeded with url: /api/generate (Caused by NewConnectionError("HTTPConnection(host='localhost', port=12543): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-06-30 03:43:22,420 - INFO - 
+Processing PoC 34...
+2026-06-30 03:43:22,420 - DEBUG - Sending LLM request for PoC 34
+2026-06-30 03:43:22,421 - DEBUG - Starting new HTTP connection (1): localhost:12543
+2026-06-30 03:43:22,422 - ERROR - Error processing PoC 34: HTTPConnectionPool(host='localhost', port=12543): Max retries exceeded with url: /api/generate (Caused by NewConnectionError("HTTPConnection(host='localhost', port=12543): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-06-30 03:43:22,422 - INFO - 
+Processing PoC 35...
+2026-06-30 03:43:22,422 - DEBUG - Sending LLM request for PoC 35
+2026-06-30 03:43:22,423 - DEBUG - Starting new HTTP connection (1): localhost:12543
+2026-06-30 03:43:22,423 - ERROR - Error processing PoC 35: HTTPConnectionPool(host='localhost', port=12543): Max retries exceeded with url: /api/generate (Caused by NewConnectionError("HTTPConnection(host='localhost', port=12543): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-06-30 03:43:22,424 - INFO - 
+Processing PoC 36...
+2026-06-30 03:43:22,424 - DEBUG - Sending LLM request for PoC 36
+2026-06-30 03:43:22,425 - DEBUG - Starting new HTTP connection (1): localhost:12543
+2026-06-30 03:43:22,425 - ERROR - Error processing PoC 36: HTTPConnectionPool(host='localhost', port=12543): Max retries exceeded with url: /api/generate (Caused by NewConnectionError("HTTPConnection(host='localhost', port=12543): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-06-30 03:43:22,425 - INFO - 
+Processing PoC 37...
+2026-06-30 03:43:22,425 - DEBUG - Sending LLM request for PoC 37
+2026-06-30 03:43:22,427 - DEBUG - Starting new HTTP connection (1): localhost:12543
+2026-06-30 03:43:22,427 - ERROR - Error processing PoC 37: HTTPConnectionPool(host='localhost', port=12543): Max retries exceeded with url: /api/generate (Caused by NewConnectionError("HTTPConnection(host='localhost', port=12543): Failed to establish a new connection: [Errno 111] Connection refused"))
+2026-06-30 03:43:22,428 - DEBUG - Saving results to sandbox_variant_results.xlsx
+2026-06-30 03:43:22,480 - INFO - Results saved to sandbox_variant_results.xlsx
+2026-06-30 03:43:22,480 - INFO - 
+Results saved to 'sandbox_variant_results.xlsx'
+2026-06-30 03:43:55,086 - DEBUG - Reading CSV file: tf_poc.csv
+2026-06-30 03:43:55,090 - INFO - Successfully loaded CSV with 93 PoCs
+2026-06-30 03:43:55,091 - INFO - 
+Processing PoC 1...
+2026-06-30 03:43:55,091 - DEBUG - Sending LLM request for PoC 1
+2026-06-30 03:43:55,092 - DEBUG - Starting new HTTP connection (1): localhost:12543

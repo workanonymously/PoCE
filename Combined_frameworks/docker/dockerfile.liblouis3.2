@@ -1,0 +1,60 @@
+# Dockerfile: Ubuntu 18.04 + Liblouis 3.2.0 + ASan (robust)
+
+FROM ubuntu:18.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV CFLAGS="-g -O1 -fsanitize=address -fno-omit-frame-pointer"
+ENV CXXFLAGS="$CFLAGS"
+ENV LDFLAGS="-fsanitize=address"
+
+WORKDIR /usr/src
+
+# Install build dependencies including autotools and helpers
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential autoconf automake libtool pkg-config m4 gettext \
+    wget ca-certificates python3 git g++ gnupg apt-transport-https curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install LLVM/Clang 12 + libfuzzer + symbolizer
+RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - && \
+    echo "deb https://apt.llvm.org/bionic/ llvm-toolchain-bionic-12 main" >> /etc/apt/sources.list && \
+    apt-get update && apt-get install -y clang-12 llvm-12 libfuzzer-12-dev llvm-12-tools && \
+    update-alternatives --install /usr/bin/clang clang /usr/bin/clang-12 100 && \
+    update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-12 100 && \
+    rm -rf /var/lib/apt/lists/*
+
+# Download and extract Liblouis 3.2.0
+RUN wget -O liblouis-3.2.0.tar.gz \
+    "https://github.com/liblouis/liblouis/releases/download/v3.2.0/liblouis-3.2.0.tar.gz" && \
+    tar xzf liblouis-3.2.0.tar.gz
+
+# Build Liblouis with ASan (serial build to avoid recursive make race)
+RUN set -eux; \
+    cd liblouis-3.2.0; \
+    if [ -x ./autogen.sh ]; then ./autogen.sh; elif [ ! -x ./configure ]; then autoreconf -i; fi; \
+    CC=clang CXX=clang++ ./configure --prefix=/usr/local --enable-shared=yes; \
+    make -j1; \
+    make install
+
+# Copy ASan runtime to /usr/local/lib and run ldconfig
+RUN set -eux; \
+    ASAN_SO="$(clang-12 -print-file-name=libclang_rt.asan-x86_64.so)"; \
+    cp "$ASAN_SO" /usr/local/lib/; \
+    chmod 644 /usr/local/lib/$(basename "$ASAN_SO"); \
+    ldconfig
+
+# Ensure loader can find Liblouis + ASan runtime
+ENV LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+
+# ASan symbolizer and options
+ENV ASAN_SYMBOLIZER_PATH=/usr/lib/llvm-12/bin/llvm-symbolizer
+ENV ASAN_OPTIONS=detect_leaks=1:abort_on_error=1:symbolize=1:log_path=/tmp/asan_log
+
+# Create writable log path for ASan
+RUN mkdir -p /tmp && touch /tmp/asan_log && chmod 666 /tmp/asan_log
+
+# Sanity checks
+RUN /usr/local/bin/lou_translate --version || true
+RUN clang-12 --version || true
+
+CMD ["/bin/bash"]

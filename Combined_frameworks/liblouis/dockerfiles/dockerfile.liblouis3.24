@@ -1,0 +1,41 @@
+FROM ubuntu:16.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV CFLAGS="-g -O1 -fsanitize=address,undefined -fno-omit-frame-pointer"
+ENV LDFLAGS="-fsanitize=address,undefined"
+
+WORKDIR /usr/src
+
+# Install base build deps (include apt-transport-https)
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+    build-essential autoconf automake libtool pkg-config wget ca-certificates python3-dev git g++ gnupg apt-transport-https \
+ && rm -rf /var/lib/apt/lists/*
+
+# Install LLVM/Clang 12
+RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - \
+ && echo "deb https://apt.llvm.org/xenial/ llvm-toolchain-xenial-12 main" >> /etc/apt/sources.list \
+ && apt-get update \
+ && apt-get install -y clang-12 llvm-12 libfuzzer-12-dev \
+ && update-alternatives --install /usr/bin/clang clang /usr/bin/clang-12 100 \
+ && update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-12 100
+
+# Build liblouis with ASan
+RUN wget -O liblouis-3.24.0.tar.gz \
+      "https://launchpad.net/ubuntu/+archive/primary/+files/liblouis_3.24.0.orig.tar.gz" \
+ && tar xzf liblouis-3.24.0.tar.gz \
+ && cd liblouis-3.24.0 \
+ && CC=clang CXX=clang++ ./configure --prefix=/usr/local \
+ && make -j"$(nproc)" \
+ && make install \
+ && cd /usr/src \
+ && rm -rf liblouis-3.24.0 liblouis-3.24.0.tar.gz
+
+# Ensure runtime linker finds /usr/local/lib without ldconfig
+ENV LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+
+# Ensure ASan can symbolize properly
+ENV ASAN_SYMBOLIZER_PATH=/usr/lib/llvm-12/bin/llvm-symbolizer
+ENV ASAN_OPTIONS=detect_leaks=1:abort_on_error=1:symbolize=1
+
+CMD ["/bin/bash"]

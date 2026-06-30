@@ -1,0 +1,65 @@
+FROM ubuntu:18.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install build dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    automake \
+    autoconf \
+    libtool \
+    pkg-config \
+    ca-certificates \
+    wget \
+    curl \
+    git \
+    clang \
+    llvm \
+    xz-utils \
+    cmake \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /test
+
+# Copy your local tarball into the image
+COPY docker/libsixel-1.10.3.tar.gz /test/libsixel-1.10.3.tar.gz
+
+# Extract the tarball
+RUN tar -xzf libsixel-1.10.3.tar.gz \
+    && rm libsixel-1.10.3.tar.gz
+
+# Setup AddressSanitizer environment
+ENV CC=clang
+ENV CXX=clang++
+ENV CFLAGS="-O1 -g -fno-omit-frame-pointer -fsanitize=address"
+ENV CXXFLAGS="-O1 -g -fno-omit-frame-pointer -fsanitize=address"
+ENV LDFLAGS="-fsanitize=address"
+
+# # Build libsixel
+
+RUN cd libsixel-*/ && \
+    # Ensure scripts are executable (sometimes tar loses permissions)
+    chmod +x *.sh || true && \
+    # Generate the configure script if it's missing
+    if [ ! -f ./configure ]; then \
+        if [ -f ./autogen.sh ]; then ./autogen.sh; \
+        elif [ -f ./bootstrap.sh ]; then ./bootstrap.sh; \
+        else autoreconf -i; fi \
+    fi && \
+    ./configure \
+       --prefix=/usr/local \
+       --disable-shared \
+       --enable-static \
+       --with-jpeg \
+       --with-png \
+    && make -j$(nproc) \
+    && make install \
+    && ldconfig
+
+
+
+
+COPY test-poc /test/test-poc
+
+CMD ["/bin/bash"]

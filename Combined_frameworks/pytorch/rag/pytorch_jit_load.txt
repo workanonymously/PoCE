@@ -1,0 +1,133 @@
+torch.jit.load   PyTorch 2.6 documentation
+Learn
+Get Started
+Run PyTorch locally or get started quickly with one of the supported cloud platforms
+Tutorials
+Whats new in PyTorch tutorials
+Learn the Basics
+Familiarize yourself with PyTorch concepts and modules
+PyTorch Recipes
+Bite-size, ready-to-deploy PyTorch code examples
+Intro to PyTorch - YouTube Series
+Master PyTorch basics with our engaging YouTube tutorial series
+Ecosystem
+Tools
+Learn about the tools and frameworks in the PyTorch Ecosystem
+Community
+Join the PyTorch developer community to contribute, learn, and get your questions answered
+Forums
+A place to discuss PyTorch code, issues, install, research
+Developer Resources
+Find resources and get questions answered
+Contributor Awards - 2023
+Award winners announced at this year's PyTorch Conference
+Edge
+About PyTorch Edge
+Build innovative and privacy-aware AI experiences for edge devices
+ExecuTorch
+End-to-end solution for enabling on-device inference capabilities across mobile and edge devices
+Docs
+PyTorch
+Explore the documentation for comprehensive guidance on how to use PyTorch
+PyTorch Domains
+Read the PyTorch Domains documentation to learn more about domain-specific libraries
+Blogs & News
+PyTorch Blog
+Catch up on the latest technical news and happenings
+Community Blog
+Stories from the PyTorch ecosystem
+Videos
+Learn about the latest PyTorch tutorials, new, and more
+Community Stories
+Learn how our community solves real, everyday machine learning problems with PyTorch
+Events
+Find events, webinars, and podcasts
+About
+PyTorch Foundation
+Learn more about the PyTorch Foundation
+Governing Board
+Become a Member
+--->
+Table of Contents
+Docs
+TorchScript
+torch.jit.load
+Shortcuts
+torch.jit.load ¶
+torch.jit.    load   (    f   ,    map_location    =    None   ,    _extra_files    =    None   ,    _restore_shapes    =    False    )    [source]      [source]    ¶
+Load a    ScriptModule    or    ScriptFunction    previously saved with    torch.jit.save   .
+All previously saved modules, no matter their device, are first loaded onto CPU,
+and then are moved to the devices they were saved from. If this fails (e.g.
+because the run time system doesn’t have certain devices), an exception is
+raised.
+Parameters
+f  – a file-like object (has to implement read, readline, tell, and seek),
+or a string containing a file name
+map_location  ( string   or    torch.device  ) – A simplified version of
+map_location   in  torch.jit.save  used to dynamically remap
+storages to an alternative set of devices.
+_extra_files  ( dictionary   of   filename to content ) – The extra
+filenames given in the map would be loaded and their content
+would be stored in the provided map.
+_restore_shapes  (  bool  ) – Whether or not to retrace the module on load using stored inputs
+Returns
+A    ScriptModule    object.
+Example:
+.. testcode:
+import   torch
+import   io
+torch  .  jit  .  load  (   scriptmodule.pt   )
+# Load ScriptModule from io.BytesIO object
+with   open  (   scriptmodule.pt   ,    rb   )   as   f  :
+buffer   =   io  .  BytesIO  (  f  .  read  ())
+# Load all tensors to the original device
+torch  .  jit  .  load  (  buffer  )
+# Load all tensors onto CPU, using a device
+buffer  .  seek  (  0  )
+torch  .  jit  .  load  (  buffer  ,   map_location  =  torch  .  device  (   cpu   ))
+# Load all tensors onto CPU, using a string
+buffer  .  seek  (  0  )
+torch  .  jit  .  load  (  buffer  ,   map_location  =   cpu   )
+# Load with extra files.
+extra_files   =   {   foo.txt   :       }    # values will be replaced with data
+torch  .  jit  .  load  (   scriptmodule.pt   ,   _extra_files  =  extra_files  )
+print  (  extra_files  [   foo.txt   ])
+torch.jit.load
+load()
+Docs
+Access comprehensive developer documentation for PyTorch
+View Docs
+Tutorials
+Get in-depth tutorials for beginners and advanced developers
+View Tutorials
+Resources
+Find development resources and get your questions answered
+View Resources
+To analyze traffic and optimize your experience, we serve cookies on this site. By clicking or navigating, you agree to allow our usage of cookies. As the current maintainers of this site, Facebook’s Cookies Policy applies. Learn more, including about available controls:  Cookies Policy .
+Learn
+Get Started
+Tutorials
+Learn the Basics
+PyTorch Recipes
+Introduction to PyTorch - YouTube Series
+Ecosystem
+Tools
+Community
+Forums
+Developer Resources
+Contributor Awards - 2023
+Edge
+About PyTorch Edge
+ExecuTorch
+Docs
+PyTorch
+PyTorch Domains
+Blog & News
+PyTorch Blog
+Community Blog
+Videos
+Community Stories
+Events
+About
+PyTorch Foundation
+Governing Board

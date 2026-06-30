@@ -1,0 +1,22 @@
+FROM python:3.11-slim
+
+WORKDIR /app/Combined_frameworks
+
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONPATH=/app:/app/Combined_frameworks
+ENV IN_DOCKER=1
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    gcc \
+    zlib1g-dev \
+    libz-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip install --no-cache-dir \
+    requests \
+    openai
+
+COPY . /app/Combined_frameworks
+
+ENTRYPOINT ["python3", "main.py"]

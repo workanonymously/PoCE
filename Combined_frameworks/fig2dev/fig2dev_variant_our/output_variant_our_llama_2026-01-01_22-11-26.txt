@@ -1,0 +1,1845 @@
+Docker image 'fig-new-img' built successfully.
+[INFO] Container 'fig-container' is already running.
+Running PoC...
+Generating test traffic...
+[ERROR] Command failed: ./fig2dev-3.2.7b/fig2dev/fig2dev -L ptk test-poc.fig
+=================================================================
+==7==ERROR: AddressSanitizer: global-buffer-overflow on address 0x00000154509f at pc 0x000000500a96 bp 0x7ffc1001a210 sp 0x7ffc1001a208
+READ of size 1 at 0x00000154509f thread T0
+    #0 0x500a95  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95)
+    #1 0x4ff5b6  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4ff5b6)
+    #2 0x4f98d8  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4f98d8)
+    #3 0x763aa2d7583f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+    #4 0x419618  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x419618)
+
+0x00000154509f is located 1 bytes to the left of global variable 'buf' defined in 'read.c:81:14' (0x15450a0) of size 8192
+0x00000154509f is located 191 bytes to the right of global variable 'comments' defined in 'read.c:83:14' (0x1544cc0) of size 800
+SUMMARY: AddressSanitizer: global-buffer-overflow (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95) 
+Shadow bytes around the buggy address:
+  0x0000802a09c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09f0: 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9
+  0x0000802a0a00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+=>0x0000802a0a10: f9 f9 f9[f9]00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Heap right redzone:      fb
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack partial redzone:   f4
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==7==ABORTING
+
+Waiting for crash detection...
+
+=== fig Output ===
+=================================================================
+==7==ERROR: AddressSanitizer: global-buffer-overflow on address 0x00000154509f at pc 0x000000500a96 bp 0x7ffc1001a210 sp 0x7ffc1001a208
+READ of size 1 at 0x00000154509f thread T0
+    #0 0x500a95  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95)
+    #1 0x4ff5b6  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4ff5b6)
+    #2 0x4f98d8  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4f98d8)
+    #3 0x763aa2d7583f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+    #4 0x419618  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x419618)
+
+0x00000154509f is located 1 bytes to the left of global variable 'buf' defined in 'read.c:81:14' (0x15450a0) of size 8192
+0x00000154509f is located 191 bytes to the right of global variable 'comments' defined in 'read.c:83:14' (0x1544cc0) of size 800
+SUMMARY: AddressSanitizer: global-buffer-overflow (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95) 
+Shadow bytes around the buggy address:
+  0x0000802a09c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09f0: 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9
+  0x0000802a0a00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+=>0x0000802a0a10: f9 f9 f9[f9]00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Heap right redzone:      fb
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack partial redzone:   f4
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==7==ABORTING
+
+
+Crash Detected: True
+Cleaning up...
+Container 'fig-container' is running. Stopping it...
+Added new row: [1, '2020-21676', 'genpstrx_text', True, 'fig2dev-3.2.7b', '#FIG 3.2\nLandscape\nCenter\nInches\nLetter\n100\nSingle\n-1\n#\n1200 2\n\n2 1 0 1 0 7 32 -1 2147483647 0 0 0 -1 1 1 5\n1 0 1.00 45.0 0\n5 0 1.00 6 0.', 'global-buffer-overflow', 'fig2dev+0x500a95 (read.c:81)', 'Read', '−1 byte (1 byte before buf)', '1 byte', "\n =================================================================\n==7==ERROR: AddressSanitizer: global-buffer-overflow on address 0x00000154509f at pc 0x000000500a96 bp 0x7ffc1001a210 sp 0x7ffc1001a208\nREAD of size 1 at 0x00000154509f thread T0\n    #0 0x500a95  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95)\n    #1 0x4ff5b6  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4ff5b6)\n    #2 0x4f98d8  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4f98d8)\n    #3 0x763aa2d7583f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)\n    #4 0x419618  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x419618)\n\n0x00000154509f is located 1 bytes to the left of global variable 'buf' defined in 'read.c:81:14' (0x15450a0) of size 8192\n0x00000154509f is located 191 bytes to the right of global variable 'comments' defined in 'read.c:83:14' (0x1544cc0) of size 800\nSUMMARY: AddressSanitizer: global-buffer-overflow (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95) \nShadow bytes around the buggy address:\n  0x0000802a09c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a09d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a09e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a09f0: 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9\n  0x0000802a0a00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9\n=>0x0000802a0a10: f9 f9 f9[f9]00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Heap right redzone:      fb\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack partial redzone:   f4\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==7==ABORTING\n"]
+Updated xlsx
+Docker image 'fig-new-img' built successfully.
+[INFO] Container 'fig-container' is already running.
+Running PoC...
+Generating test traffic...
+[ERROR] Command failed: ./fig2dev-3.2.7b/fig2dev/fig2dev -L ptk test-poc.fig
+=================================================================
+==7==ERROR: AddressSanitizer: global-buffer-overflow on address 0x00000154509f at pc 0x000000500a96 bp 0x7fff9354ea50 sp 0x7fff9354ea48
+READ of size 1 at 0x00000154509f thread T0
+    #0 0x500a95  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95)
+    #1 0x4ff5b6  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4ff5b6)
+    #2 0x4f98d8  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4f98d8)
+    #3 0x76b1c6b1e83f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+    #4 0x419618  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x419618)
+
+0x00000154509f is located 1 bytes to the left of global variable 'buf' defined in 'read.c:81:14' (0x15450a0) of size 8192
+0x00000154509f is located 191 bytes to the right of global variable 'comments' defined in 'read.c:83:14' (0x1544cc0) of size 800
+SUMMARY: AddressSanitizer: global-buffer-overflow (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95) 
+Shadow bytes around the buggy address:
+  0x0000802a09c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09f0: 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9
+  0x0000802a0a00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+=>0x0000802a0a10: f9 f9 f9[f9]00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Heap right redzone:      fb
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack partial redzone:   f4
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==7==ABORTING
+
+Waiting for crash detection...
+
+=== fig Output ===
+=================================================================
+==7==ERROR: AddressSanitizer: global-buffer-overflow on address 0x00000154509f at pc 0x000000500a96 bp 0x7fff9354ea50 sp 0x7fff9354ea48
+READ of size 1 at 0x00000154509f thread T0
+    #0 0x500a95  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95)
+    #1 0x4ff5b6  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4ff5b6)
+    #2 0x4f98d8  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4f98d8)
+    #3 0x76b1c6b1e83f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+    #4 0x419618  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x419618)
+
+0x00000154509f is located 1 bytes to the left of global variable 'buf' defined in 'read.c:81:14' (0x15450a0) of size 8192
+0x00000154509f is located 191 bytes to the right of global variable 'comments' defined in 'read.c:83:14' (0x1544cc0) of size 800
+SUMMARY: AddressSanitizer: global-buffer-overflow (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95) 
+Shadow bytes around the buggy address:
+  0x0000802a09c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09f0: 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9
+  0x0000802a0a00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+=>0x0000802a0a10: f9 f9 f9[f9]00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Heap right redzone:      fb
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack partial redzone:   f4
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==7==ABORTING
+
+
+Crash Detected: True
+Cleaning up...
+Container 'fig-container' is running. Stopping it...
+Added new row: [2, '2020-21676', 'genpstrx_text', True, 'fig2dev-3.2.7b', '#FIG 3.2\nLandscape\nCenter\nInches\nLetter\n100\nSingle\n-1\n#\n1200 2\n\n2 1 0 1 0 7 32 -1 2147483647 0 0 0 -1 1 1 5\n1 0 1.00 45.0 0\n5 0 1.00 6 0.', 'global-buffer-overflow', 'fig2dev+0x500a95 (read.c:81)', 'Read', '−1 byte (1 byte before buf)', '1 byte', "\n =================================================================\n==7==ERROR: AddressSanitizer: global-buffer-overflow on address 0x00000154509f at pc 0x000000500a96 bp 0x7fff9354ea50 sp 0x7fff9354ea48\nREAD of size 1 at 0x00000154509f thread T0\n    #0 0x500a95  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95)\n    #1 0x4ff5b6  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4ff5b6)\n    #2 0x4f98d8  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4f98d8)\n    #3 0x76b1c6b1e83f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)\n    #4 0x419618  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x419618)\n\n0x00000154509f is located 1 bytes to the left of global variable 'buf' defined in 'read.c:81:14' (0x15450a0) of size 8192\n0x00000154509f is located 191 bytes to the right of global variable 'comments' defined in 'read.c:83:14' (0x1544cc0) of size 800\nSUMMARY: AddressSanitizer: global-buffer-overflow (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95) \nShadow bytes around the buggy address:\n  0x0000802a09c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a09d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a09e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a09f0: 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9\n  0x0000802a0a00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9\n=>0x0000802a0a10: f9 f9 f9[f9]00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Heap right redzone:      fb\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack partial redzone:   f4\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==7==ABORTING\n"]
+Updated xlsx
+Docker image 'fig-new-img' built successfully.
+[INFO] Container 'fig-container' is already running.
+Running PoC...
+Generating test traffic...
+[ERROR] Command failed: ./fig2dev-3.2.7b/fig2dev/fig2dev -L ptk test-poc.fig
+=================================================================
+==7==ERROR: AddressSanitizer: global-buffer-overflow on address 0x00000154509f at pc 0x000000500a96 bp 0x7ffdf7cbf8b0 sp 0x7ffdf7cbf8a8
+READ of size 1 at 0x00000154509f thread T0
+    #0 0x500a95  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95)
+    #1 0x4ff5b6  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4ff5b6)
+    #2 0x4f98d8  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4f98d8)
+    #3 0x71aafa28883f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+    #4 0x419618  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x419618)
+
+0x00000154509f is located 1 bytes to the left of global variable 'buf' defined in 'read.c:81:14' (0x15450a0) of size 8192
+0x00000154509f is located 191 bytes to the right of global variable 'comments' defined in 'read.c:83:14' (0x1544cc0) of size 800
+SUMMARY: AddressSanitizer: global-buffer-overflow (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95) 
+Shadow bytes around the buggy address:
+  0x0000802a09c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09f0: 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9
+  0x0000802a0a00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+=>0x0000802a0a10: f9 f9 f9[f9]00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Heap right redzone:      fb
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack partial redzone:   f4
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==7==ABORTING
+
+Waiting for crash detection...
+
+=== fig Output ===
+=================================================================
+==7==ERROR: AddressSanitizer: global-buffer-overflow on address 0x00000154509f at pc 0x000000500a96 bp 0x7ffdf7cbf8b0 sp 0x7ffdf7cbf8a8
+READ of size 1 at 0x00000154509f thread T0
+    #0 0x500a95  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95)
+    #1 0x4ff5b6  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4ff5b6)
+    #2 0x4f98d8  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4f98d8)
+    #3 0x71aafa28883f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+    #4 0x419618  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x419618)
+
+0x00000154509f is located 1 bytes to the left of global variable 'buf' defined in 'read.c:81:14' (0x15450a0) of size 8192
+0x00000154509f is located 191 bytes to the right of global variable 'comments' defined in 'read.c:83:14' (0x1544cc0) of size 800
+SUMMARY: AddressSanitizer: global-buffer-overflow (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95) 
+Shadow bytes around the buggy address:
+  0x0000802a09c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09f0: 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9
+  0x0000802a0a00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+=>0x0000802a0a10: f9 f9 f9[f9]00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Heap right redzone:      fb
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack partial redzone:   f4
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==7==ABORTING
+
+
+Crash Detected: True
+Cleaning up...
+Container 'fig-container' is running. Stopping it...
+Added new row: [3, '2020-21676', 'genpstrx_text', True, 'fig2dev-3.2.7b', '#FIG 3.2\nLandscape\nCenter\nInches\nLetter\n100\nSingle\n-1\n#\n1200 2\n\n2 1 0 1 0 7 2147483646 -1 65535 0 0 0 -1 1 1 5\n1 0 1.00 45.0 0\n5 0 1.00 6 0.', 'global-buffer-overflow', 'fig2dev+0x500a95 (read.c:81)', 'Read', '−1 byte (1 byte before buf)', '1 byte', "\n =================================================================\n==7==ERROR: AddressSanitizer: global-buffer-overflow on address 0x00000154509f at pc 0x000000500a96 bp 0x7ffdf7cbf8b0 sp 0x7ffdf7cbf8a8\nREAD of size 1 at 0x00000154509f thread T0\n    #0 0x500a95  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95)\n    #1 0x4ff5b6  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4ff5b6)\n    #2 0x4f98d8  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4f98d8)\n    #3 0x71aafa28883f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)\n    #4 0x419618  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x419618)\n\n0x00000154509f is located 1 bytes to the left of global variable 'buf' defined in 'read.c:81:14' (0x15450a0) of size 8192\n0x00000154509f is located 191 bytes to the right of global variable 'comments' defined in 'read.c:83:14' (0x1544cc0) of size 800\nSUMMARY: AddressSanitizer: global-buffer-overflow (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95) \nShadow bytes around the buggy address:\n  0x0000802a09c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a09d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a09e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a09f0: 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9\n  0x0000802a0a00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9\n=>0x0000802a0a10: f9 f9 f9[f9]00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Heap right redzone:      fb\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack partial redzone:   f4\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==7==ABORTING\n"]
+Updated xlsx
+Docker image 'fig-new-img' built successfully.
+[INFO] Container 'fig-container' is already running.
+Running PoC...
+Generating test traffic...
+[ERROR] Command failed: ./fig2dev-3.2.7b/fig2dev/fig2dev -L ptk test-poc.fig
+=================================================================
+==7==ERROR: AddressSanitizer: global-buffer-overflow on address 0x00000154509f at pc 0x000000500a96 bp 0x7ffd74a2e290 sp 0x7ffd74a2e288
+READ of size 1 at 0x00000154509f thread T0
+    #0 0x500a95  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95)
+    #1 0x4ff5b6  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4ff5b6)
+    #2 0x4f98d8  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4f98d8)
+    #3 0x7a64292e783f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+    #4 0x419618  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x419618)
+
+0x00000154509f is located 1 bytes to the left of global variable 'buf' defined in 'read.c:81:14' (0x15450a0) of size 8192
+0x00000154509f is located 191 bytes to the right of global variable 'comments' defined in 'read.c:83:14' (0x1544cc0) of size 800
+SUMMARY: AddressSanitizer: global-buffer-overflow (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95) 
+Shadow bytes around the buggy address:
+  0x0000802a09c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09f0: 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9
+  0x0000802a0a00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+=>0x0000802a0a10: f9 f9 f9[f9]00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Heap right redzone:      fb
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack partial redzone:   f4
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==7==ABORTING
+
+Waiting for crash detection...
+
+=== fig Output ===
+=================================================================
+==7==ERROR: AddressSanitizer: global-buffer-overflow on address 0x00000154509f at pc 0x000000500a96 bp 0x7ffd74a2e290 sp 0x7ffd74a2e288
+READ of size 1 at 0x00000154509f thread T0
+    #0 0x500a95  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95)
+    #1 0x4ff5b6  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4ff5b6)
+    #2 0x4f98d8  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4f98d8)
+    #3 0x7a64292e783f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+    #4 0x419618  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x419618)
+
+0x00000154509f is located 1 bytes to the left of global variable 'buf' defined in 'read.c:81:14' (0x15450a0) of size 8192
+0x00000154509f is located 191 bytes to the right of global variable 'comments' defined in 'read.c:83:14' (0x1544cc0) of size 800
+SUMMARY: AddressSanitizer: global-buffer-overflow (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95) 
+Shadow bytes around the buggy address:
+  0x0000802a09c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09f0: 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9
+  0x0000802a0a00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+=>0x0000802a0a10: f9 f9 f9[f9]00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Heap right redzone:      fb
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack partial redzone:   f4
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==7==ABORTING
+
+
+Crash Detected: True
+Cleaning up...
+Container 'fig-container' is running. Stopping it...
+Added new row: [4, '2020-21676', 'genpstrx_text', True, 'fig2dev-3.2.7b', '#FIG 3.2\nLandscape\nCenter\nInches\nLetter\n100\nSingle\n-1\n#\n1200 2\n\n2 1 0 1 0 7 32 -1 2147483647 0 0 0 -1 1 1 5\n1 0 1.00 45.0 0\n5 0 1.00 6 0.', 'global-buffer-overflow', 'fig2dev+0x500a95 (read.c:81)', 'Read', '−1 byte (1 byte before buf)', '1 byte', "\n =================================================================\n==7==ERROR: AddressSanitizer: global-buffer-overflow on address 0x00000154509f at pc 0x000000500a96 bp 0x7ffd74a2e290 sp 0x7ffd74a2e288\nREAD of size 1 at 0x00000154509f thread T0\n    #0 0x500a95  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95)\n    #1 0x4ff5b6  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4ff5b6)\n    #2 0x4f98d8  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4f98d8)\n    #3 0x7a64292e783f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)\n    #4 0x419618  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x419618)\n\n0x00000154509f is located 1 bytes to the left of global variable 'buf' defined in 'read.c:81:14' (0x15450a0) of size 8192\n0x00000154509f is located 191 bytes to the right of global variable 'comments' defined in 'read.c:83:14' (0x1544cc0) of size 800\nSUMMARY: AddressSanitizer: global-buffer-overflow (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95) \nShadow bytes around the buggy address:\n  0x0000802a09c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a09d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a09e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a09f0: 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9\n  0x0000802a0a00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9\n=>0x0000802a0a10: f9 f9 f9[f9]00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Heap right redzone:      fb\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack partial redzone:   f4\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==7==ABORTING\n"]
+Updated xlsx
+Docker image 'fig-new-img' built successfully.
+[INFO] Container 'fig-container' is already running.
+Running PoC...
+Generating test traffic...
+[ERROR] Command failed: ./fig2dev-3.2.7b/fig2dev/fig2dev -L ptk test-poc.fig
+=================================================================
+==7==ERROR: AddressSanitizer: global-buffer-overflow on address 0x00000154509f at pc 0x000000500a96 bp 0x7ffe03d60d70 sp 0x7ffe03d60d68
+READ of size 1 at 0x00000154509f thread T0
+    #0 0x500a95  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95)
+    #1 0x4ff5b6  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4ff5b6)
+    #2 0x4f98d8  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4f98d8)
+    #3 0x70232258283f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+    #4 0x419618  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x419618)
+
+0x00000154509f is located 1 bytes to the left of global variable 'buf' defined in 'read.c:81:14' (0x15450a0) of size 8192
+0x00000154509f is located 191 bytes to the right of global variable 'comments' defined in 'read.c:83:14' (0x1544cc0) of size 800
+SUMMARY: AddressSanitizer: global-buffer-overflow (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95) 
+Shadow bytes around the buggy address:
+  0x0000802a09c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09f0: 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9
+  0x0000802a0a00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+=>0x0000802a0a10: f9 f9 f9[f9]00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Heap right redzone:      fb
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack partial redzone:   f4
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==7==ABORTING
+
+Waiting for crash detection...
+
+=== fig Output ===
+=================================================================
+==7==ERROR: AddressSanitizer: global-buffer-overflow on address 0x00000154509f at pc 0x000000500a96 bp 0x7ffe03d60d70 sp 0x7ffe03d60d68
+READ of size 1 at 0x00000154509f thread T0
+    #0 0x500a95  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95)
+    #1 0x4ff5b6  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4ff5b6)
+    #2 0x4f98d8  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4f98d8)
+    #3 0x70232258283f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+    #4 0x419618  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x419618)
+
+0x00000154509f is located 1 bytes to the left of global variable 'buf' defined in 'read.c:81:14' (0x15450a0) of size 8192
+0x00000154509f is located 191 bytes to the right of global variable 'comments' defined in 'read.c:83:14' (0x1544cc0) of size 800
+SUMMARY: AddressSanitizer: global-buffer-overflow (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95) 
+Shadow bytes around the buggy address:
+  0x0000802a09c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09f0: 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9
+  0x0000802a0a00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+=>0x0000802a0a10: f9 f9 f9[f9]00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Heap right redzone:      fb
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack partial redzone:   f4
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==7==ABORTING
+
+
+Crash Detected: True
+Cleaning up...
+Container 'fig-container' is running. Stopping it...
+Added new row: [5, '2020-21676', 'genpstrx_text', True, 'fig2dev-3.2.7b', '#FIG 3.2\nLandscape\nCenter\nInches\nLetter\n100\nSingle\n-1\n#\n1200 2\n\n2 1 0 1 0 7 32 -1 2147483646 0 0 0 -1 1 1 5\n1 0 1.00 45.0 0\n5 0 1.00 6 0.', 'global-buffer-overflow', 'fig2dev+0x500a95 (read.c:81)', 'Read', '−1 byte (1 byte before buf)', '1 byte', "\n =================================================================\n==7==ERROR: AddressSanitizer: global-buffer-overflow on address 0x00000154509f at pc 0x000000500a96 bp 0x7ffe03d60d70 sp 0x7ffe03d60d68\nREAD of size 1 at 0x00000154509f thread T0\n    #0 0x500a95  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95)\n    #1 0x4ff5b6  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4ff5b6)\n    #2 0x4f98d8  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4f98d8)\n    #3 0x70232258283f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)\n    #4 0x419618  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x419618)\n\n0x00000154509f is located 1 bytes to the left of global variable 'buf' defined in 'read.c:81:14' (0x15450a0) of size 8192\n0x00000154509f is located 191 bytes to the right of global variable 'comments' defined in 'read.c:83:14' (0x1544cc0) of size 800\nSUMMARY: AddressSanitizer: global-buffer-overflow (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95) \nShadow bytes around the buggy address:\n  0x0000802a09c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a09d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a09e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a09f0: 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9\n  0x0000802a0a00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9\n=>0x0000802a0a10: f9 f9 f9[f9]00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Heap right redzone:      fb\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack partial redzone:   f4\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==7==ABORTING\n"]
+Updated xlsx
+Docker image 'fig-new-img' built successfully.
+[INFO] Container 'fig-container' is already running.
+Running PoC...
+Generating test traffic...
+[ERROR] Command failed: ./fig2dev-3.2.7b/fig2dev/fig2dev -L ptk test-poc.fig
+=================================================================
+==7==ERROR: AddressSanitizer: global-buffer-overflow on address 0x00000154509f at pc 0x000000500a96 bp 0x7ffd2a410270 sp 0x7ffd2a410268
+READ of size 1 at 0x00000154509f thread T0
+    #0 0x500a95  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95)
+    #1 0x4ff5b6  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4ff5b6)
+    #2 0x4f98d8  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4f98d8)
+    #3 0x7895354ff83f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+    #4 0x419618  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x419618)
+
+0x00000154509f is located 1 bytes to the left of global variable 'buf' defined in 'read.c:81:14' (0x15450a0) of size 8192
+0x00000154509f is located 191 bytes to the right of global variable 'comments' defined in 'read.c:83:14' (0x1544cc0) of size 800
+SUMMARY: AddressSanitizer: global-buffer-overflow (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95) 
+Shadow bytes around the buggy address:
+  0x0000802a09c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09f0: 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9
+  0x0000802a0a00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+=>0x0000802a0a10: f9 f9 f9[f9]00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Heap right redzone:      fb
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack partial redzone:   f4
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==7==ABORTING
+
+Waiting for crash detection...
+
+=== fig Output ===
+=================================================================
+==7==ERROR: AddressSanitizer: global-buffer-overflow on address 0x00000154509f at pc 0x000000500a96 bp 0x7ffd2a410270 sp 0x7ffd2a410268
+READ of size 1 at 0x00000154509f thread T0
+    #0 0x500a95  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95)
+    #1 0x4ff5b6  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4ff5b6)
+    #2 0x4f98d8  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4f98d8)
+    #3 0x7895354ff83f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+    #4 0x419618  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x419618)
+
+0x00000154509f is located 1 bytes to the left of global variable 'buf' defined in 'read.c:81:14' (0x15450a0) of size 8192
+0x00000154509f is located 191 bytes to the right of global variable 'comments' defined in 'read.c:83:14' (0x1544cc0) of size 800
+SUMMARY: AddressSanitizer: global-buffer-overflow (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95) 
+Shadow bytes around the buggy address:
+  0x0000802a09c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09f0: 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9
+  0x0000802a0a00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+=>0x0000802a0a10: f9 f9 f9[f9]00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Heap right redzone:      fb
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack partial redzone:   f4
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==7==ABORTING
+
+
+Crash Detected: True
+Cleaning up...
+Container 'fig-container' is running. Stopping it...
+Added new row: [6, '2020-21676', 'genpstrx_text', True, 'fig2dev-3.2.7b', '#FIG 3.2\nLandscape\nCenter\nInches\nLetter\n100\nSingle\n-1\n#\n1200 2\n\n2 1 0 1 0 7 32 -1 2147483646 0 0 0 -1 1 1 5\n1 0 1.00 45.0 0\n5 0 1.00 6 0.', 'global-buffer-overflow', 'fig2dev+0x500a95 (read.c:81)', 'Read', '−1 byte (1 byte before buf)', '1 byte', "\n =================================================================\n==7==ERROR: AddressSanitizer: global-buffer-overflow on address 0x00000154509f at pc 0x000000500a96 bp 0x7ffd2a410270 sp 0x7ffd2a410268\nREAD of size 1 at 0x00000154509f thread T0\n    #0 0x500a95  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95)\n    #1 0x4ff5b6  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4ff5b6)\n    #2 0x4f98d8  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4f98d8)\n    #3 0x7895354ff83f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)\n    #4 0x419618  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x419618)\n\n0x00000154509f is located 1 bytes to the left of global variable 'buf' defined in 'read.c:81:14' (0x15450a0) of size 8192\n0x00000154509f is located 191 bytes to the right of global variable 'comments' defined in 'read.c:83:14' (0x1544cc0) of size 800\nSUMMARY: AddressSanitizer: global-buffer-overflow (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95) \nShadow bytes around the buggy address:\n  0x0000802a09c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a09d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a09e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a09f0: 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9\n  0x0000802a0a00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9\n=>0x0000802a0a10: f9 f9 f9[f9]00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Heap right redzone:      fb\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack partial redzone:   f4\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==7==ABORTING\n"]
+Updated xlsx
+Docker image 'fig-new-img' built successfully.
+[INFO] Container 'fig-container' is already running.
+Running PoC...
+Generating test traffic...
+[ERROR] Command failed: ./fig2dev-3.2.7b/fig2dev/fig2dev -L ptk test-poc.fig
+=================================================================
+==7==ERROR: AddressSanitizer: global-buffer-overflow on address 0x00000154509f at pc 0x000000500a96 bp 0x7ffecd2b1190 sp 0x7ffecd2b1188
+READ of size 1 at 0x00000154509f thread T0
+    #0 0x500a95  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95)
+    #1 0x4ff5b6  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4ff5b6)
+    #2 0x4f98d8  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4f98d8)
+    #3 0x71c57bbef83f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+    #4 0x419618  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x419618)
+
+0x00000154509f is located 1 bytes to the left of global variable 'buf' defined in 'read.c:81:14' (0x15450a0) of size 8192
+0x00000154509f is located 191 bytes to the right of global variable 'comments' defined in 'read.c:83:14' (0x1544cc0) of size 800
+SUMMARY: AddressSanitizer: global-buffer-overflow (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95) 
+Shadow bytes around the buggy address:
+  0x0000802a09c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09f0: 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9
+  0x0000802a0a00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+=>0x0000802a0a10: f9 f9 f9[f9]00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Heap right redzone:      fb
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack partial redzone:   f4
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==7==ABORTING
+
+Waiting for crash detection...
+
+=== fig Output ===
+=================================================================
+==7==ERROR: AddressSanitizer: global-buffer-overflow on address 0x00000154509f at pc 0x000000500a96 bp 0x7ffecd2b1190 sp 0x7ffecd2b1188
+READ of size 1 at 0x00000154509f thread T0
+    #0 0x500a95  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95)
+    #1 0x4ff5b6  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4ff5b6)
+    #2 0x4f98d8  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4f98d8)
+    #3 0x71c57bbef83f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+    #4 0x419618  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x419618)
+
+0x00000154509f is located 1 bytes to the left of global variable 'buf' defined in 'read.c:81:14' (0x15450a0) of size 8192
+0x00000154509f is located 191 bytes to the right of global variable 'comments' defined in 'read.c:83:14' (0x1544cc0) of size 800
+SUMMARY: AddressSanitizer: global-buffer-overflow (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95) 
+Shadow bytes around the buggy address:
+  0x0000802a09c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09f0: 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9
+  0x0000802a0a00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+=>0x0000802a0a10: f9 f9 f9[f9]00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Heap right redzone:      fb
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack partial redzone:   f4
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==7==ABORTING
+
+
+Crash Detected: True
+Cleaning up...
+Container 'fig-container' is running. Stopping it...
+Added new row: [7, '2020-21676', 'genpstrx_text', True, 'fig2dev-3.2.7b', '#FIG 3.2\nLandscape\nCenter\nInches\nLetter\n100\nSingle\n-1\n# \n1200 2\n\n2 1 0 1 0 7 32 -1 2147483646 0 0 0 -1 1 1 5\n1 0 1.00 45.0 0\n5 0 1.00 6 0.', 'global-buffer-overflow', 'fig2dev+0x500a95 (read.c:81)', 'Read', '−1 byte (1 byte before buf)', '1 byte', "\n =================================================================\n==7==ERROR: AddressSanitizer: global-buffer-overflow on address 0x00000154509f at pc 0x000000500a96 bp 0x7ffecd2b1190 sp 0x7ffecd2b1188\nREAD of size 1 at 0x00000154509f thread T0\n    #0 0x500a95  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95)\n    #1 0x4ff5b6  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4ff5b6)\n    #2 0x4f98d8  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4f98d8)\n    #3 0x71c57bbef83f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)\n    #4 0x419618  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x419618)\n\n0x00000154509f is located 1 bytes to the left of global variable 'buf' defined in 'read.c:81:14' (0x15450a0) of size 8192\n0x00000154509f is located 191 bytes to the right of global variable 'comments' defined in 'read.c:83:14' (0x1544cc0) of size 800\nSUMMARY: AddressSanitizer: global-buffer-overflow (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95) \nShadow bytes around the buggy address:\n  0x0000802a09c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a09d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a09e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a09f0: 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9\n  0x0000802a0a00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9\n=>0x0000802a0a10: f9 f9 f9[f9]00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Heap right redzone:      fb\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack partial redzone:   f4\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==7==ABORTING\n"]
+Updated xlsx
+Docker image 'fig-new-img' built successfully.
+[INFO] Container 'fig-container' is already running.
+Running PoC...
+Generating test traffic...
+[ERROR] Command failed: ./fig2dev-3.2.7b/fig2dev/fig2dev -L ptk test-poc.fig
+=================================================================
+==7==ERROR: AddressSanitizer: global-buffer-overflow on address 0x00000154509f at pc 0x000000500a96 bp 0x7ffd4a0f5e90 sp 0x7ffd4a0f5e88
+READ of size 1 at 0x00000154509f thread T0
+    #0 0x500a95  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95)
+    #1 0x4ff5b6  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4ff5b6)
+    #2 0x4f98d8  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4f98d8)
+    #3 0x7a028675383f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+    #4 0x419618  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x419618)
+
+0x00000154509f is located 1 bytes to the left of global variable 'buf' defined in 'read.c:81:14' (0x15450a0) of size 8192
+0x00000154509f is located 191 bytes to the right of global variable 'comments' defined in 'read.c:83:14' (0x1544cc0) of size 800
+SUMMARY: AddressSanitizer: global-buffer-overflow (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95) 
+Shadow bytes around the buggy address:
+  0x0000802a09c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09f0: 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9
+  0x0000802a0a00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+=>0x0000802a0a10: f9 f9 f9[f9]00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Heap right redzone:      fb
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack partial redzone:   f4
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==7==ABORTING
+
+Waiting for crash detection...
+
+=== fig Output ===
+=================================================================
+==7==ERROR: AddressSanitizer: global-buffer-overflow on address 0x00000154509f at pc 0x000000500a96 bp 0x7ffd4a0f5e90 sp 0x7ffd4a0f5e88
+READ of size 1 at 0x00000154509f thread T0
+    #0 0x500a95  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95)
+    #1 0x4ff5b6  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4ff5b6)
+    #2 0x4f98d8  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4f98d8)
+    #3 0x7a028675383f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+    #4 0x419618  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x419618)
+
+0x00000154509f is located 1 bytes to the left of global variable 'buf' defined in 'read.c:81:14' (0x15450a0) of size 8192
+0x00000154509f is located 191 bytes to the right of global variable 'comments' defined in 'read.c:83:14' (0x1544cc0) of size 800
+SUMMARY: AddressSanitizer: global-buffer-overflow (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95) 
+Shadow bytes around the buggy address:
+  0x0000802a09c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09f0: 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9
+  0x0000802a0a00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+=>0x0000802a0a10: f9 f9 f9[f9]00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Heap right redzone:      fb
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack partial redzone:   f4
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==7==ABORTING
+
+
+Crash Detected: True
+Cleaning up...
+Container 'fig-container' is running. Stopping it...
+Added new row: [1, '2020-21675', 'genptk_text', True, 'fig2dev-3.2.7b', '#FIG 3.2\nLandscape\nCenter\nMetric\nLetter\n100\nSingle\n-1\n1200 2\n\n1 0 0 50 -50 0 0 0 2147483647 0.0000 4 135 30 450 450 450 450 \npolyline\n 0 0 100 100 200 200 300 300 400 400 500 500 \n\nA"*"x.', 'global-buffer-overflow', 'fig2dev+0x500a95 (read.c:81)', 'Read', '−1 byte (1 byte before buf)', '1 byte', "\n =================================================================\n==7==ERROR: AddressSanitizer: global-buffer-overflow on address 0x00000154509f at pc 0x000000500a96 bp 0x7ffd4a0f5e90 sp 0x7ffd4a0f5e88\nREAD of size 1 at 0x00000154509f thread T0\n    #0 0x500a95  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95)\n    #1 0x4ff5b6  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4ff5b6)\n    #2 0x4f98d8  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4f98d8)\n    #3 0x7a028675383f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)\n    #4 0x419618  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x419618)\n\n0x00000154509f is located 1 bytes to the left of global variable 'buf' defined in 'read.c:81:14' (0x15450a0) of size 8192\n0x00000154509f is located 191 bytes to the right of global variable 'comments' defined in 'read.c:83:14' (0x1544cc0) of size 800\nSUMMARY: AddressSanitizer: global-buffer-overflow (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95) \nShadow bytes around the buggy address:\n  0x0000802a09c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a09d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a09e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a09f0: 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9\n  0x0000802a0a00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9\n=>0x0000802a0a10: f9 f9 f9[f9]00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Heap right redzone:      fb\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack partial redzone:   f4\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==7==ABORTING\n"]
+Updated xlsx
+Docker image 'fig-new-img' built successfully.
+[INFO] Container 'fig-container' is already running.
+Running PoC...
+Generating test traffic...
+[ERROR] Command failed: ./fig2dev-3.2.7b/fig2dev/fig2dev -L ptk test-poc.fig
+=================================================================
+==7==ERROR: AddressSanitizer: global-buffer-overflow on address 0x00000154509f at pc 0x000000500a96 bp 0x7ffc434f6c70 sp 0x7ffc434f6c68
+READ of size 1 at 0x00000154509f thread T0
+    #0 0x500a95  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95)
+    #1 0x4ff5b6  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4ff5b6)
+    #2 0x4f98d8  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4f98d8)
+    #3 0x7d3fdb4c783f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+    #4 0x419618  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x419618)
+
+0x00000154509f is located 1 bytes to the left of global variable 'buf' defined in 'read.c:81:14' (0x15450a0) of size 8192
+0x00000154509f is located 191 bytes to the right of global variable 'comments' defined in 'read.c:83:14' (0x1544cc0) of size 800
+SUMMARY: AddressSanitizer: global-buffer-overflow (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95) 
+Shadow bytes around the buggy address:
+  0x0000802a09c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09f0: 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9
+  0x0000802a0a00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+=>0x0000802a0a10: f9 f9 f9[f9]00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Heap right redzone:      fb
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack partial redzone:   f4
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==7==ABORTING
+
+Waiting for crash detection...
+
+=== fig Output ===
+=================================================================
+==7==ERROR: AddressSanitizer: global-buffer-overflow on address 0x00000154509f at pc 0x000000500a96 bp 0x7ffc434f6c70 sp 0x7ffc434f6c68
+READ of size 1 at 0x00000154509f thread T0
+    #0 0x500a95  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95)
+    #1 0x4ff5b6  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4ff5b6)
+    #2 0x4f98d8  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4f98d8)
+    #3 0x7d3fdb4c783f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+    #4 0x419618  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x419618)
+
+0x00000154509f is located 1 bytes to the left of global variable 'buf' defined in 'read.c:81:14' (0x15450a0) of size 8192
+0x00000154509f is located 191 bytes to the right of global variable 'comments' defined in 'read.c:83:14' (0x1544cc0) of size 800
+SUMMARY: AddressSanitizer: global-buffer-overflow (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95) 
+Shadow bytes around the buggy address:
+  0x0000802a09c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09f0: 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9
+  0x0000802a0a00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+=>0x0000802a0a10: f9 f9 f9[f9]00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Heap right redzone:      fb
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack partial redzone:   f4
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==7==ABORTING
+
+
+Crash Detected: True
+Cleaning up...
+Container 'fig-container' is running. Stopping it...
+Added new row: [2, '2020-21675', 'genptk_text', True, 'fig2dev-3.2.7b', '#FIG 3.2\nLandscape\nCenter\nMetric\nLetter\n100\nSingle\n-1\n1200 2\n\n1 0 0 50 -50 0 0 0 2147483647 0.0000 4 135 30 450 450 450 450 \npolyline\n 0 0 100 100 200 200 300 300 400 400 500 500 \n\nA"*"x.', 'global-buffer-overflow', 'fig2dev+0x500a95 (read.c:81)', 'Read', '−1 byte (1 byte before buf)', '1 byte', "\n =================================================================\n==7==ERROR: AddressSanitizer: global-buffer-overflow on address 0x00000154509f at pc 0x000000500a96 bp 0x7ffc434f6c70 sp 0x7ffc434f6c68\nREAD of size 1 at 0x00000154509f thread T0\n    #0 0x500a95  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95)\n    #1 0x4ff5b6  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4ff5b6)\n    #2 0x4f98d8  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4f98d8)\n    #3 0x7d3fdb4c783f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)\n    #4 0x419618  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x419618)\n\n0x00000154509f is located 1 bytes to the left of global variable 'buf' defined in 'read.c:81:14' (0x15450a0) of size 8192\n0x00000154509f is located 191 bytes to the right of global variable 'comments' defined in 'read.c:83:14' (0x1544cc0) of size 800\nSUMMARY: AddressSanitizer: global-buffer-overflow (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95) \nShadow bytes around the buggy address:\n  0x0000802a09c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a09d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a09e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a09f0: 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9\n  0x0000802a0a00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9\n=>0x0000802a0a10: f9 f9 f9[f9]00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Heap right redzone:      fb\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack partial redzone:   f4\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==7==ABORTING\n"]
+Updated xlsx
+Docker image 'fig-new-img' built successfully.
+[INFO] Container 'fig-container' is already running.
+Running PoC...
+Generating test traffic...
+[ERROR] Command failed: ./fig2dev-3.2.7b/fig2dev/fig2dev -L ptk test-poc.fig
+Incorrect format in the first line in input file
+
+[ERROR] Command failed: ./fig2dev-3.2.7b/fig2dev/fig2dev -L pstricks test-poc.fig
+Incorrect format in the first line in input file
+
+Waiting for crash detection...
+
+=== fig Output ===
+Incorrect format in the first line in input file
+
+
+Crash Detected: False
+Cleaning up...
+Container 'fig-container' is running. Stopping it...
+Added new row: [3, '2020-21675', 'genptk_text', False, 'fig2dev-3.2.7b', 'FIG 3.2\nLandscape\nCenter\nMetric\nLetter\n100\nSingle\n-1\n1200 2\n\n1 0 0 50 -50 0 0 0 2147483647 0.0000 4 135 30 450 450 450 450 \n polyline\n 0 0 100 100 200 200 300 300 400 400 500 500 \n\nA"*"x.', 'global-buffer-overflow', 'fig2dev+0x500a95 (read.c:81)', 'Read', '−1 byte (1 byte before buf)', '1 byte', '\n Incorrect format in the first line in input file\n']
+Updated xlsx
+Docker image 'fig-new-img' built successfully.
+[INFO] Container 'fig-container' is already running.
+Running PoC...
+Generating test traffic...
+[ERROR] Command failed: ./fig2dev-3.2.7b/fig2dev/fig2dev -L ptk test-poc.fig
+=================================================================
+==7==ERROR: AddressSanitizer: global-buffer-overflow on address 0x00000154509f at pc 0x000000500a96 bp 0x7ffd5714b450 sp 0x7ffd5714b448
+READ of size 1 at 0x00000154509f thread T0
+    #0 0x500a95  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95)
+    #1 0x4ff5b6  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4ff5b6)
+    #2 0x4f98d8  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4f98d8)
+    #3 0x78e5f75a583f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+    #4 0x419618  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x419618)
+
+0x00000154509f is located 1 bytes to the left of global variable 'buf' defined in 'read.c:81:14' (0x15450a0) of size 8192
+0x00000154509f is located 191 bytes to the right of global variable 'comments' defined in 'read.c:83:14' (0x1544cc0) of size 800
+SUMMARY: AddressSanitizer: global-buffer-overflow (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95) 
+Shadow bytes around the buggy address:
+  0x0000802a09c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09f0: 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9
+  0x0000802a0a00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+=>0x0000802a0a10: f9 f9 f9[f9]00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Heap right redzone:      fb
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack partial redzone:   f4
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==7==ABORTING
+
+Waiting for crash detection...
+
+=== fig Output ===
+=================================================================
+==7==ERROR: AddressSanitizer: global-buffer-overflow on address 0x00000154509f at pc 0x000000500a96 bp 0x7ffd5714b450 sp 0x7ffd5714b448
+READ of size 1 at 0x00000154509f thread T0
+    #0 0x500a95  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95)
+    #1 0x4ff5b6  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4ff5b6)
+    #2 0x4f98d8  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4f98d8)
+    #3 0x78e5f75a583f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+    #4 0x419618  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x419618)
+
+0x00000154509f is located 1 bytes to the left of global variable 'buf' defined in 'read.c:81:14' (0x15450a0) of size 8192
+0x00000154509f is located 191 bytes to the right of global variable 'comments' defined in 'read.c:83:14' (0x1544cc0) of size 800
+SUMMARY: AddressSanitizer: global-buffer-overflow (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95) 
+Shadow bytes around the buggy address:
+  0x0000802a09c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09f0: 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9
+  0x0000802a0a00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+=>0x0000802a0a10: f9 f9 f9[f9]00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Heap right redzone:      fb
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack partial redzone:   f4
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==7==ABORTING
+
+
+Crash Detected: True
+Cleaning up...
+Container 'fig-container' is running. Stopping it...
+Added new row: [4, '2020-21675', 'genptk_text', True, 'fig2dev-3.2.7b', '#FIG 3.2\nLandscape\nCenter\nMetric\nLetter\n100\nSingle\n-1\n1200 2\n\n1 0 0 50 -50 0 0 0 2147483647 0.0000 4 135 30 450 450 450 450 \npolyline\n 0 0 100 100 \n\nA"*"x.', 'global-buffer-overflow', 'fig2dev+0x500a95 (read.c:81)', 'Read', '−1 byte (1 byte before buf)', '1 byte', "\n =================================================================\n==7==ERROR: AddressSanitizer: global-buffer-overflow on address 0x00000154509f at pc 0x000000500a96 bp 0x7ffd5714b450 sp 0x7ffd5714b448\nREAD of size 1 at 0x00000154509f thread T0\n    #0 0x500a95  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95)\n    #1 0x4ff5b6  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4ff5b6)\n    #2 0x4f98d8  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4f98d8)\n    #3 0x78e5f75a583f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)\n    #4 0x419618  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x419618)\n\n0x00000154509f is located 1 bytes to the left of global variable 'buf' defined in 'read.c:81:14' (0x15450a0) of size 8192\n0x00000154509f is located 191 bytes to the right of global variable 'comments' defined in 'read.c:83:14' (0x1544cc0) of size 800\nSUMMARY: AddressSanitizer: global-buffer-overflow (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95) \nShadow bytes around the buggy address:\n  0x0000802a09c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a09d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a09e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a09f0: 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9\n  0x0000802a0a00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9\n=>0x0000802a0a10: f9 f9 f9[f9]00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Heap right redzone:      fb\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack partial redzone:   f4\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==7==ABORTING\n"]
+Updated xlsx
+Docker image 'fig-new-img' built successfully.
+[INFO] Container 'fig-container' is already running.
+Running PoC...
+Generating test traffic...
+[ERROR] Command failed: ./fig2dev-3.2.7b/fig2dev/fig2dev -L ptk test-poc.fig
+=================================================================
+==7==ERROR: AddressSanitizer: global-buffer-overflow on address 0x00000154509f at pc 0x000000500a96 bp 0x7fff8b2b20d0 sp 0x7fff8b2b20c8
+READ of size 1 at 0x00000154509f thread T0
+    #0 0x500a95  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95)
+    #1 0x4ff5b6  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4ff5b6)
+    #2 0x4f98d8  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4f98d8)
+    #3 0x77f391e5583f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+    #4 0x419618  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x419618)
+
+0x00000154509f is located 1 bytes to the left of global variable 'buf' defined in 'read.c:81:14' (0x15450a0) of size 8192
+0x00000154509f is located 191 bytes to the right of global variable 'comments' defined in 'read.c:83:14' (0x1544cc0) of size 800
+SUMMARY: AddressSanitizer: global-buffer-overflow (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95) 
+Shadow bytes around the buggy address:
+  0x0000802a09c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09f0: 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9
+  0x0000802a0a00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+=>0x0000802a0a10: f9 f9 f9[f9]00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Heap right redzone:      fb
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack partial redzone:   f4
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==7==ABORTING
+
+Waiting for crash detection...
+
+=== fig Output ===
+=================================================================
+==7==ERROR: AddressSanitizer: global-buffer-overflow on address 0x00000154509f at pc 0x000000500a96 bp 0x7fff8b2b20d0 sp 0x7fff8b2b20c8
+READ of size 1 at 0x00000154509f thread T0
+    #0 0x500a95  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95)
+    #1 0x4ff5b6  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4ff5b6)
+    #2 0x4f98d8  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4f98d8)
+    #3 0x77f391e5583f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+    #4 0x419618  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x419618)
+
+0x00000154509f is located 1 bytes to the left of global variable 'buf' defined in 'read.c:81:14' (0x15450a0) of size 8192
+0x00000154509f is located 191 bytes to the right of global variable 'comments' defined in 'read.c:83:14' (0x1544cc0) of size 800
+SUMMARY: AddressSanitizer: global-buffer-overflow (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95) 
+Shadow bytes around the buggy address:
+  0x0000802a09c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09f0: 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9
+  0x0000802a0a00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+=>0x0000802a0a10: f9 f9 f9[f9]00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Heap right redzone:      fb
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack partial redzone:   f4
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==7==ABORTING
+
+
+Crash Detected: True
+Cleaning up...
+Container 'fig-container' is running. Stopping it...
+Added new row: [5, '2020-21675', 'genptk_text', True, 'fig2dev-3.2.7b', '#FIG 3.2\nLandscape\nCenter\nMetric\nLetter\n100\nSingle\n-1\n1200 2\n\n1 0 0 50 -50 0 0 0 2147483647 0.0000 4 135 30 450 450 450 450 \npolyline\n 0 0 100 100 \n\nA"*"x.', 'global-buffer-overflow', 'fig2dev+0x500a95 (read.c:81)', 'Read', '−1 byte (1 byte before buf)', '1 byte', "\n =================================================================\n==7==ERROR: AddressSanitizer: global-buffer-overflow on address 0x00000154509f at pc 0x000000500a96 bp 0x7fff8b2b20d0 sp 0x7fff8b2b20c8\nREAD of size 1 at 0x00000154509f thread T0\n    #0 0x500a95  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95)\n    #1 0x4ff5b6  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4ff5b6)\n    #2 0x4f98d8  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4f98d8)\n    #3 0x77f391e5583f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)\n    #4 0x419618  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x419618)\n\n0x00000154509f is located 1 bytes to the left of global variable 'buf' defined in 'read.c:81:14' (0x15450a0) of size 8192\n0x00000154509f is located 191 bytes to the right of global variable 'comments' defined in 'read.c:83:14' (0x1544cc0) of size 800\nSUMMARY: AddressSanitizer: global-buffer-overflow (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95) \nShadow bytes around the buggy address:\n  0x0000802a09c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a09d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a09e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a09f0: 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9\n  0x0000802a0a00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9\n=>0x0000802a0a10: f9 f9 f9[f9]00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Heap right redzone:      fb\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack partial redzone:   f4\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==7==ABORTING\n"]
+Updated xlsx
+Docker image 'fig-new-img' built successfully.
+[INFO] Container 'fig-container' is already running.
+Running PoC...
+Generating test traffic...
+[ERROR] Command failed: ./fig2dev-3.2.7b/fig2dev/fig2dev -L ptk test-poc.fig
+=================================================================
+==7==ERROR: AddressSanitizer: global-buffer-overflow on address 0x00000154509f at pc 0x000000500a96 bp 0x7ffd23ef8d90 sp 0x7ffd23ef8d88
+READ of size 1 at 0x00000154509f thread T0
+    #0 0x500a95  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95)
+    #1 0x4ff5b6  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4ff5b6)
+    #2 0x4f98d8  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4f98d8)
+    #3 0x7be2c1ffe83f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+    #4 0x419618  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x419618)
+
+0x00000154509f is located 1 bytes to the left of global variable 'buf' defined in 'read.c:81:14' (0x15450a0) of size 8192
+0x00000154509f is located 191 bytes to the right of global variable 'comments' defined in 'read.c:83:14' (0x1544cc0) of size 800
+SUMMARY: AddressSanitizer: global-buffer-overflow (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95) 
+Shadow bytes around the buggy address:
+  0x0000802a09c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09f0: 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9
+  0x0000802a0a00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+=>0x0000802a0a10: f9 f9 f9[f9]00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Heap right redzone:      fb
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack partial redzone:   f4
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==7==ABORTING
+
+Waiting for crash detection...
+
+=== fig Output ===
+=================================================================
+==7==ERROR: AddressSanitizer: global-buffer-overflow on address 0x00000154509f at pc 0x000000500a96 bp 0x7ffd23ef8d90 sp 0x7ffd23ef8d88
+READ of size 1 at 0x00000154509f thread T0
+    #0 0x500a95  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95)
+    #1 0x4ff5b6  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4ff5b6)
+    #2 0x4f98d8  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4f98d8)
+    #3 0x7be2c1ffe83f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+    #4 0x419618  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x419618)
+
+0x00000154509f is located 1 bytes to the left of global variable 'buf' defined in 'read.c:81:14' (0x15450a0) of size 8192
+0x00000154509f is located 191 bytes to the right of global variable 'comments' defined in 'read.c:83:14' (0x1544cc0) of size 800
+SUMMARY: AddressSanitizer: global-buffer-overflow (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95) 
+Shadow bytes around the buggy address:
+  0x0000802a09c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09f0: 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9
+  0x0000802a0a00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+=>0x0000802a0a10: f9 f9 f9[f9]00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Heap right redzone:      fb
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack partial redzone:   f4
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==7==ABORTING
+
+
+Crash Detected: True
+Cleaning up...
+Container 'fig-container' is running. Stopping it...
+Added new row: [6, '2020-21675', 'genptk_text', True, 'fig2dev-3.2.7b', '#FIG 3.2\nLandscape\nCenter\nMetric\nLetter\n100\nSingle\n-1\n1200 2\n\n1 0 0 50 -50 0 0 0 2147483647 0.0000 4 135 30 450 450 450 450 \npolyline\n 0 0 100 100 \n\nA"*"x.', 'global-buffer-overflow', 'fig2dev+0x500a95 (read.c:81)', 'Read', '−1 byte (1 byte before buf)', '1 byte', "\n =================================================================\n==7==ERROR: AddressSanitizer: global-buffer-overflow on address 0x00000154509f at pc 0x000000500a96 bp 0x7ffd23ef8d90 sp 0x7ffd23ef8d88\nREAD of size 1 at 0x00000154509f thread T0\n    #0 0x500a95  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95)\n    #1 0x4ff5b6  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4ff5b6)\n    #2 0x4f98d8  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4f98d8)\n    #3 0x7be2c1ffe83f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)\n    #4 0x419618  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x419618)\n\n0x00000154509f is located 1 bytes to the left of global variable 'buf' defined in 'read.c:81:14' (0x15450a0) of size 8192\n0x00000154509f is located 191 bytes to the right of global variable 'comments' defined in 'read.c:83:14' (0x1544cc0) of size 800\nSUMMARY: AddressSanitizer: global-buffer-overflow (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95) \nShadow bytes around the buggy address:\n  0x0000802a09c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a09d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a09e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a09f0: 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9\n  0x0000802a0a00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9\n=>0x0000802a0a10: f9 f9 f9[f9]00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Heap right redzone:      fb\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack partial redzone:   f4\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==7==ABORTING\n"]
+Updated xlsx
+Docker image 'fig-new-img' built successfully.
+[INFO] Container 'fig-container' is already running.
+Running PoC...
+Generating test traffic...
+[ERROR] Command failed: ./fig2dev-3.2.7b/fig2dev/fig2dev -L ptk test-poc.fig
+=================================================================
+==7==ERROR: AddressSanitizer: global-buffer-overflow on address 0x00000154509f at pc 0x000000500a96 bp 0x7ffc165ff490 sp 0x7ffc165ff488
+READ of size 1 at 0x00000154509f thread T0
+    #0 0x500a95  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95)
+    #1 0x4ff5b6  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4ff5b6)
+    #2 0x4f98d8  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4f98d8)
+    #3 0x72c93ed6a83f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+    #4 0x419618  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x419618)
+
+0x00000154509f is located 1 bytes to the left of global variable 'buf' defined in 'read.c:81:14' (0x15450a0) of size 8192
+0x00000154509f is located 191 bytes to the right of global variable 'comments' defined in 'read.c:83:14' (0x1544cc0) of size 800
+SUMMARY: AddressSanitizer: global-buffer-overflow (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95) 
+Shadow bytes around the buggy address:
+  0x0000802a09c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09f0: 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9
+  0x0000802a0a00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+=>0x0000802a0a10: f9 f9 f9[f9]00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Heap right redzone:      fb
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack partial redzone:   f4
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==7==ABORTING
+
+Waiting for crash detection...
+
+=== fig Output ===
+=================================================================
+==7==ERROR: AddressSanitizer: global-buffer-overflow on address 0x00000154509f at pc 0x000000500a96 bp 0x7ffc165ff490 sp 0x7ffc165ff488
+READ of size 1 at 0x00000154509f thread T0
+    #0 0x500a95  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95)
+    #1 0x4ff5b6  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4ff5b6)
+    #2 0x4f98d8  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4f98d8)
+    #3 0x72c93ed6a83f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+    #4 0x419618  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x419618)
+
+0x00000154509f is located 1 bytes to the left of global variable 'buf' defined in 'read.c:81:14' (0x15450a0) of size 8192
+0x00000154509f is located 191 bytes to the right of global variable 'comments' defined in 'read.c:83:14' (0x1544cc0) of size 800
+SUMMARY: AddressSanitizer: global-buffer-overflow (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95) 
+Shadow bytes around the buggy address:
+  0x0000802a09c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a09f0: 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9
+  0x0000802a0a00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+=>0x0000802a0a10: f9 f9 f9[f9]00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0000802a0a60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Heap right redzone:      fb
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack partial redzone:   f4
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==7==ABORTING
+
+
+Crash Detected: True
+Cleaning up...
+Container 'fig-container' is running. Stopping it...
+Added new row: [7, '2020-21675', 'genptk_text', True, 'fig2dev-3.2.7b', '#FIG 3.2\nLandscape\nCenter\nMetric\nLetter\n100\nSingle\n-1\n1200 2\n\n1 0 0 50 -50 0 0 0 2147483647 0.0000 4 135 30 450 450 450 450 \npolyline\n 0 0 100 100 200 200 300 300 400 400 500 500 \n\nA"*"x.', 'global-buffer-overflow', 'fig2dev+0x500a95 (read.c:81)', 'Read', '−1 byte (1 byte before buf)', '1 byte', "\n =================================================================\n==7==ERROR: AddressSanitizer: global-buffer-overflow on address 0x00000154509f at pc 0x000000500a96 bp 0x7ffc165ff490 sp 0x7ffc165ff488\nREAD of size 1 at 0x00000154509f thread T0\n    #0 0x500a95  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95)\n    #1 0x4ff5b6  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4ff5b6)\n    #2 0x4f98d8  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x4f98d8)\n    #3 0x72c93ed6a83f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)\n    #4 0x419618  (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x419618)\n\n0x00000154509f is located 1 bytes to the left of global variable 'buf' defined in 'read.c:81:14' (0x15450a0) of size 8192\n0x00000154509f is located 191 bytes to the right of global variable 'comments' defined in 'read.c:83:14' (0x1544cc0) of size 800\nSUMMARY: AddressSanitizer: global-buffer-overflow (/test/fig2dev-3.2.7b/fig2dev/fig2dev+0x500a95) \nShadow bytes around the buggy address:\n  0x0000802a09c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a09d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a09e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a09f0: 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9\n  0x0000802a0a00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9\n=>0x0000802a0a10: f9 f9 f9[f9]00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x0000802a0a60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Heap right redzone:      fb\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack partial redzone:   f4\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n==7==ABORTING\n"]
+Updated xlsx
+Docker image 'fig-new-img' built successfully.
+[INFO] Container 'fig-container' is already running.
+Running PoC...
+Generating test traffic...
+[ERROR] Command failed: ./fig2dev-3.2.7a/fig2dev/fig2dev -L tikz test-poc.fig
+Incomplete compound object at line 12.
+
+=================================================================
+==8==ERROR: LeakSanitizer: detected memory leaks
+
+Direct leak of 16 byte(s) in 1 object(s) allocated from:
+    #0 0x4b96e8  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4b96e8)
+    #1 0x500947  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x500947)
+    #2 0x508313  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x508313)
+    #3 0x4ff95e  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4ff95e)
+    #4 0x4f9958  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4f9958)
+    #5 0x7836732a183f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+
+Indirect leak of 17 byte(s) in 1 object(s) allocated from:
+    #0 0x4b96e8  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4b96e8)
+    #1 0x500998  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x500998)
+    #2 0x508313  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x508313)
+    #3 0x4ff95e  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4ff95e)
+    #4 0x4f9958  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4f9958)
+    #5 0x7836732a183f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+
+SUMMARY: AddressSanitizer: 33 byte(s) leaked in 2 allocation(s).
+
+Waiting for crash detection...
+
+=== fig Output ===
+Incomplete compound object at line 12.
+
+=================================================================
+==8==ERROR: LeakSanitizer: detected memory leaks
+
+Direct leak of 16 byte(s) in 1 object(s) allocated from:
+    #0 0x4b96e8  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4b96e8)
+    #1 0x500947  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x500947)
+    #2 0x508313  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x508313)
+    #3 0x4ff95e  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4ff95e)
+    #4 0x4f9958  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4f9958)
+    #5 0x7836732a183f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+
+Indirect leak of 17 byte(s) in 1 object(s) allocated from:
+    #0 0x4b96e8  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4b96e8)
+    #1 0x500998  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x500998)
+    #2 0x508313  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x508313)
+    #3 0x4ff95e  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4ff95e)
+    #4 0x4f9958  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4f9958)
+    #5 0x7836732a183f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+
+SUMMARY: AddressSanitizer: 33 byte(s) leaked in 2 allocation(s).
+
+
+Crash Detected: True
+Cleaning up...
+Container 'fig-container' is running. Stopping it...
+Added new row: [1, '2021-3561', 'read_objects', True, 'fig2dev-3.2.7a', '#FIG 3.2\nLandscape\nCenter\nMetric\nA4\n100\nSingle\n-1\n1200 2\n# Optional comment\n\n6  # Compound object\n10 20 30 40  # Bounding box coordinates (upper-left and lower-right)\n\n1  # Ellipse object\n2147483647  # Wrap-around number of points\n10  # Line thickness (1/80 inch)\n7  # White pen color\n-1  # No fill\n0.1  # Style value for dash/dotted lines\n1  # Direction (always 1)\n3.14  # Angle in radians\n100 200  # Center of the ellipse (x, y)\n300 400  # Radii (x, y)\n\n-6  # End of compound object.', 'global-buffer-overflow', 'fig2dev+0x5008fe  (read.c:81) ', 'Read', '−1 byte (1 byte before buf)', '1 byte', '\n Incomplete compound object at line 12.\n\n=================================================================\n==8==ERROR: LeakSanitizer: detected memory leaks\n\nDirect leak of 16 byte(s) in 1 object(s) allocated from:\n    #0 0x4b96e8  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4b96e8)\n    #1 0x500947  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x500947)\n    #2 0x508313  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x508313)\n    #3 0x4ff95e  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4ff95e)\n    #4 0x4f9958  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4f9958)\n    #5 0x7836732a183f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)\n\nIndirect leak of 17 byte(s) in 1 object(s) allocated from:\n    #0 0x4b96e8  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4b96e8)\n    #1 0x500998  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x500998)\n    #2 0x508313  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x508313)\n    #3 0x4ff95e  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4ff95e)\n    #4 0x4f9958  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4f9958)\n    #5 0x7836732a183f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)\n\nSUMMARY: AddressSanitizer: 33 byte(s) leaked in 2 allocation(s).\n']
+Updated xlsx
+Docker image 'fig-new-img' built successfully.
+[INFO] Container 'fig-container' is already running.
+Running PoC...
+Generating test traffic...
+[ERROR] Command failed: ./fig2dev-3.2.7a/fig2dev/fig2dev -L tikz test-poc.fig
+Incomplete compound object at line 12.
+
+=================================================================
+==7==ERROR: LeakSanitizer: detected memory leaks
+
+Direct leak of 16 byte(s) in 1 object(s) allocated from:
+    #0 0x4b96e8  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4b96e8)
+    #1 0x500947  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x500947)
+    #2 0x508313  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x508313)
+    #3 0x4ff95e  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4ff95e)
+    #4 0x4f9958  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4f9958)
+    #5 0x731edaf8d83f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+
+Indirect leak of 17 byte(s) in 1 object(s) allocated from:
+    #0 0x4b96e8  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4b96e8)
+    #1 0x500998  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x500998)
+    #2 0x508313  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x508313)
+    #3 0x4ff95e  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4ff95e)
+    #4 0x4f9958  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4f9958)
+    #5 0x731edaf8d83f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+
+SUMMARY: AddressSanitizer: 33 byte(s) leaked in 2 allocation(s).
+
+Waiting for crash detection...
+
+=== fig Output ===
+Incomplete compound object at line 12.
+
+=================================================================
+==7==ERROR: LeakSanitizer: detected memory leaks
+
+Direct leak of 16 byte(s) in 1 object(s) allocated from:
+    #0 0x4b96e8  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4b96e8)
+    #1 0x500947  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x500947)
+    #2 0x508313  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x508313)
+    #3 0x4ff95e  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4ff95e)
+    #4 0x4f9958  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4f9958)
+    #5 0x731edaf8d83f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+
+Indirect leak of 17 byte(s) in 1 object(s) allocated from:
+    #0 0x4b96e8  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4b96e8)
+    #1 0x500998  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x500998)
+    #2 0x508313  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x508313)
+    #3 0x4ff95e  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4ff95e)
+    #4 0x4f9958  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4f9958)
+    #5 0x731edaf8d83f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+
+SUMMARY: AddressSanitizer: 33 byte(s) leaked in 2 allocation(s).
+
+
+Crash Detected: True
+Cleaning up...
+Container 'fig-container' is running. Stopping it...
+Added new row: [2, '2021-3561', 'read_objects', True, 'fig2dev-3.2.7a', '#FIG 3.2\nLandscape\nCenter\nMetric\nA4\n100\nSingle\n-1\n1200 2\n# Optional comment\n\n6  # Compound object\n10 20 30 40  # Bounding box coordinates (upper-left and lower-right)\n\n1  # Ellipse object\n1  # Subtype: ellipse defined by radii\n1  # Solid line style\n2147483647  # Line thickness (1/80 inch) - near 2^31-1\n7  # White pen color\n-1  # No fill\n0.1  # Style value for dash/dotted lines\n1  # Direction (always 1)\n3.14  # Angle in radians\n100 200  # Center of the ellipse (x, y)\n300 400  # Radii (x, y)\n\n-6  # End of compound object.', 'global-buffer-overflow', 'fig2dev+0x5008fe  (read.c:81) ', 'Read', '−1 byte (1 byte before buf)', '1 byte', '\n Incomplete compound object at line 12.\n\n=================================================================\n==7==ERROR: LeakSanitizer: detected memory leaks\n\nDirect leak of 16 byte(s) in 1 object(s) allocated from:\n    #0 0x4b96e8  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4b96e8)\n    #1 0x500947  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x500947)\n    #2 0x508313  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x508313)\n    #3 0x4ff95e  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4ff95e)\n    #4 0x4f9958  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4f9958)\n    #5 0x731edaf8d83f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)\n\nIndirect leak of 17 byte(s) in 1 object(s) allocated from:\n    #0 0x4b96e8  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4b96e8)\n    #1 0x500998  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x500998)\n    #2 0x508313  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x508313)\n    #3 0x4ff95e  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4ff95e)\n    #4 0x4f9958  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4f9958)\n    #5 0x731edaf8d83f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)\n\nSUMMARY: AddressSanitizer: 33 byte(s) leaked in 2 allocation(s).\n']
+Updated xlsx
+Docker image 'fig-new-img' built successfully.
+[INFO] Container 'fig-container' is already running.
+Running PoC...
+Generating test traffic...
+[ERROR] Command failed: ./fig2dev-3.2.7a/fig2dev/fig2dev -L tikz test-poc.fig
+Incomplete compound object at line 12.
+
+=================================================================
+==7==ERROR: LeakSanitizer: detected memory leaks
+
+Direct leak of 16 byte(s) in 1 object(s) allocated from:
+    #0 0x4b96e8  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4b96e8)
+    #1 0x500947  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x500947)
+    #2 0x508313  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x508313)
+    #3 0x4ff95e  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4ff95e)
+    #4 0x4f9958  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4f9958)
+    #5 0x7bcc46a7183f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+
+Indirect leak of 17 byte(s) in 1 object(s) allocated from:
+    #0 0x4b96e8  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4b96e8)
+    #1 0x500998  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x500998)
+    #2 0x508313  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x508313)
+    #3 0x4ff95e  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4ff95e)
+    #4 0x4f9958  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4f9958)
+    #5 0x7bcc46a7183f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+
+SUMMARY: AddressSanitizer: 33 byte(s) leaked in 2 allocation(s).
+
+Waiting for crash detection...
+
+=== fig Output ===
+Incomplete compound object at line 12.
+
+=================================================================
+==7==ERROR: LeakSanitizer: detected memory leaks
+
+Direct leak of 16 byte(s) in 1 object(s) allocated from:
+    #0 0x4b96e8  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4b96e8)
+    #1 0x500947  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x500947)
+    #2 0x508313  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x508313)
+    #3 0x4ff95e  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4ff95e)
+    #4 0x4f9958  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4f9958)
+    #5 0x7bcc46a7183f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+
+Indirect leak of 17 byte(s) in 1 object(s) allocated from:
+    #0 0x4b96e8  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4b96e8)
+    #1 0x500998  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x500998)
+    #2 0x508313  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x508313)
+    #3 0x4ff95e  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4ff95e)
+    #4 0x4f9958  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4f9958)
+    #5 0x7bcc46a7183f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+
+SUMMARY: AddressSanitizer: 33 byte(s) leaked in 2 allocation(s).
+
+
+Crash Detected: True
+Cleaning up...
+Container 'fig-container' is running. Stopping it...
+Added new row: [3, '2021-3561', 'read_objects', True, 'fig2dev-3.2.7a', '#FIG 3.2\nLandscape\nCenter\nMetric\nA4\n100\nSingle\n-1\n1200 2\n# Optional comment\n\n6  # Compound object\n10 20 30 40  # Bounding box coordinates (upper-left and lower-right)\n\n1  # Ellipse object\n1  # Subtype: ellipse defined by radii\n1  # Solid line style\n10  # Line thickness (1/80 inch)\n7  # White pen color\n-1  # No fill\n0.1  # Style value for dash/dotted lines\n1  # Direction (always 1)\n3.14  # Angle in radians\n100 200  # Center of the ellipse (x, y)\n2147483646 400  # Radii (x, y)  // Edge case: Integer wrap-around\n\n-6  # End of compound object.', 'global-buffer-overflow', 'fig2dev+0x5008fe  (read.c:81) ', 'Read', '−1 byte (1 byte before buf)', '1 byte', '\n Incomplete compound object at line 12.\n\n=================================================================\n==7==ERROR: LeakSanitizer: detected memory leaks\n\nDirect leak of 16 byte(s) in 1 object(s) allocated from:\n    #0 0x4b96e8  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4b96e8)\n    #1 0x500947  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x500947)\n    #2 0x508313  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x508313)\n    #3 0x4ff95e  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4ff95e)\n    #4 0x4f9958  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4f9958)\n    #5 0x7bcc46a7183f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)\n\nIndirect leak of 17 byte(s) in 1 object(s) allocated from:\n    #0 0x4b96e8  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4b96e8)\n    #1 0x500998  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x500998)\n    #2 0x508313  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x508313)\n    #3 0x4ff95e  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4ff95e)\n    #4 0x4f9958  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4f9958)\n    #5 0x7bcc46a7183f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)\n\nSUMMARY: AddressSanitizer: 33 byte(s) leaked in 2 allocation(s).\n']
+Updated xlsx
+Docker image 'fig-new-img' built successfully.
+[INFO] Container 'fig-container' is already running.
+Running PoC...
+Generating test traffic...
+[ERROR] Command failed: ./fig2dev-3.2.7a/fig2dev/fig2dev -L tikz test-poc.fig
+Incomplete compound object at line 12.
+
+=================================================================
+==7==ERROR: LeakSanitizer: detected memory leaks
+
+Direct leak of 16 byte(s) in 1 object(s) allocated from:
+    #0 0x4b96e8  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4b96e8)
+    #1 0x500947  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x500947)
+    #2 0x508313  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x508313)
+    #3 0x4ff95e  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4ff95e)
+    #4 0x4f9958  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4f9958)
+    #5 0x761fd262c83f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+
+Indirect leak of 17 byte(s) in 1 object(s) allocated from:
+    #0 0x4b96e8  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4b96e8)
+    #1 0x500998  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x500998)
+    #2 0x508313  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x508313)
+    #3 0x4ff95e  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4ff95e)
+    #4 0x4f9958  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4f9958)
+    #5 0x761fd262c83f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+
+SUMMARY: AddressSanitizer: 33 byte(s) leaked in 2 allocation(s).
+
+Waiting for crash detection...
+
+=== fig Output ===
+Incomplete compound object at line 12.
+
+=================================================================
+==7==ERROR: LeakSanitizer: detected memory leaks
+
+Direct leak of 16 byte(s) in 1 object(s) allocated from:
+    #0 0x4b96e8  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4b96e8)
+    #1 0x500947  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x500947)
+    #2 0x508313  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x508313)
+    #3 0x4ff95e  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4ff95e)
+    #4 0x4f9958  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4f9958)
+    #5 0x761fd262c83f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+
+Indirect leak of 17 byte(s) in 1 object(s) allocated from:
+    #0 0x4b96e8  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4b96e8)
+    #1 0x500998  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x500998)
+    #2 0x508313  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x508313)
+    #3 0x4ff95e  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4ff95e)
+    #4 0x4f9958  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4f9958)
+    #5 0x761fd262c83f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+
+SUMMARY: AddressSanitizer: 33 byte(s) leaked in 2 allocation(s).
+
+
+Crash Detected: True
+Cleaning up...
+Container 'fig-container' is running. Stopping it...
+Added new row: [4, '2021-3561', 'read_objects', True, 'fig2dev-3.2.7a', '#FIG 3.2\nLandscape\nCenter\nMetric\nA4\n100\nSingle\n-1\n1200 2\n# Optional comment\n\n6  # Compound object\n10 20 30 40  # Bounding box coordinates (upper-left and lower-right)\n\n1  # Ellipse object\n2147483647  # Integer wrap-around: number of points near 2^31-1\n10  # Line thickness (1/80 inch)\n7  # White pen color\n-1  # No fill\n0.1  # Style value for dash/dotted lines\n1  # Direction (always 1)\n3.14  # Angle in radians\n100 200  # Center of the ellipse (x, y)\n300 400  # Radii (x, y)\n\n-6  # End of compound object.', 'global-buffer-overflow', 'fig2dev+0x5008fe  (read.c:81) ', 'Read', '−1 byte (1 byte before buf)', '1 byte', '\n Incomplete compound object at line 12.\n\n=================================================================\n==7==ERROR: LeakSanitizer: detected memory leaks\n\nDirect leak of 16 byte(s) in 1 object(s) allocated from:\n    #0 0x4b96e8  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4b96e8)\n    #1 0x500947  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x500947)\n    #2 0x508313  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x508313)\n    #3 0x4ff95e  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4ff95e)\n    #4 0x4f9958  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4f9958)\n    #5 0x761fd262c83f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)\n\nIndirect leak of 17 byte(s) in 1 object(s) allocated from:\n    #0 0x4b96e8  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4b96e8)\n    #1 0x500998  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x500998)\n    #2 0x508313  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x508313)\n    #3 0x4ff95e  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4ff95e)\n    #4 0x4f9958  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4f9958)\n    #5 0x761fd262c83f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)\n\nSUMMARY: AddressSanitizer: 33 byte(s) leaked in 2 allocation(s).\n']
+Updated xlsx
+Docker image 'fig-new-img' built successfully.
+[INFO] Container 'fig-container' is already running.
+Running PoC...
+Generating test traffic...
+[ERROR] Command failed: ./fig2dev-3.2.7a/fig2dev/fig2dev -L tikz test-poc.fig
+Incomplete compound object at line 12.
+
+=================================================================
+==7==ERROR: LeakSanitizer: detected memory leaks
+
+Direct leak of 16 byte(s) in 1 object(s) allocated from:
+    #0 0x4b96e8  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4b96e8)
+    #1 0x500947  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x500947)
+    #2 0x508313  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x508313)
+    #3 0x4ff95e  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4ff95e)
+    #4 0x4f9958  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4f9958)
+    #5 0x7454a9b2e83f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+
+Indirect leak of 17 byte(s) in 1 object(s) allocated from:
+    #0 0x4b96e8  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4b96e8)
+    #1 0x500998  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x500998)
+    #2 0x508313  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x508313)
+    #3 0x4ff95e  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4ff95e)
+    #4 0x4f9958  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4f9958)
+    #5 0x7454a9b2e83f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+
+SUMMARY: AddressSanitizer: 33 byte(s) leaked in 2 allocation(s).
+
+Waiting for crash detection...
+
+=== fig Output ===
+Incomplete compound object at line 12.
+
+=================================================================
+==7==ERROR: LeakSanitizer: detected memory leaks
+
+Direct leak of 16 byte(s) in 1 object(s) allocated from:
+    #0 0x4b96e8  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4b96e8)
+    #1 0x500947  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x500947)
+    #2 0x508313  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x508313)
+    #3 0x4ff95e  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4ff95e)
+    #4 0x4f9958  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4f9958)
+    #5 0x7454a9b2e83f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+
+Indirect leak of 17 byte(s) in 1 object(s) allocated from:
+    #0 0x4b96e8  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4b96e8)
+    #1 0x500998  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x500998)
+    #2 0x508313  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x508313)
+    #3 0x4ff95e  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4ff95e)
+    #4 0x4f9958  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4f9958)
+    #5 0x7454a9b2e83f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+
+SUMMARY: AddressSanitizer: 33 byte(s) leaked in 2 allocation(s).
+
+
+Crash Detected: True
+Cleaning up...
+Container 'fig-container' is running. Stopping it...
+Added new row: [5, '2021-3561', 'read_objects', True, 'fig2dev-3.2.7a', '#FIG 3.2\nLandscape\nCenter\nMetric\nA4\n100\nSingle\n-1\n1200 2\n# Optional comment\n\n6  # Compound object\n10 20 30 40  # Bounding box coordinates (upper-left and lower-right)\n\n1  # Ellipse object\n2147483647  # Number of points (near 2^31-1)\n1  # Subtype: ellipse defined by radii\n1  # Solid line style\n10  # Line thickness (1/80 inch)\n7  # White pen color\n-1  # No fill\n0.1  # Style value for dash/dotted lines\n1  # Direction (always 1)\n3.14  # Angle in radians\n100 200  # Center of the ellipse (x, y)\n300 400  # Radii (x, y)\n\n-6  # End of compound object.', 'global-buffer-overflow', 'fig2dev+0x5008fe  (read.c:81) ', 'Read', '−1 byte (1 byte before buf)', '1 byte', '\n Incomplete compound object at line 12.\n\n=================================================================\n==7==ERROR: LeakSanitizer: detected memory leaks\n\nDirect leak of 16 byte(s) in 1 object(s) allocated from:\n    #0 0x4b96e8  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4b96e8)\n    #1 0x500947  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x500947)\n    #2 0x508313  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x508313)\n    #3 0x4ff95e  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4ff95e)\n    #4 0x4f9958  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4f9958)\n    #5 0x7454a9b2e83f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)\n\nIndirect leak of 17 byte(s) in 1 object(s) allocated from:\n    #0 0x4b96e8  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4b96e8)\n    #1 0x500998  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x500998)\n    #2 0x508313  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x508313)\n    #3 0x4ff95e  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4ff95e)\n    #4 0x4f9958  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4f9958)\n    #5 0x7454a9b2e83f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)\n\nSUMMARY: AddressSanitizer: 33 byte(s) leaked in 2 allocation(s).\n']
+Updated xlsx
+Docker image 'fig-new-img' built successfully.
+[INFO] Container 'fig-container' is already running.
+Running PoC...
+Generating test traffic...
+[ERROR] Command failed: ./fig2dev-3.2.7a/fig2dev/fig2dev -L tikz test-poc.fig
+Incomplete compound object at line 12.
+
+=================================================================
+==7==ERROR: LeakSanitizer: detected memory leaks
+
+Direct leak of 16 byte(s) in 1 object(s) allocated from:
+    #0 0x4b96e8  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4b96e8)
+    #1 0x500947  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x500947)
+    #2 0x508313  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x508313)
+    #3 0x4ff95e  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4ff95e)
+    #4 0x4f9958  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4f9958)
+    #5 0x7c2b7e5d683f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+
+Indirect leak of 17 byte(s) in 1 object(s) allocated from:
+    #0 0x4b96e8  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4b96e8)
+    #1 0x500998  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x500998)
+    #2 0x508313  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x508313)
+    #3 0x4ff95e  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4ff95e)
+    #4 0x4f9958  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4f9958)
+    #5 0x7c2b7e5d683f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+
+SUMMARY: AddressSanitizer: 33 byte(s) leaked in 2 allocation(s).
+
+Waiting for crash detection...
+
+=== fig Output ===
+Incomplete compound object at line 12.
+
+=================================================================
+==7==ERROR: LeakSanitizer: detected memory leaks
+
+Direct leak of 16 byte(s) in 1 object(s) allocated from:
+    #0 0x4b96e8  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4b96e8)
+    #1 0x500947  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x500947)
+    #2 0x508313  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x508313)
+    #3 0x4ff95e  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4ff95e)
+    #4 0x4f9958  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4f9958)
+    #5 0x7c2b7e5d683f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+
+Indirect leak of 17 byte(s) in 1 object(s) allocated from:
+    #0 0x4b96e8  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4b96e8)
+    #1 0x500998  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x500998)
+    #2 0x508313  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x508313)
+    #3 0x4ff95e  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4ff95e)
+    #4 0x4f9958  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4f9958)
+    #5 0x7c2b7e5d683f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+
+SUMMARY: AddressSanitizer: 33 byte(s) leaked in 2 allocation(s).
+
+
+Crash Detected: True
+Cleaning up...
+Container 'fig-container' is running. Stopping it...
+Added new row: [6, '2021-3561', 'read_objects', True, 'fig2dev-3.2.7a', '#FIG 3.2\nLandscape\nCenter\nMetric\nA4\n100\nSingle\n-1\n1200 2\n# Optional comment\n\n6  # Compound object\n10 20 30 40  # Bounding box coordinates (upper-left and lower-right)\n\n1  # Ellipse object\n2147483647  # Subtype: ellipse defined by radii\n1  # Solid line style\n10  # Line thickness (1/80 inch)\n7  # White pen color\n-1  # No fill\n0.1  # Style value for dash/dotted lines\n1  # Direction (always 1)\n3.14  # Angle in radians\n100 200  # Center of the ellipse (x, y)\n300 400  # Radii (x, y)\n\n-6  # End of compound object.', 'global-buffer-overflow', 'fig2dev+0x5008fe  (read.c:81) ', 'Read', '−1 byte (1 byte before buf)', '1 byte', '\n Incomplete compound object at line 12.\n\n=================================================================\n==7==ERROR: LeakSanitizer: detected memory leaks\n\nDirect leak of 16 byte(s) in 1 object(s) allocated from:\n    #0 0x4b96e8  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4b96e8)\n    #1 0x500947  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x500947)\n    #2 0x508313  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x508313)\n    #3 0x4ff95e  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4ff95e)\n    #4 0x4f9958  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4f9958)\n    #5 0x7c2b7e5d683f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)\n\nIndirect leak of 17 byte(s) in 1 object(s) allocated from:\n    #0 0x4b96e8  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4b96e8)\n    #1 0x500998  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x500998)\n    #2 0x508313  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x508313)\n    #3 0x4ff95e  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4ff95e)\n    #4 0x4f9958  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4f9958)\n    #5 0x7c2b7e5d683f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)\n\nSUMMARY: AddressSanitizer: 33 byte(s) leaked in 2 allocation(s).\n']
+Updated xlsx
+Docker image 'fig-new-img' built successfully.
+[INFO] Container 'fig-container' is already running.
+Running PoC...
+Generating test traffic...
+[ERROR] Command failed: ./fig2dev-3.2.7a/fig2dev/fig2dev -L tikz test-poc.fig
+Incomplete compound object at line 12.
+
+=================================================================
+==7==ERROR: LeakSanitizer: detected memory leaks
+
+Direct leak of 16 byte(s) in 1 object(s) allocated from:
+    #0 0x4b96e8  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4b96e8)
+    #1 0x500947  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x500947)
+    #2 0x508313  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x508313)
+    #3 0x4ff95e  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4ff95e)
+    #4 0x4f9958  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4f9958)
+    #5 0x720e53a8783f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+
+Indirect leak of 17 byte(s) in 1 object(s) allocated from:
+    #0 0x4b96e8  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4b96e8)
+    #1 0x500998  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x500998)
+    #2 0x508313  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x508313)
+    #3 0x4ff95e  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4ff95e)
+    #4 0x4f9958  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4f9958)
+    #5 0x720e53a8783f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+
+SUMMARY: AddressSanitizer: 33 byte(s) leaked in 2 allocation(s).
+
+Waiting for crash detection...
+
+=== fig Output ===
+Incomplete compound object at line 12.
+
+=================================================================
+==7==ERROR: LeakSanitizer: detected memory leaks
+
+Direct leak of 16 byte(s) in 1 object(s) allocated from:
+    #0 0x4b96e8  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4b96e8)
+    #1 0x500947  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x500947)
+    #2 0x508313  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x508313)
+    #3 0x4ff95e  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4ff95e)
+    #4 0x4f9958  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4f9958)
+    #5 0x720e53a8783f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+
+Indirect leak of 17 byte(s) in 1 object(s) allocated from:
+    #0 0x4b96e8  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4b96e8)
+    #1 0x500998  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x500998)
+    #2 0x508313  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x508313)
+    #3 0x4ff95e  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4ff95e)
+    #4 0x4f9958  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4f9958)
+    #5 0x720e53a8783f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)
+
+SUMMARY: AddressSanitizer: 33 byte(s) leaked in 2 allocation(s).
+
+
+Crash Detected: True
+Cleaning up...
+Container 'fig-container' is running. Stopping it...
+Added new row: [7, '2021-3561', 'read_objects', True, 'fig2dev-3.2.7a', '#FIG 3.2\nLandscape\nCenter\nMetric\nA4\n100\nSingle\n-1\n1200 2\n# Optional comment\n\n6  # Compound object\n10 20 30 40  # Bounding box coordinates (upper-left and lower-right)\n\n1  # Ellipse object\n2147483647  # Large number of points (near 2^31-1)\n10 20 30 40 50 60 70 80 90 100  # Short coordinate list\n\n-6  # End of compound object.', 'global-buffer-overflow', 'fig2dev+0x5008fe  (read.c:81) ', 'Read', '−1 byte (1 byte before buf)', '1 byte', '\n Incomplete compound object at line 12.\n\n=================================================================\n==7==ERROR: LeakSanitizer: detected memory leaks\n\nDirect leak of 16 byte(s) in 1 object(s) allocated from:\n    #0 0x4b96e8  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4b96e8)\n    #1 0x500947  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x500947)\n    #2 0x508313  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x508313)\n    #3 0x4ff95e  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4ff95e)\n    #4 0x4f9958  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4f9958)\n    #5 0x720e53a8783f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)\n\nIndirect leak of 17 byte(s) in 1 object(s) allocated from:\n    #0 0x4b96e8  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4b96e8)\n    #1 0x500998  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x500998)\n    #2 0x508313  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x508313)\n    #3 0x4ff95e  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4ff95e)\n    #4 0x4f9958  (/test/fig2dev-3.2.7a/fig2dev/fig2dev+0x4f9958)\n    #5 0x720e53a8783f  (/lib/x86_64-linux-gnu/libc.so.6+0x2083f)\n\nSUMMARY: AddressSanitizer: 33 byte(s) leaked in 2 allocation(s).\n']
+Updated xlsx

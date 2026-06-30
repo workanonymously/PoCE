@@ -1,0 +1,29 @@
+```
+#FIG 3.2
+Landscape
+Center
+Metric
+A4
+100
+Single
+-1
+1200 2
+# Optional comment
+
+6  # Compound object
+10 20 30 40  # Bounding box coordinates (upper-left and lower-right)
+
+1  # Ellipse object
+1  # Subtype: ellipse defined by radii
+1  # Solid line style
+10  # Line thickness (1/80 inch)
+7  # White pen color
+-1  # No fill
+0.1  # Style value for dash/dotted lines
+1  # Direction (always 1)
+3.14  # Angle in radians
+100 200  # Center of the ellipse (x, y)
+300 400  # Radii (x, y)
+
+-6  # End of compound object
+```

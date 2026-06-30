@@ -1,0 +1,50 @@
+FROM ubuntu:18.04
+
+# Install dependencies
+RUN apt-get update && \
+    apt-get install -y \
+    build-essential \
+    gdb \
+    clang\
+    libpcap-dev \
+    wget \
+    autoconf \
+    automake \
+    libtool \
+    pkg-config \
+    flex \
+    libnet1-dev \
+    bison \
+    && rm -rf /var/lib/apt/lists/*
+
+# Download and install vulnerable tcpdump version
+RUN mkdir /test
+WORKDIR /test
+
+RUN wget https://www.tcpdump.org/release/tcpdump-4.9.2.tar.gz && \
+    tar xvf tcpdump-4.9.2.tar.gz && \
+    cd tcpdump-4.9.2 && \
+    CC=clang CFLAGS="-g -O0 -fsanitize=address -fno-omit-frame-pointer" \
+    LDFLAGS="-fsanitize=address" \
+    ./configure && \
+    make -j$(nproc) && \
+    make install
+
+# Create directory for test files
+
+WORKDIR /test
+
+COPY test-poc.c /test/test-poc.c
+# COPY test-poc.py /test/test-poc.py
+# COPY test_pcap_python_mfr.py /test/test_pcap_python_mfr.py
+
+# COPY mfr.pcap  /test/mfr.pcap
+# COPY safe_test.pcap /test/safe_test.pcap
+
+# RUN clang -g -O1 -fsanitize=address -fno-omit-frame-pointer /test/dummy-poc.c -o /test/dummy-poc
+
+# RUN gcc /test/tcpdump-poc.c -o /test/tcpdump-poc
+# Clean up
+# RUN rm -rf /tmp/tcpdump-4.9.2*
+
+CMD ["/bin/bash"]

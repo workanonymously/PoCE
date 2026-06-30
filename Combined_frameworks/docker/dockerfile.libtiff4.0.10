@@ -1,0 +1,43 @@
+FROM ubuntu:16.04
+
+# Install required dependencies
+RUN apt-get update && apt-get install -y \
+    nano \
+    wget \
+    build-essential \
+    cmake \
+    libtool \
+    autoconf \
+    automake \
+    pkg-config \
+    libjpeg-dev \
+    liblzma-dev \
+    zlib1g-dev \
+    libssl-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Download and extract libtiff 4.0.10
+WORKDIR /tmp
+RUN wget https://download.osgeo.org/libtiff/tiff-4.0.10.tar.gz \
+    && tar -xzf tiff-4.0.10.tar.gz \
+    && rm tiff-4.0.10.tar.gz
+
+# Build libtiff with ASan
+WORKDIR /tmp/tiff-4.0.10
+RUN CFLAGS="-fsanitize=address -fno-omit-frame-pointer" \
+    CXXFLAGS="-fsanitize=address -fno-omit-frame-pointer" \
+    LDFLAGS="-fsanitize=address" \
+    ./configure \
+    --prefix=/usr/local \
+    --enable-shared \
+    --disable-static
+
+RUN make -j$(nproc) && make install
+
+# Update library cache
+RUN ldconfig
+
+# Set ASan options
+ENV ASAN_OPTIONS=detect_leaks=1:halt_on_error=0
+
+WORKDIR /workspace

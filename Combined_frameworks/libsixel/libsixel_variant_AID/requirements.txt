@@ -1,0 +1,3 @@
+How to run variant_AID tools:
+1. Inside the path of libsixel we have to run (Don't run inside variant_AID path) :
+    python3 variant_AID/AID_Variant_new.py

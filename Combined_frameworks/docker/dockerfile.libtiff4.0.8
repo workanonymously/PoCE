@@ -1,0 +1,40 @@
+FROM ubuntu:18.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install everything in one layer
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    wget \
+    cmake \
+    pkg-config \
+    libjbig-dev \
+    libjbig0 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Build and install libtiff 4.0.9
+WORKDIR /tmp
+RUN wget -q http://download.osgeo.org/libtiff/tiff-4.0.8.tar.gz && \
+    tar -xzf tiff-4.0.8.tar.gz && \
+    cd tiff-4.0.8 && \
+    ./configure \
+        --prefix=/usr/local \
+        --enable-jbig \
+        --with-jbig-include-dir=/usr/include \
+        --with-jbig-lib-dir=/usr/lib/x86_64-linux-gnu && \
+    make -j$(nproc) && \
+    make install && \
+    ldconfig
+
+# Clean up
+RUN rm -rf /tmp/tiff-4.0.8* && \
+    apt-get remove -y build-essential wget cmake && \
+    apt-get autoremove -y
+
+# Verify installation
+RUN echo "libtiff version: $(tiffinfo -v | head -1)" && \
+    echo "JBIG support: $(tiffinfo -v | grep JBIG)"
+
+WORKDIR /data
+
+CMD ["bin/bash"]
