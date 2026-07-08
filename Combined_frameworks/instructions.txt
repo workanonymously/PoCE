@@ -6,11 +6,11 @@ Steps:
    default llm is llama3:70b
 
 3. In one terminal run the following commands to start ollama server -
-   export OLLAMA_HOST=127.0.0.1:12345
+   export OLLAMA_HOST=127.0.0.1:12543
    ollama serve
 
 4. Then in another terminal download your prefered llm in the same ollama port
-   export OLLAMA_HOST=127.0.0.1:12345
+   export OLLAMA_HOST=127.0.0.1:12543
    ollama run llama3:70b 
 
 5. Then stop running the llm in the terminal and run the following command to run our PoCE tool

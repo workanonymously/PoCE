@@ -26,7 +26,7 @@ RUN tar -xvJf fig2dev-3.2.9a.tar.xz && \
     cd fig2dev-3.2.9a && \
     ./configure && make && make install
 
-# COPY SBO1  /test/SBO1
+# COPY fig2dev/fig2dev_groundtruth_PoCs/SBO1  /test/SBO1
 COPY test-poc.fig /test/test-poc.fig
 
 CMD ["/bin/bash"]

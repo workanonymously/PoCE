@@ -28,6 +28,6 @@ RUN tar -xvJf fig2dev-3.2.7b.tar.xz && \
     ./configure CC="clang -O2 -fno-omit-frame-pointer -g -fsanitize=address" CXX="clang++ -O2 -fno-omit-frame-pointer -g -fsanitize=address" && \
     make && make install
 
-# COPY groundtruth_PoCs/fig2dev_box_crash  /test/fig2dev_box_crash
+COPY fig2dev/fig2dev_groundtruth_PoCs/fig2dev_box_crash  /test/fig2dev_box_crash
 COPY test-poc.fig /test/test-poc.fig
 CMD ["/bin/bash"]

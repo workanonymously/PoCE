@@ -1,0 +1,50 @@
+FROM debian:bookworm-slim
+
+WORKDIR /workspace
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    cmake \
+    autoconf \
+    automake \
+    libtool \
+    pkg-config \
+    autogen \
+    python3 \
+    python3-pip \
+    libmpg123-dev \
+    libvorbis-dev \
+    libflac-dev \
+    libogg-dev \
+    libopus-dev \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip3 install --no-cache-dir --break-system-packages requests
+
+COPY libsndfile_source /workspace/libsndfile_source
+
+RUN cd /workspace/libsndfile_source \
+    && make distclean 2>/dev/null || true \
+    && ./configure --enable-werror=no --disable-dependency-tracking \
+    && make -j$(nproc) \
+       CFLAGS="-fsanitize=address -g -O1 -fno-omit-frame-pointer" \
+       LDFLAGS="-fsanitize=address" \
+    && echo "sndfile-info built OK"
+
+COPY Combined_frameworks/ /workspace/
+
+RUN mkdir -p /workspace/new_outputs/libsndfile_outputs/output
+
+ENV OLLAMA_BASE_URL=http://localhost:11434
+ENV OLLAMA_MODEL=qwen2.5:72b
+ENV T_SESSIONS=10
+ENV I_REFINEMENTS=5
+ENV OLLAMA_TIMEOUT=300
+ENV RAG_TOP_K=3
+ENV SNDFILE_INFO_PATH=/workspace/libsndfile_source/programs/sndfile-info
+
+VOLUME ["/workspace/new_outputs"]
+
+WORKDIR /workspace
+ENTRYPOINT ["python3", "main.py", "--framework", "libsndfile"]

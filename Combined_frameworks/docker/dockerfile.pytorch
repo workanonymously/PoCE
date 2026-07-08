@@ -1,0 +1,39 @@
+FROM continuumio/miniconda3:24.1.2-0
+
+WORKDIR /workspace
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc g++ \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN conda create -y -n vuln_pytorch python=3.10 \
+    && conda run -n vuln_pytorch pip install --no-cache-dir \
+        torch --index-url https://download.pytorch.org/whl/cpu \
+    && conda run -n vuln_pytorch pip install --no-cache-dir \
+        picklescan \
+    && conda clean -afy
+
+RUN pip install --no-cache-dir \
+    requests \
+    picklescan \
+    sentence-transformers \
+    faiss-cpu \
+    "pymupdf>=1.24"
+
+COPY Combined_frameworks/ /workspace/
+
+RUN mkdir -p /workspace/new_outputs/pytorch_outputs/output
+
+VOLUME ["/workspace/new_outputs"]
+
+ENV OLLAMA_BASE_URL=http://localhost:11434
+ENV OLLAMA_MODEL=qwen2.5:72b
+ENV T_SESSIONS=10
+ENV I_REFINEMENTS=5
+ENV OLLAMA_TIMEOUT=300
+ENV RAG_TOP_K=3
+ENV CHUNK_SIZE_WORDS=500
+ENV CONDA_ENV=vuln_pytorch
+
+WORKDIR /workspace
+ENTRYPOINT ["python3", "main.py", "--framework", "pytorch"]

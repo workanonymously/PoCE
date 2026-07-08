@@ -3,7 +3,7 @@ import subprocess
 import sys
 
 def main():
-    
+
     parser = argparse.ArgumentParser(description="Run specific scripts based on framework or variant name.")
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument("--framework", help="Name of the framework (e.g., fig2dev, tcpdump, libsixel)")
@@ -20,10 +20,9 @@ def main():
         "tensorflow": "tensorflow/tensorflow_tool.py",
         "zlib": "zlib_tool/zlib_tool.py",
         "yasm": "yasm/yasm_tool.py",
+        "binutils": "binutils/binutils_tool.py",
         "pytorch": "pytorch/pytorch_tool.py",
         "libsndfile": "libsndfile/libsndfile_tool.py",
-        "binutils": "binutils/binutils_tool.py"
-
     }
 
     variant_scripts = {
@@ -34,9 +33,9 @@ def main():
         "libtiff_variant": "libtiff/libtiff_variant_our/variant_own.py",
         "tensorflow_variant": "tensorflow/tensorflow_variant_our/variant_own.py",
         "zlib_variant": "zlib_tool/zlib_variant_our/variant_own.py",
+        "yasm_variant": "yasm/yasm_variant_our/variant_own.py",
         "pytorch_variant": "pytorch/pytorch_variant_our/variant_own.py",
         "libsndfile_variant": "libsndfile/libsndfile_variant_our/variant_own.py",
-        "yasm_variant": "yasm/yasm_variant_our/variant_own.py"
     }
 
 
