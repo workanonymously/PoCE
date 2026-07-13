@@ -1,0 +1,21 @@
+## Artifact Status
+
+We are applying for the **Reusable** implying **Functional* and **Available** badges.
+
+## Justification for Reusable and functional Badge
+
+We believe the artifact qualifies for the **Reusable** implying **Functional** badge because it is documented, complete, exercisable, and structured to support reuse and extension beyond the original experiments. The artifact provides a common command-line entry point through `main.py`, allowing users to run software workflows and variant workflows in a consistent way. Software-specific and variant-specific components are organized into separate directories, making the artifact easier to understand, modify, and extend.
+
+The artifact also includes Docker-based execution environments for software-specific dependencies. This reduces host-system dependency conflicts and makes the workflows easier to reproduce across compatible systems. The repository includes datasets, scripts, Dockerfiles, dependency specifications, and generated-output locations needed to exercise the artifact. The design also supports adding new software or variants by following the same structure used by the existing ones.
+
+Because the artifact is carefully organized, documented, Dockerized, and designed for extension, we believe it exceeds the minimum requirements for functionality and reusability.
+
+## Justification for Available Badge
+
+We believe the artifact qualifies for the **Available** badge because the author-created artifacts relevant to the paper have been placed in a publicly accessible archival repository. The updated version v.0.3 provides long-term access to the artifact and includes the materials needed to reproduce and reuse the work.
+
+The DOI for the artifact is:
+
+https://doi.org/10.5281/zenodo.21059961 
+
+

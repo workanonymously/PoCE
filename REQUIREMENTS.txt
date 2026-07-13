@@ -1,0 +1,55 @@
+Requirements
+================================
+
+This section describes the tested system configuration and installation requirements for running the artifact. Ollama setup instructions are provided separately in the main README.
+
+Tested System Configuration
+================================
+
+The artifact was tested and packaged on the following platform:
+
+Component             Tested Configuration
+---------             --------------------
+Architecture          x86_64
+Operating System      Ubuntu 24.04.2 LTS
+CPU                   AMD EPYC 9254 24-Core Processor
+Tested CPU Count      96-core system
+Memory                At least 16 GiB RAM
+Disk Space            At least 20 GiB free
+GPU                   At least 2 NVIDIA GPUs recommended
+Container Runtime     Docker
+Entry Point           main.py
+
+Hardware Requirements
+================================
+
+Minimum recommended hardware:
+
+- Architecture: x86_64
+- CPU: 4 or more CPU cores recommended
+- Memory: At least 16 GiB RAM
+- Disk space: At least 20 GiB free disk space
+- GPU: At least 2 NVIDIA GPUs recommended
+
+The two-GPU setup is recommended because one GPU can be used for running the language model service, while another GPU can be used for running the experiment workflow.
+
+The artifact may run on fewer resources for smaller tests, but the above configuration is recommended for reproducing the packaged experiments.
+
+Software Requirements
+================================
+
+The following software should be installed on the host system:
+
+- Ubuntu 24.04.2 LTS or a compatible Linux distribution
+- Docker
+- NVIDIA GPU drivers
+- NVIDIA Container Toolkit, if GPU access from Docker containers is required
+- Git
+- Python 3, for invoking the top-level launcher scripts
+
+Software-specific dependencies are packaged inside Docker images. Users do not need to manually install most Python packages, compilers, libraries, or software versions on the host system if tested in default but can change in dockerfile if needed. Software based required packages are added in each folder as requirements.txt.
+
+Verify docker by
+docker --version
+
+In ReadME.md we added the detailed step by step execution process.
