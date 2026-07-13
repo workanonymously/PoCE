@@ -12,7 +12,7 @@ Because the artifact is carefully organized, documented, Dockerized, and designe
 
 ## Justification for Available Badge
 
-We believe the artifact qualifies for the **Available** badge because the author-created artifacts relevant to the paper have been placed in a publicly accessible archival repository. The updated version v.0.3 provides long-term access to the artifact and includes the materials needed to reproduce and reuse the work.
+We believe the artifact qualifies for the **Available** badge because the author-created artifacts relevant to the paper have been placed in a publicly accessible archival repository. The updated version v1.0.3 provides long-term access to the artifact and includes the materials needed to reproduce and reuse the work.
 
 The DOI for the artifact is:
 
